@@ -1,0 +1,38 @@
+:host {
+  display: block;
+}
+
+.notification-card {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.notification-card > mat-icon {
+  color: var(--brand);
+}
+
+.notification-card > div {
+  flex: 1;
+}
+
+.notification-card h2 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.notification-card p {
+  font-size: 13px;
+}
+
+.notification-card.unread {
+  border-left: 4px solid var(--brand);
+}
+
+.notification-card small {
+  font-size: 11px;
+}
+
+.notification-list + .panel {
+  align-self: start;
+}

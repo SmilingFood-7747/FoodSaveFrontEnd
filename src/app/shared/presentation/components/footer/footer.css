@@ -56,8 +56,3 @@
     gap: 9px;
   }
 }
-
-.footer nav a[aria-disabled='true'] {
-  opacity: 0.55;
-  cursor: default;
-}

@@ -1,0 +1,150 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ (businessMode ? 'nav.business' : 'nav.account') | translate }}</p>
+      <h1>{{ (businessMode ? 'reservation.businessTitle' : 'reservation.title') | translate }}</h1>
+      <p>{{ (businessMode ? 'reservation.businessBody' : 'reservation.subtitle') | translate }}</p>
+    </div>
+    <a mat-stroked-button routerLink="/offers"
+      ><mat-icon>restaurant</mat-icon>{{ 'nav.offers' | translate }}</a
+    >
+  </div>
+  @if (createdId) {
+    <div class="message success" role="status">
+      <mat-icon>check_circle</mat-icon>{{ 'reservation.created' | translate }}
+    </div>
+  }
+  @if (businessMode) {
+    <form class="panel pickup-form" (ngSubmit)="collect()">
+      <div>
+        <h2>{{ 'reservation.validateCode' | translate }}</h2>
+        <p class="muted">{{ 'reservation.validateBody' | translate }}</p>
+      </div>
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ 'reservation.code' | translate }}</mat-label
+        ><input
+          matInput
+          name="code"
+          [ngModel]="code()"
+          (ngModelChange)="code.set($event)"
+          required
+          autocomplete="off" /></mat-form-field
+      ><button mat-flat-button type="submit" [disabled]="!code().trim()">
+        <mat-icon>qr_code_scanner</mat-icon>{{ 'reservation.confirmPickup' | translate }}
+      </button>
+    </form>
+  }
+  @if (error()) {
+    <p class="message error" role="alert">{{ error() | translate }}</p>
+  }
+  @if (message()) {
+    <p class="message success" role="status">{{ message() | translate }}</p>
+  }
+  <div class="filter-row">
+    <mat-form-field appearance="outline"
+      ><mat-label>{{ 'common.status' | translate }}</mat-label
+      ><mat-select [ngModel]="filter()" (ngModelChange)="filter.set($event)">
+        @for (s of ['all', 'ACTIVE', 'COLLECTED', 'CANCELLED', 'EXPIRED']; track s) {
+          <mat-option [value]="s">{{
+            (s === 'all' ? 'common.all' : 'status.' + s) | translate
+          }}</mat-option>
+        }
+      </mat-select></mat-form-field
+    ><mat-form-field appearance="outline"
+      ><mat-label>{{ 'reservation.search' | translate }}</mat-label
+      ><input matInput [ngModel]="query()" (ngModelChange)="query.set($event)" /></mat-form-field
+    ><mat-form-field appearance="outline"
+      ><mat-label>{{ 'common.period' | translate }}</mat-label
+      ><mat-select [ngModel]="period()" (ngModelChange)="period.set($event)"
+        ><mat-option [value]="0">{{ 'common.allTime' | translate }}</mat-option
+        ><mat-option [value]="7">{{ 'common.last7' | translate }}</mat-option
+        ><mat-option [value]="30">{{ 'common.last30' | translate }}</mat-option></mat-select
+      ></mat-form-field
+    >
+  </div>
+  <div class="reservation-list">
+    @for (r of results(); track r.id) {
+      <article class="panel reservation-card" [class.just-created]="r.id === createdId">
+        @let photo = imageUrls()[r.offerId] | async;
+        @if (photo && !failedImages().includes(photo)) {
+          <img [src]="photo" alt="" class="reservation-thumbnail" (error)="imageFailed(photo)" />
+        } @else {
+          <div class="reservation-thumbnail no-image">{{ 'common.noImage' | translate }}</div>
+        }
+        <div class="reservation-info">
+          <span class="status" [class.status-inactive]="r.status !== 'ACTIVE'">{{
+            'status.' + r.status | translate
+          }}</span>
+          <h2>{{ offers.get(r.offerId)?.title }}</h2>
+          <p>
+            {{ businesses.get(offers.get(r.offerId)?.businessId ?? 0)?.name }} · {{ r.quantity }}
+            {{ 'reservation.units' | translate }}
+          </p>
+          <p>
+            <mat-icon aria-hidden="true">schedule</mat-icon
+            >{{ r.pickupStartAt | localized: 'date' }} —
+            {{ r.pickupDeadlineAt | localized: 'time' }}
+          </p>
+          <strong>{{ r.unitPrice * r.quantity | localized }}</strong>
+        </div>
+        <div class="pickup-code">
+          <small>{{ 'reservation.code' | translate }}</small
+          ><strong>{{ r.pickupCode }}</strong>
+          <p class="caption">{{ 'reservation.codeNote' | translate }}</p>
+          @if (!businessMode && r.status === 'ACTIVE') {
+            <button mat-stroked-button (click)="cancel(r.id)">
+              {{ 'reservation.cancel' | translate }}
+            </button>
+          }
+          @if (!businessMode && r.status === 'COLLECTED' && !reviewed(r.id)) {
+            <button mat-flat-button (click)="reviewId.set(r.id)">
+              <mat-icon>star_outline</mat-icon>{{ 'review.rate' | translate }}
+            </button>
+          }
+          @if (reviewed(r.id)) {
+            <span class="muted">{{ 'review.already' | translate }}</span>
+          }
+        </div>
+      </article>
+    }
+    @if (!results().length) {
+      <div class="empty-state">
+        <mat-icon>shopping_bag</mat-icon>
+        <h2>{{ 'reservation.empty' | translate }}</h2>
+        <p>{{ 'reservation.emptyBody' | translate }}</p>
+        <a mat-flat-button routerLink="/offers">{{ 'nav.offers' | translate }}</a>
+      </div>
+    }
+  </div>
+  @if (reviewId()) {
+    <section class="panel review-panel" aria-labelledby="review-title">
+      <h2 id="review-title">{{ 'review.title' | translate }}</h2>
+      <form (ngSubmit)="review()">
+        <mat-form-field appearance="outline"
+          ><mat-label>{{ 'review.rating' | translate }}</mat-label
+          ><mat-select name="rating" [ngModel]="rating()" (ngModelChange)="rating.set($event)">
+            @for (n of [5, 4, 3, 2, 1]; track n) {
+              <mat-option [value]="n">{{ n }} / 5</mat-option>
+            }
+          </mat-select></mat-form-field
+        ><mat-form-field appearance="outline"
+          ><mat-label>{{ 'review.comment' | translate }}</mat-label
+          ><textarea
+            matInput
+            name="comment"
+            [ngModel]="comment()"
+            (ngModelChange)="comment.set($event)"
+            maxlength="1000"
+          ></textarea>
+        </mat-form-field>
+        <div class="button-row">
+          <button mat-flat-button type="submit">{{ 'review.submit' | translate }}</button
+          ><button mat-button type="button" (click)="reviewId.set(null)">
+            {{ 'common.cancel' | translate }}
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+  <p class="caption">{{ 'detail.cancelPolicy' | translate }}</p>
+</section>

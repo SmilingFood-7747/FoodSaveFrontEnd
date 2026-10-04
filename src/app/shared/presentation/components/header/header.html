@@ -1,27 +1,49 @@
 <a class="skip-link" href="#main-content" (click)="skip($event)">{{ 'nav.skip' | translate }}</a>
 <header class="topbar">
-  <a class="brand" routerLink="/offers" aria-label="FoodSave">
-    <img class="brand-logo" src="/foodsave-logo-header.png" alt="" width="48" height="48" />
-    <span
+  <a class="brand" routerLink="/offers" aria-label="FoodSave"
+    ><img class="brand-logo" src="/foodsave-logo-header.png" alt="" width="48" height="48" /><span
       >Food<span class="brand-accent">Save</span
       ><small>{{ 'brand.tagline' | translate }}</small></span
-    >
-  </a>
+    ></a
+  >
   <form class="top-search" (ngSubmit)="find()" role="search">
-    <mat-icon aria-hidden="true">search</mat-icon>
-    <input
+    <mat-icon aria-hidden="true">search</mat-icon
+    ><input
       [attr.aria-label]="'catalog.search' | translate"
       [placeholder]="'catalog.search' | translate"
       [ngModel]="search()"
       (ngModelChange)="search.set($event)"
       name="search"
-    />
-    <button mat-icon-button type="submit" [attr.aria-label]="'common.search' | translate">
+    /><button mat-icon-button type="submit" [attr.aria-label]="'common.search' | translate">
       <mat-icon>arrow_forward</mat-icon>
     </button>
   </form>
   <div class="header-actions">
     <app-language-switcher />
-    <button mat-stroked-button type="button" disabled>{{ 'auth.signIn' | translate }}</button>
+    @if (session.user(); as user) {
+      <a
+        mat-icon-button
+        routerLink="/notifications"
+        [attr.aria-label]="('nav.notifications' | translate) + ' (' + notifications.unread() + ')'"
+        class="notification-button"
+        ><mat-icon>notifications_none</mat-icon>
+        @if (notifications.unread()) {
+          <span class="unread-dot"></span>
+        }
+      </a>
+      <a routerLink="/profile" class="user-avatar" [attr.aria-label]="'nav.profile' | translate">{{
+        user.fullName.charAt(0)
+      }}</a>
+      <button
+        class="logout-button"
+        mat-icon-button
+        (click)="logout()"
+        [attr.aria-label]="'auth.signOut' | translate"
+      >
+        <mat-icon>logout</mat-icon>
+      </button>
+    } @else {
+      <a mat-stroked-button routerLink="/sign-in">{{ 'auth.signIn' | translate }}</a>
+    }
   </div>
 </header>

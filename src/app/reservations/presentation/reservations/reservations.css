@@ -1,0 +1,158 @@
+:host {
+  display: block;
+}
+
+.no-image {
+  display: grid;
+  place-items: center;
+  background: var(--canvas);
+  color: var(--muted);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.pickup-form {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.pickup-form > div {
+  flex: 1;
+}
+
+.pickup-form h2 {
+  margin-bottom: 7px;
+}
+
+.pickup-form p {
+  font-size: 12px;
+  margin: 0;
+}
+
+.pickup-form mat-form-field {
+  margin-bottom: -20px;
+}
+
+.reservation-card {
+  display: flex;
+  gap: 23px;
+  align-items: center;
+}
+
+.reservation-card.just-created {
+  border-color: #7aaf69;
+  box-shadow: 0 0 0 3px #e9f2e2;
+}
+
+.reservation-thumbnail {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.reservation-info {
+  flex: 1;
+}
+
+.reservation-info h2 {
+  font-size: 19px;
+  margin: 9px 0 8px;
+}
+
+.reservation-info p {
+  font-size: 12px;
+  margin-bottom: 6px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.reservation-info mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.pickup-code {
+  text-align: right;
+  max-width: 230px;
+}
+
+.pickup-code > small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.pickup-code > strong {
+  display: block;
+  font-family: monospace;
+  font-size: 21px;
+  letter-spacing: 2px;
+  color: var(--brand);
+}
+
+.pickup-code p {
+  max-width: 210px;
+  margin-bottom: 10px;
+}
+
+.review-panel {
+  max-width: 700px;
+}
+
+.review-panel mat-form-field {
+  display: block;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .pickup-form {
+    flex-wrap: wrap;
+  }
+  .pickup-form > div {
+    width: 100%;
+    flex-basis: 100%;
+  }
+}
+
+@media (max-width: 850px) {
+  .reservation-card {
+    flex-wrap: wrap;
+  }
+  .pickup-code {
+    width: 100%;
+    max-width: none;
+    text-align: left;
+    padding: 16px 0 0;
+    border-top: 1px solid var(--border);
+  }
+  .pickup-code > strong {
+    font-size: 23px;
+  }
+  .pickup-code p {
+    max-width: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .reservation-thumbnail {
+    width: 68px;
+    height: 68px;
+  }
+  .reservation-card {
+    gap: 14px;
+  }
+  .reservation-info h2 {
+    font-size: 17px;
+  }
+  .pickup-form > mat-form-field {
+    width: 100%;
+  }
+  .pickup-form > button {
+    width: 100%;
+  }
+}

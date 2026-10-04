@@ -1,0 +1,116 @@
+<section class="page auth-grid">
+  <div class="auth-story">
+    <p class="eyebrow">FOODSAVE</p>
+    <h1>{{ 'auth.heroTitle' | translate }}</h1>
+    <p>{{ 'auth.heroBody' | translate }}</p>
+    <div class="auth-points">
+      <span><mat-icon>eco</mat-icon>{{ 'auth.point1' | translate }}</span
+      ><span><mat-icon>local_offer</mat-icon>{{ 'auth.point2' | translate }}</span
+      ><span><mat-icon>verified</mat-icon>{{ 'auth.point3' | translate }}</span>
+    </div>
+  </div>
+  <div class="panel auth-panel">
+    <h2>{{ (registering ? 'auth.createAccount' : 'auth.welcome') | translate }}</h2>
+    <p class="muted">{{ (registering ? 'auth.registerBody' : 'auth.signInBody') | translate }}</p>
+    <form (ngSubmit)="submit()" #form="ngForm">
+      @if (registering) {
+        <mat-form-field appearance="outline"
+          ><mat-label>{{ 'profile.name' | translate }}</mat-label
+          ><input
+            matInput
+            name="fullName"
+            [ngModel]="fullName()"
+            (ngModelChange)="fullName.set($event)"
+            required
+            autocomplete="name" /></mat-form-field
+        ><mat-form-field appearance="outline"
+          ><mat-label>{{ 'profile.role' | translate }}</mat-label
+          ><mat-select name="role" [ngModel]="role()" (ngModelChange)="role.set($event)"
+            ><mat-option value="CUSTOMER">{{ 'roles.CUSTOMER' | translate }}</mat-option
+            ><mat-option value="BUSINESS_OWNER">{{
+              'roles.BUSINESS_OWNER' | translate
+            }}</mat-option></mat-select
+          ></mat-form-field
+        ><mat-form-field appearance="outline"
+          ><mat-label>{{ 'profile.phone' | translate }}</mat-label
+          ><input
+            matInput
+            type="tel"
+            name="phone"
+            [ngModel]="phone()"
+            (ngModelChange)="phone.set($event)"
+            autocomplete="tel"
+        /></mat-form-field>
+      }
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ 'profile.email' | translate }}</mat-label
+        ><input
+          matInput
+          type="email"
+          name="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          required
+          email
+          autocomplete="email"
+      /></mat-form-field>
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ 'auth.password' | translate }}</mat-label
+        ><input
+          matInput
+          type="password"
+          name="password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          required
+          [minlength]="registering ? 8 : 1"
+          [attr.autocomplete]="registering ? 'new-password' : 'current-password'"
+      /></mat-form-field>
+      @if (registering) {
+        <mat-checkbox
+          name="accepted"
+          [ngModel]="accepted()"
+          (ngModelChange)="accepted.set($event)"
+          >{{ 'auth.acceptTerms' | translate }}</mat-checkbox
+        >
+        <p>
+          <a routerLink="/terms">{{ 'legal.terms' | translate }}</a> ·
+          <a routerLink="/privacy">{{ 'legal.privacy' | translate }}</a>
+        </p>
+      }
+      @if (error()) {
+        <p class="message error" role="alert">{{ error() | translate }}</p>
+      }
+      <button
+        mat-flat-button
+        class="full-width"
+        type="submit"
+        [disabled]="form.invalid || busy() || (registering && !accepted())"
+      >
+        {{
+          (busy() ? 'common.loading' : registering ? 'auth.createAccount' : 'auth.signIn')
+            | translate
+        }}
+      </button>
+    </form>
+    <p class="auth-switch">
+      {{ (registering ? 'auth.haveAccount' : 'auth.noAccount') | translate }}
+      <a [routerLink]="registering ? '/sign-in' : '/sign-up'" [queryParams]="{ role: role() }">{{
+        (registering ? 'auth.signIn' : 'auth.createAccount') | translate
+      }}</a>
+    </p>
+    @if (!registering) {
+      <div class="demo-accounts">
+        <strong>{{ 'auth.demoAccounts' | translate }}</strong>
+        <p>{{ 'auth.demoBody' | translate }}</p>
+        <div class="button-row">
+          <button mat-stroked-button (click)="demo('CUSTOMER')">
+            {{ 'roles.CUSTOMER' | translate }}</button
+          ><button mat-stroked-button (click)="demo('BUSINESS_OWNER')">
+            {{ 'roles.BUSINESS_OWNER' | translate }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</section>

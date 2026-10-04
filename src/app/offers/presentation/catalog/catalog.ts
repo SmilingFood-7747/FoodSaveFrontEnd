@@ -1,32 +1,20 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { TranslatePipe } from '@ngx-translate/core';
+import { UI } from '../../../shared/presentation/ui';
+import { OfferCard } from '../components/offer-card/offer-card';
+import { OfferService } from '../../application/offer.service';
+import { BusinessService } from '../../../businesses/application/business.service';
 import { GeolocationService } from '../../../shared/application/geolocation.service';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-catalog',
-  imports: [
-    FormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    TranslatePipe,
-  ],
+  imports: [...UI, OfferCard],
   templateUrl: './catalog.html',
   styleUrl: './catalog.css',
 })
 export class Catalog {
+  readonly offers = inject(OfferService);
+  readonly businesses = inject(BusinessService);
   readonly geo = inject(GeolocationService);
   readonly query = signal('');
   readonly category = signal('all');
@@ -36,15 +24,40 @@ export class Catalog {
   readonly availableOnly = signal(true);
   readonly locationError = signal(false);
   readonly categories = ['all', 'meals', 'bakery', 'vegetarian', 'desserts'];
-  readonly districts = signal<string[]>([]);
-  readonly results = signal([]);
+  readonly districts = computed(() => [...new Set(this.businesses.all().map((b) => b.district))]);
+  readonly results = computed(() =>
+    this.offers.active().filter((o) => {
+      const business = this.businesses.get(o.businessId);
+      const text = `${o.title} ${o.description} ${business?.name}`.toLowerCase();
+      const distance = business ? this.geo.distance(business.latitude, business.longitude) : null;
+      const time = new Intl.DateTimeFormat('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'America/Lima',
+        hour12: false,
+      }).format(new Date(o.pickupEndAt));
+      const matchesSearch = text.includes(this.query().trim().toLowerCase());
+      const matchesCategory = this.category() === 'all' || o.category === this.category();
+      const matchesDistrict = this.district() === 'all' || business?.district === this.district();
+      const hasUnits = !this.availableOnly() || o.availableUnits > 0;
+      const matchesDistance = !this.radius() || (distance !== null && distance <= this.radius());
+      const matchesTime = !this.pickupBefore() || time <= this.pickupBefore();
 
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesDistrict &&
+        hasUnits &&
+        matchesDistance &&
+        matchesTime
+      );
+    }),
+  );
   constructor() {
     inject(ActivatedRoute)
       .queryParamMap.pipe(takeUntilDestroyed())
-      .subscribe((params) => this.query.set(params.get('q') ?? ''));
+      .subscribe((p) => this.query.set(p.get('q') ?? ''));
   }
-
   clear(): void {
     this.query.set('');
     this.category.set('all');
@@ -53,7 +66,6 @@ export class Catalog {
     this.pickupBefore.set('');
     this.availableOnly.set(true);
   }
-
   async locate(): Promise<void> {
     try {
       this.locationError.set(false);

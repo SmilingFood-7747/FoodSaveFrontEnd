@@ -1,0 +1,74 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'nav.business' | translate }}</p>
+      <h1>{{ 'nav.manageOffers' | translate }}</h1>
+      <p>{{ 'editor.manageBody' | translate }}</p>
+    </div>
+    <a mat-flat-button routerLink="/business/offers/new"
+      ><mat-icon>add</mat-icon>{{ 'editor.publish' | translate }}</a
+    >
+  </div>
+  @if (error()) {
+    <p class="message error" role="alert">{{ error() | translate }}</p>
+  }
+  <div class="panel table-panel">
+    <div class="table-scroll">
+      <table>
+        <caption class="sr-only">
+          {{
+            'nav.manageOffers' | translate
+          }}
+        </caption>
+        <thead>
+          <tr>
+            <th>{{ 'editor.title' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+            <th>{{ 'editor.offerPrice' | translate }}</th>
+            <th>{{ 'editor.available' | translate }}</th>
+            <th>{{ 'editor.pickupEnd' | translate }}</th>
+            <th>{{ 'common.actions' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (o of offers.owned(); track o.id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/offers', o.id]">{{ o.title }}</a>
+              </td>
+              <td>
+                <span class="status" [class.status-inactive]="o.status !== 'ACTIVE'">{{
+                  'status.' + o.status | translate
+                }}</span>
+              </td>
+              <td>{{ o.offerPrice | localized }}</td>
+              <td>{{ o.availableUnits }} / {{ o.initialUnits }}</td>
+              <td>{{ o.pickupEndAt | localized: 'date' }}</td>
+              <td>
+                <a
+                  mat-icon-button
+                  [routerLink]="['/business/offers', o.id, 'edit']"
+                  [attr.aria-label]="'editor.edit' | translate"
+                  ><mat-icon>edit</mat-icon></a
+                ><button
+                  mat-icon-button
+                  (click)="pause(o.id)"
+                  [disabled]="o.status !== 'ACTIVE'"
+                  [attr.aria-label]="'editor.pause' | translate"
+                >
+                  <mat-icon>pause_circle_outline</mat-icon>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (!offers.owned().length) {
+      <div class="empty-state">
+        <mat-icon>restaurant</mat-icon>
+        <h2>{{ 'editor.empty' | translate }}</h2>
+      </div>
+    }
+  </div>
+</section>

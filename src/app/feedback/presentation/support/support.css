@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+.faq {
+  border-bottom: 1px solid var(--border);
+  padding: 17px 0;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.faq p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 12px 0 0;
+}
+
+.support-ticket h3 {
+  margin-top: 14px;
+}
+
+.support-ticket p {
+  font-size: 13px;
+}

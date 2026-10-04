@@ -1,16 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Component, inject, signal } from '@angular/core';
 import { Header } from '../header/header';
-
+import { UI } from '../../ui';
+import { SessionService } from '../../../../iam/application/session.service';
+import { BrowserDatabase } from '../../../infrastructure/browser-database';
 @Component({
   selector: 'app-layout',
-  imports: [RouterLink, RouterLinkActive, MatButtonModule, MatIconModule, TranslatePipe, Header],
+  imports: [...UI, Header],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
 })
 export class Layout {
+  readonly session = inject(SessionService);
+  readonly storage = inject(BrowserDatabase);
   readonly menuOpen = signal(false);
 }

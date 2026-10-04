@@ -1,0 +1,46 @@
+<section class="page narrow-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'nav.account' | translate }}</p>
+      <h1>{{ 'profile.title' | translate }}</h1>
+      <p>{{ 'profile.subtitle' | translate }}</p>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="profile-heading">
+      <span class="large-avatar">{{ session.user()?.fullName?.charAt(0) }}</span>
+      <div>
+        <h2>{{ session.user()?.fullName }}</h2>
+        <span class="status">{{ 'roles.' + session.user()?.role | translate }}</span>
+      </div>
+    </div>
+    <form (ngSubmit)="save()">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ 'profile.name' | translate }}</mat-label
+        ><input
+          matInput
+          name="name"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
+          required
+          autocomplete="name" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>{{ 'profile.phone' | translate }}</mat-label
+        ><input
+          matInput
+          type="tel"
+          name="phone"
+          [ngModel]="phone()"
+          (ngModelChange)="phone.set($event)"
+          autocomplete="tel" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>{{ 'profile.email' | translate }}</mat-label
+        ><input matInput [value]="session.user()?.email" readonly
+      /></mat-form-field>
+      @if (message()) {
+        <p class="message" role="status">{{ message() | translate }}</p>
+      }
+      <button mat-flat-button type="submit">{{ 'common.save' | translate }}</button>
+    </form>
+  </div>
+</section>

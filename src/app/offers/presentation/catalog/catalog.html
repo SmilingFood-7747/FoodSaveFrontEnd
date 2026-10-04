@@ -94,6 +94,11 @@
     }}</mat-checkbox
     ><button mat-button (click)="clear()">{{ 'catalog.clear' | translate }}</button>
   </div>
+  <div class="offer-grid">
+    @for (offer of results(); track offer.id) {
+      <app-offer-card [offer]="offer" />
+    }
+  </div>
   @if (!results().length) {
     <div class="empty-state">
       <mat-icon>search_off</mat-icon>

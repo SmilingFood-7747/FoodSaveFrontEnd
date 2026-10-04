@@ -1,38 +1,33 @@
-import { DOCUMENT } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslatePipe } from '@ngx-translate/core';
+import { Router } from '@angular/router';
+import { UI } from '../../ui';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
-
+import { SessionService } from '../../../../iam/application/session.service';
+import { NotificationService } from '../../../../notifications/application/notification.service';
+import { DOCUMENT } from '@angular/common';
 @Component({
   selector: 'app-header',
-  imports: [
-    FormsModule,
-    RouterLink,
-    MatButtonModule,
-    MatIconModule,
-    TranslatePipe,
-    LanguageSwitcher,
-  ],
+  imports: [...UI, LanguageSwitcher],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
-  readonly search = signal('');
+  readonly session = inject(SessionService);
+  readonly notifications = inject(NotificationService);
   private readonly router = inject(Router);
+  readonly search = signal('');
   private readonly document = inject(DOCUMENT);
-
-  find(): void {
-    this.router.navigate(['/offers'], { queryParams: { q: this.search() } });
-  }
-
   skip(event: Event): void {
     event.preventDefault();
     const content = this.document.getElementById('main-content');
     content?.focus();
     content?.scrollIntoView({ block: 'start' });
+  }
+  find(): void {
+    this.router.navigate(['/offers'], { queryParams: { q: this.search() } });
+  }
+  logout(): void {
+    this.session.signOut();
+    this.router.navigate(['/offers']);
   }
 }

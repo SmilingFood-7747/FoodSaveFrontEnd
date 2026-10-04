@@ -1,0 +1,87 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'dashboard.eyebrow' | translate }}</p>
+      <h1>{{ 'dashboard.greeting' | translate: { name: session.user()?.fullName } }}</h1>
+      <p>{{ 'dashboard.subtitle' | translate }}</p>
+    </div>
+    <a mat-flat-button routerLink="/business/offers/new"
+      ><mat-icon>add</mat-icon>{{ 'editor.publish' | translate }}</a
+    >
+  </div>
+  <mat-form-field appearance="outline"
+    ><mat-label>{{ 'common.period' | translate }}</mat-label
+    ><mat-select [ngModel]="reporting.period()" (ngModelChange)="reporting.period.set($event)"
+      ><mat-option [value]="7">{{ 'common.last7' | translate }}</mat-option
+      ><mat-option [value]="30">{{ 'common.last30' | translate }}</mat-option
+      ><mat-option [value]="0">{{ 'common.allTime' | translate }}</mat-option></mat-select
+    ></mat-form-field
+  >
+  <div class="stats-grid">
+    <div class="stat-card">
+      <mat-icon>restaurant</mat-icon><small>{{ 'dashboard.offers' | translate }}</small
+      ><strong>{{ reporting.summary().offers }}</strong>
+    </div>
+    <div class="stat-card">
+      <mat-icon>shopping_bag</mat-icon><small>{{ 'dashboard.reservations' | translate }}</small
+      ><strong>{{ reporting.summary().reservations }}</strong>
+    </div>
+    <div class="stat-card">
+      <mat-icon>eco</mat-icon><small>{{ 'dashboard.collected' | translate }}</small
+      ><strong>{{ reporting.summary().collected }}</strong>
+    </div>
+    <div class="stat-card">
+      <mat-icon>payments</mat-icon><small>{{ 'dashboard.recovered' | translate }}</small
+      ><strong>{{ reporting.summary().recovered | localized }}</strong>
+    </div>
+  </div>
+  <div class="detail-grid">
+    <div class="panel">
+      <h2>{{ 'dashboard.operation' | translate }}</h2>
+      @for (
+        item of [
+          { key: 'ACTIVE', count: reporting.summary().active },
+          {
+            key: 'COLLECTED',
+            count:
+              reporting.rows().length -
+              reporting.summary().active -
+              reporting.summary().cancelled -
+              reporting.summary().expired,
+          },
+          { key: 'CANCELLED', count: reporting.summary().cancelled },
+          { key: 'EXPIRED', count: reporting.summary().expired },
+        ];
+        track item.key
+      ) {
+        <div class="chart-row">
+          <div>
+            <span>{{ 'status.' + item.key | translate }}</span
+            ><strong>{{ item.count }}</strong>
+          </div>
+          <div class="chart-track"><span [style.width.%]="width(item.count)"></span></div>
+        </div>
+      }
+      <a mat-stroked-button routerLink="/business/reservations">{{
+        'dashboard.viewReservations' | translate
+      }}</a>
+    </div>
+    <div class="panel impact-panel">
+      <mat-icon>volunteer_activism</mat-icon>
+      <h2>{{ 'dashboard.impactTitle' | translate }}</h2>
+      <p>{{ 'dashboard.impactBody' | translate }}</p>
+      <strong class="big-number">{{ reporting.summary().saved | localized }}</strong
+      ><span>{{ 'dashboard.customerSavings' | translate }}</span>
+    </div>
+  </div>
+  <div class="panel definitions">
+    <h2>{{ 'dashboard.definitions' | translate }}</h2>
+    <p>{{ 'dashboard.definitionsBody' | translate }}</p>
+    <p class="caption">{{ 'app.demoMetrics' | translate }}</p>
+  </div>
+  @if (!businesses.owned().length) {
+    <div class="message">
+      <a routerLink="/business/profile">{{ 'editor.businessFirst' | translate }}</a>
+    </div>
+  }
+</section>

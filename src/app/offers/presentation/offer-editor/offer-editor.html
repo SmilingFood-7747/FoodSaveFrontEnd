@@ -1,0 +1,192 @@
+<section class="page">
+  <a class="back-link" routerLink="/business/offers"
+    ><mat-icon>arrow_back</mat-icon>{{ 'nav.manageOffers' | translate }}</a
+  >
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'nav.business' | translate }}</p>
+      <h1>{{ (id ? 'editor.edit' : 'editor.publish') | translate }}</h1>
+      <p>{{ 'editor.subtitle' | translate }}</p>
+    </div>
+  </div>
+  @if (!businesses.owned().length) {
+    <div class="empty-state">
+      <mat-icon>storefront</mat-icon>
+      <h2>{{ 'editor.businessFirst' | translate }}</h2>
+      <a mat-flat-button routerLink="/business/profile">{{ 'business.register' | translate }}</a>
+    </div>
+  } @else {
+    <div class="panel form-panel">
+      <form (ngSubmit)="save()" #form="ngForm">
+        <div class="form-grid">
+          <mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.name' | translate }}</mat-label
+            ><mat-select
+              name="business"
+              [ngModel]="businessId()"
+              (ngModelChange)="businessId.set($event)"
+              required
+            >
+              @for (b of businesses.owned(); track b.id) {
+                <mat-option [value]="b.id">{{ b.name }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'editor.category' | translate }}</mat-label
+            ><mat-select
+              name="category"
+              [ngModel]="category()"
+              (ngModelChange)="category.set($event)"
+            >
+              @for (c of categories; track c) {
+                <mat-option [value]="c">{{ 'categories.' + c | translate }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          >
+        </div>
+        <mat-form-field appearance="outline" class="full-width"
+          ><mat-label>{{ 'editor.title' | translate }}</mat-label
+          ><input
+            matInput
+            name="title"
+            [ngModel]="title()"
+            (ngModelChange)="title.set($event)"
+            required
+            maxlength="255" /></mat-form-field
+        ><mat-form-field appearance="outline" class="full-width"
+          ><mat-label>{{ 'editor.description' | translate }}</mat-label
+          ><textarea
+            matInput
+            name="description"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+            required
+            rows="3"
+          ></textarea>
+        </mat-form-field>
+        <div class="form-grid">
+          <mat-form-field appearance="outline"
+            ><mat-label>{{ 'editor.originalPrice' | translate }}</mat-label
+            ><input
+              matInput
+              type="number"
+              step="0.1"
+              min="0.1"
+              name="originalPrice"
+              [ngModel]="originalPrice()"
+              (ngModelChange)="originalPrice.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'editor.offerPrice' | translate }}</mat-label
+            ><input
+              matInput
+              type="number"
+              step="0.1"
+              min="0.1"
+              name="offerPrice"
+              [ngModel]="offerPrice()"
+              (ngModelChange)="offerPrice.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'editor.units' | translate }}</mat-label
+            ><input
+              matInput
+              type="number"
+              min="1"
+              step="1"
+              name="units"
+              [ngModel]="units()"
+              (ngModelChange)="units.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'detail.allergens' | translate }}</mat-label
+            ><input
+              matInput
+              name="allergens"
+              [ngModel]="allergens()"
+              (ngModelChange)="allergens.set($event)" /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'editor.pickupStart' | translate }}</mat-label
+            ><input
+              matInput
+              type="datetime-local"
+              name="start"
+              [ngModel]="start()"
+              (ngModelChange)="start.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'editor.pickupEnd' | translate }}</mat-label
+            ><input
+              matInput
+              type="datetime-local"
+              name="end"
+              [ngModel]="end()"
+              (ngModelChange)="end.set($event)"
+              required
+          /></mat-form-field>
+        </div>
+        <section class="image-upload" aria-labelledby="offer-photo-label">
+          <h3 id="offer-photo-label">{{ 'editor.image' | translate }}</h3>
+          <p id="offer-photo-hint" class="caption">{{ 'editor.imageHint' | translate }}</p>
+          <input
+            #imageInput
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            hidden
+            (change)="selectImage($event)"
+            [disabled]="saving()"
+          />
+          <div class="button-row">
+            <button
+              mat-stroked-button
+              type="button"
+              (click)="imageInput.click()"
+              [disabled]="saving()"
+              aria-describedby="offer-photo-hint"
+            >
+              <mat-icon>add_photo_alternate</mat-icon>{{ 'editor.selectImage' | translate }}
+            </button>
+            @if (selectedImage()) {
+              <button mat-button type="button" (click)="clearImage()" [disabled]="saving()">
+                {{ 'editor.removeSelection' | translate }}
+              </button>
+            }
+          </div>
+          @if (checkingImage()) {
+            <p role="status">{{ 'editor.checkingImage' | translate }}</p>
+          }
+          @let photo = preview() || (existingImage | async);
+          @if (photo && photo !== failedImage()) {
+            <img
+              class="offer-photo-preview"
+              [src]="photo"
+              [alt]="'editor.preview' | translate"
+              (error)="failedImage.set(photo)"
+            />
+          } @else {
+            <div class="offer-photo-preview no-image">{{ 'common.noImage' | translate }}</div>
+          }
+          @if (selectedImage(); as file) {
+            <p class="caption">{{ file.name }}</p>
+          }
+          @if (imageError()) {
+            <p class="message error" role="alert">{{ imageError() | translate }}</p>
+          }
+        </section>
+        <p class="caption">{{ 'editor.policy' | translate }}</p>
+        @if (error()) {
+          <p class="message error" role="alert">{{ error() | translate }}</p>
+        }
+        <div class="button-row">
+          <button
+            mat-flat-button
+            type="submit"
+            [disabled]="form.invalid || saving() || checkingImage() || !!imageError()"
+          >
+            {{ submitLabel() | translate }}</button
+          ><a mat-button routerLink="/business/offers">{{ 'common.cancel' | translate }}</a>
+        </div>
+      </form>
+    </div>
+  }
+</section>

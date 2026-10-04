@@ -1,0 +1,113 @@
+<section class="page">
+  <a class="back-link" routerLink="/offers"
+    ><mat-icon>arrow_back</mat-icon>{{ 'catalog.back' | translate }}</a
+  >
+  @if (offer(); as o) {
+    <div class="detail-grid">
+      <div>
+        @let photo = imageUrl() | async;
+        @if (photo && photo !== failedImage()) {
+          <img
+            class="detail-image"
+            [src]="photo"
+            [alt]="o.title"
+            (error)="failedImage.set(photo)"
+          />
+        } @else {
+          <div class="detail-image no-image">{{ 'common.noImage' | translate }}</div>
+        }
+        <div class="panel">
+          <p class="eyebrow">{{ 'categories.' + o.category | translate }}</p>
+          <h1>{{ o.title }}</h1>
+          <p>{{ o.description }}</p>
+          <hr />
+          <h3>Alérgenos</h3>
+          <p>{{ o.allergens || ('detail.askAllergens' | translate) }}</p>
+          <p class="muted">{{ 'detail.allergensNote' | translate }}</p>
+        </div>
+      </div>
+      <div>
+        <div class="panel sticky-panel">
+          <span class="status" [class.status-inactive]="o.status !== 'ACTIVE'">{{
+            'status.' + o.status | translate
+          }}</span>
+          <h2>{{ business()?.name }}</h2>
+          <a [routerLink]="['/businesses', o.businessId]" class="muted"
+            >{{ business()?.district }} · {{ 'detail.viewBusiness' | translate }}</a
+          >
+          <div class="detail-price">
+            <strong>{{ o.offerPrice | localized: 'money' : 'es-PE' }}</strong
+            ><s>{{ o.originalPrice | localized: 'money' : 'es-PE' }}</s>
+          </div>
+          <div class="detail-fact">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <strong>{{ 'detail.pickupWindow' | translate }}</strong>
+              <p>
+                {{ o.pickupStartAt | localized: 'date' : 'es-PE' }} —
+                {{ o.pickupEndAt | localized: 'date' : 'es-PE' }}
+              </p>
+            </div>
+          </div>
+          <div class="detail-fact">
+            <mat-icon>location_on</mat-icon>
+            <div>
+              <strong>{{ business()?.address }}</strong>
+              <p>{{ business()?.pickupConditions }}</p>
+            </div>
+          </div>
+          <p>{{ 'catalog.unitsLeft' | translate: { count: o.availableUnits } }}</p>
+          <mat-form-field appearance="outline" class="full-width"
+            ><mat-label>{{ 'detail.quantity' | translate }}</mat-label
+            ><input
+              matInput
+              type="number"
+              min="1"
+              [max]="o.availableUnits"
+              [ngModel]="quantity()"
+              (ngModelChange)="quantity.set($event)"
+          /></mat-form-field>
+          <div class="total-line">
+            <span>{{ 'detail.total' | translate }}</span
+            ><strong>{{ o.offerPrice * quantity() | localized: 'money' : 'es-PE' }}</strong>
+          </div>
+          <p class="muted">{{ 'detail.payment' | translate }}</p>
+          <mat-checkbox [ngModel]="confirmed()" (ngModelChange)="confirmed.set($event)">{{
+            'detail.confirmConditions' | translate
+          }}</mat-checkbox>
+          @if (error()) {
+            <p class="message error" role="alert">{{ error() | translate }}</p>
+          }
+          <button
+            mat-flat-button
+            class="full-width"
+            [disabled]="!reservable() || !confirmed()"
+            (click)="reserve()"
+          >
+            <mat-icon>shopping_bag</mat-icon>{{ 'detail.reserve' | translate }}
+          </button>
+          <p class="caption">{{ 'detail.cancelPolicy' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <mat-icon>restaurant_menu</mat-icon>
+      <h1>{{ 'detail.notFound' | translate }}</h1>
+      <a mat-flat-button routerLink="/offers">{{ 'catalog.back' | translate }}</a>
+    </div>
+  }
+  @if (map(); as url) {
+    <section class="panel offer-location">
+      <h2>{{ 'business.map' | translate }}</h2>
+      <p>{{ business()?.address }} · {{ business()?.district }}</p>
+      <iframe
+        class="business-map"
+        [src]="url"
+        [title]="'business.map' | translate"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+      ></iframe>
+    </section>
+  }
+</section>

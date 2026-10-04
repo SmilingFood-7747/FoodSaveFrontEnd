@@ -1,0 +1,136 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">
+        {{ (publicMode ? 'business.publicLabel' : 'nav.business') | translate }}
+      </p>
+      <h1>{{ publicMode ? current()?.name : ('business.title' | translate) }}</h1>
+      <p>{{ (publicMode ? 'business.publicSubtitle' : 'business.subtitle') | translate }}</p>
+    </div>
+    @if (!publicMode) {
+      <a mat-stroked-button routerLink="/business/offers/new"
+        ><mat-icon>add</mat-icon>{{ 'editor.publish' | translate }}</a
+      >
+    }
+  </div>
+  @if (publicMode) {
+    @if (current(); as b) {
+      <div class="detail-grid">
+        <div class="panel">
+          <h2>{{ b.name }}</h2>
+          <p>{{ b.address }} · {{ b.district }}</p>
+          <h3>{{ 'business.conditions' | translate }}</h3>
+          <p>{{ b.pickupConditions }}</p>
+          <h3>{{ 'business.phone' | translate }}</h3>
+          <p>{{ b.contactPhone }}</p>
+          <a mat-stroked-button routerLink="/offers">{{ 'catalog.back' | translate }}</a>
+        </div>
+        <div class="panel map-panel">
+          <iframe
+            [src]="map()"
+            [title]="'business.map' | translate"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+          ></iframe
+          ><small>© OpenStreetMap contributors</small>
+        </div>
+      </div>
+      <h2 class="section-title">{{ 'business.availableOffers' | translate }}</h2>
+      <div class="offer-grid">
+        @for (o of publicOffers(); track o.id) {
+          <app-offer-card [offer]="o" />
+        }
+      </div>
+    } @else {
+      <div class="empty-state">
+        <h2>{{ 'business.notFound' | translate }}</h2>
+      </div>
+    }
+  } @else {
+    <div class="panel form-panel">
+      <form (ngSubmit)="save()" #form="ngForm">
+        <div class="form-grid">
+          <mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.name' | translate }}</mat-label
+            ><input
+              matInput
+              name="name"
+              [ngModel]="name()"
+              (ngModelChange)="name.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.district' | translate }}</mat-label
+            ><mat-select
+              name="district"
+              [ngModel]="district()"
+              (ngModelChange)="district.set($event)"
+            >
+              @for (d of districts; track d) {
+                <mat-option [value]="d">{{ d }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.address' | translate }}</mat-label
+            ><input
+              matInput
+              name="address"
+              [ngModel]="address()"
+              (ngModelChange)="address.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.phone' | translate }}</mat-label
+            ><input
+              matInput
+              type="tel"
+              name="phone"
+              [ngModel]="phone()"
+              (ngModelChange)="phone.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.latitude' | translate }}</mat-label
+            ><input
+              matInput
+              type="number"
+              name="latitude"
+              min="-90"
+              max="90"
+              [ngModel]="latitude()"
+              (ngModelChange)="latitude.set($event)"
+              required /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'business.longitude' | translate }}</mat-label
+            ><input
+              matInput
+              type="number"
+              name="longitude"
+              min="-180"
+              max="180"
+              [ngModel]="longitude()"
+              (ngModelChange)="longitude.set($event)"
+              required
+          /></mat-form-field>
+        </div>
+        <mat-form-field appearance="outline" class="full-width"
+          ><mat-label>{{ 'business.conditions' | translate }}</mat-label
+          ><textarea
+            matInput
+            name="conditions"
+            [ngModel]="conditions()"
+            (ngModelChange)="conditions.set($event)"
+            required
+            rows="3"
+          ></textarea>
+        </mat-form-field>
+        @if (error()) {
+          <p class="message error" role="alert">{{ error() | translate }}</p>
+        }
+        @if (message()) {
+          <p class="message success" role="status">{{ message() | translate }}</p>
+        }
+        <button mat-flat-button type="submit" [disabled]="form.invalid">
+          {{ (current() ? 'common.save' : 'business.register') | translate }}
+        </button>
+      </form>
+    </div>
+  }
+</section>

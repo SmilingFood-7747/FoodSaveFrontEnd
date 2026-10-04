@@ -1,0 +1,64 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'nav.account' | translate }}</p>
+      <h1>{{ 'nav.notifications' | translate }}</h1>
+      <p>{{ 'notice.subtitle' | translate }}</p>
+    </div>
+    <span class="status">{{ 'notice.unread' | translate: { count: notifications.unread() } }}</span>
+  </div>
+  <div class="detail-grid">
+    <div class="notification-list">
+      @for (n of notifications.mine(); track n.id) {
+        <article class="panel notification-card" [class.unread]="!n.readAt">
+          <mat-icon>notifications_none</mat-icon>
+          <div>
+            <h2>{{ n.titleKey | translate }}</h2>
+            @if (reservation(n.reservationId); as r) {
+              <p>
+                <strong>{{ offers.get(r.offerId)?.title }}</strong
+                ><br />{{ businesses.get(offers.get(r.offerId)?.businessId ?? 0)?.name }} ·
+                {{ businesses.get(offers.get(r.offerId)?.businessId ?? 0)?.address }}<br />{{
+                  'reservation.code' | translate
+                }}: {{ r.pickupCode }}<br />{{ 'detail.pickupWindow' | translate }}:
+                {{ r.pickupStartAt | localized: 'date' }} —
+                {{ r.pickupDeadlineAt | localized: 'time' }}
+              </p>
+            } @else {
+              <p>{{ n.body }}</p>
+            }
+            <small class="muted">{{ n.createdAt | localized: 'date' }}</small>
+          </div>
+          @if (!n.readAt) {
+            <button
+              mat-icon-button
+              (click)="notifications.markRead(n.id)"
+              [attr.aria-label]="'notice.markRead' | translate"
+            >
+              <mat-icon>done</mat-icon>
+            </button>
+          }
+        </article>
+      }
+      @if (!notifications.mine().length) {
+        <div class="empty-state">
+          <mat-icon>notifications_none</mat-icon>
+          <h2>{{ 'notice.empty' | translate }}</h2>
+          <p>{{ 'notice.emptyBody' | translate }}</p>
+        </div>
+      }
+    </div>
+    <div class="panel">
+      <h2>{{ 'notice.preferences' | translate }}</h2>
+      <p>{{ 'notice.preferenceBody' | translate }}</p>
+      <mat-slide-toggle [ngModel]="reminders()" (ngModelChange)="reminders.set($event)">{{
+        'notice.reminders' | translate
+      }}</mat-slide-toggle>
+      <p class="caption">{{ 'notice.channels' | translate }}</p>
+      <button mat-flat-button (click)="save()">{{ 'common.save' | translate }}</button>
+      @if (saved()) {
+        <p class="message success" role="status">{{ 'notice.saved' | translate }}</p>
+      }
+    </div>
+  </div>
+</section>

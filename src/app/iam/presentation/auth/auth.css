@@ -1,0 +1,84 @@
+:host {
+  display: block;
+}
+
+.auth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+  max-width: 1150px;
+}
+
+.auth-story {
+  padding: 15px;
+}
+
+.auth-story h1 {
+  font-size: 38px;
+}
+
+.auth-story p:not(.eyebrow) {
+  color: var(--muted);
+}
+
+.auth-points {
+  display: grid;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.auth-points span {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.auth-points mat-icon {
+  color: var(--brand);
+}
+
+.auth-panel h2 {
+  font-size: 27px;
+}
+
+.auth-panel form mat-form-field {
+  width: 100%;
+}
+
+.auth-switch {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 22px;
+}
+
+.demo-accounts {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  font-size: 12px;
+}
+
+.demo-accounts p {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 7px 0 12px;
+}
+
+@media (max-width: 1200px) {
+  .auth-grid {
+    gap: 25px;
+  }
+  .auth-story h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 850px) {
+  .auth-grid {
+    grid-template-columns: 1fr;
+    max-width: 620px;
+  }
+  .auth-story {
+    display: none;
+  }
+}

@@ -1,0 +1,89 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'support.eyebrow' | translate }}</p>
+      <h1>{{ 'support.title' | translate }}</h1>
+      <p>{{ 'support.subtitle' | translate }}</p>
+    </div>
+  </div>
+  <div class="detail-grid">
+    <div class="panel">
+      <h2>{{ 'support.faq' | translate }}</h2>
+      @for (n of [1, 2, 3, 4]; track n) {
+        <details class="faq">
+          <summary>{{ 'support.q' + n | translate }}</summary>
+          <p>{{ 'support.a' + n | translate }}</p>
+        </details>
+      }
+      <p>
+        <a routerLink="/terms">{{ 'legal.terms' | translate }}</a> ·
+        <a routerLink="/privacy">{{ 'legal.privacy' | translate }}</a>
+      </p>
+    </div>
+    <div class="panel">
+      <h2>{{ 'support.contact' | translate }}</h2>
+      @if (session.user()) {
+        <form (ngSubmit)="send()" #form="ngForm">
+          <mat-form-field appearance="outline"
+            ><mat-label>{{ 'support.subject' | translate }}</mat-label
+            ><input
+              matInput
+              name="subject"
+              [ngModel]="subject()"
+              (ngModelChange)="subject.set($event)"
+              required
+              maxlength="255" /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'support.reservation' | translate }}</mat-label
+            ><mat-select
+              name="reservation"
+              [ngModel]="reservationId()"
+              (ngModelChange)="reservationId.set($event)"
+              ><mat-option [value]="0">{{ 'support.noReservation' | translate }}</mat-option>
+              @for (r of reservations.mine(); track r.id) {
+                <mat-option [value]="r.id">{{ r.pickupCode }}</mat-option>
+              }
+            </mat-select></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'support.description' | translate }}</mat-label
+            ><textarea
+              matInput
+              name="description"
+              rows="4"
+              [ngModel]="description()"
+              (ngModelChange)="description.set($event)"
+              required
+              maxlength="2000"
+            ></textarea>
+          </mat-form-field>
+          @if (error()) {
+            <p class="message error" role="alert">{{ error() | translate }}</p>
+          }
+          @if (message()) {
+            <p class="message success" role="status">{{ message() | translate }}</p>
+          }
+          <button mat-flat-button type="submit" [disabled]="form.invalid">
+            {{ 'support.submit' | translate }}
+          </button>
+        </form>
+      } @else {
+        <p>{{ 'support.signIn' | translate }}</p>
+        <a mat-flat-button routerLink="/sign-in" [queryParams]="{ redirect: '/support' }">{{
+          'auth.signIn' | translate
+        }}</a>
+      }
+      <p class="caption">{{ 'support.demoNote' | translate }}</p>
+    </div>
+  </div>
+  @if (feedback.requests().length) {
+    <h2 class="section-title">{{ 'support.myRequests' | translate }}</h2>
+    @for (r of feedback.requests(); track r.id) {
+      <article class="panel support-ticket">
+        <span class="status">{{ 'support.open' | translate }}</span>
+        <h3>#{{ r.id }} · {{ r.subject }}</h3>
+        <p>{{ r.description }}</p>
+        <small>{{ r.createdAt | localized: 'date' }}</small>
+      </article>
+    }
+  }
+</section>

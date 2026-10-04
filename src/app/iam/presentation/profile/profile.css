@@ -1,0 +1,25 @@
+:host {
+  display: block;
+}
+
+.profile-heading {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.profile-heading h2 {
+  margin-bottom: 7px;
+}
+
+.large-avatar {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  width: 65px;
+  height: 65px;
+  background: var(--light-green);
+  font-size: 28px;
+  color: var(--brand);
+}

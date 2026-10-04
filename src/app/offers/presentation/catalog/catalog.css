@@ -1,0 +1,186 @@
+:host {
+  display: block;
+}
+
+.rescue-banner {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30px 36px;
+  border-radius: 16px;
+  background: #eaf2df;
+  border: 1px solid #dfebd1;
+  min-height: 208px;
+  margin-bottom: 29px;
+}
+
+.rescue-banner > div {
+  position: relative;
+  z-index: 1;
+  max-width: 530px;
+}
+
+.banner-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: #467246;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.banner-eyebrow mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.rescue-banner h2 {
+  font-size: 30px;
+  color: #24422c;
+  letter-spacing: -0.9px;
+  margin: 11px 0 9px;
+  font-weight: 900;
+}
+
+.rescue-banner p {
+  color: #617460;
+  font-size: 14px;
+  max-width: 480px;
+  margin-bottom: 15px;
+}
+
+.rescue-banner a {
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.category-pills {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-bottom: 21px;
+}
+
+.category-pills button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 9px 17px;
+  font-size: 12px;
+  color: #5e6b61;
+}
+
+.category-pills button.selected {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.category-pills mat-icon {
+  font-size: 19px;
+  width: 19px;
+  height: 19px;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 13px;
+  margin: 0 0 17px;
+}
+
+.results-header p {
+  margin: 0;
+  flex: 1;
+  color: var(--muted);
+}
+
+.results-header strong {
+  color: var(--ink);
+}
+
+.results-header .mdc-label {
+  font-size: 12px;
+}
+
+.trust-row {
+  display: flex;
+  justify-content: center;
+  gap: 27px;
+  margin: 33px 0 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.trust-row span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.trust-row mat-icon {
+  font-size: 17px;
+  width: 17px;
+  height: 17px;
+  color: #79a967;
+}
+
+@media (max-width: 1200px) {
+  .rescue-banner > div {
+    max-width: 100%;
+  }
+  .rescue-banner h2 {
+    font-size: 27px;
+  }
+}
+
+@media (max-width: 850px) {
+  .rescue-banner {
+    padding: 26px;
+  }
+  .trust-row {
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 520px) {
+  .rescue-banner {
+    min-height: 220px;
+    padding: 24px;
+  }
+  .rescue-banner > div {
+    max-width: 100%;
+  }
+
+  .rescue-banner h2 {
+    font-size: 27px;
+  }
+  .category-pills {
+    gap: 7px;
+  }
+  .category-pills button {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .category-pills mat-icon {
+    display: none;
+  }
+  .results-header {
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .results-header p {
+    flex-basis: 100%;
+  }
+}

@@ -7,15 +7,16 @@
       ><small>{{ 'brand.tagline' | translate }}</small></span
     >
   </a>
-  <form class="top-search" role="search">
+  <form class="top-search" (ngSubmit)="find()" role="search">
     <mat-icon aria-hidden="true">search</mat-icon>
     <input
       [attr.aria-label]="'catalog.search' | translate"
       [placeholder]="'catalog.search' | translate"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
       name="search"
-      disabled
     />
-    <button mat-icon-button type="submit" [attr.aria-label]="'common.search' | translate" disabled>
+    <button mat-icon-button type="submit" [attr.aria-label]="'common.search' | translate">
       <mat-icon>arrow_forward</mat-icon>
     </button>
   </form>

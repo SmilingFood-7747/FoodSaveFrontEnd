@@ -1,0 +1,110 @@
+<section class="page catalog-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'catalog.eyebrow' | translate }}</p>
+      <h1>{{ 'catalog.title' | translate }}</h1>
+      <p>{{ 'catalog.subtitle' | translate }}</p>
+    </div>
+    <button mat-stroked-button (click)="locate()" [disabled]="geo.locating()">
+      <mat-icon>near_me</mat-icon
+      >{{ (geo.position() ? 'catalog.locationActive' : 'catalog.useLocation') | translate }}
+    </button>
+  </div>
+  @if (locationError()) {
+    <p class="message error" role="alert">{{ 'errors.location' | translate }}</p>
+  }
+  <div class="rescue-banner">
+    <div>
+      <span class="banner-eyebrow"
+        ><mat-icon aria-hidden="true">eco</mat-icon>{{ 'catalog.bannerLabel' | translate }}</span
+      >
+      <h2>{{ 'catalog.bannerTitle' | translate }}</h2>
+      <p>{{ 'catalog.bannerBody' | translate }}</p>
+      <a href="https://food-save-landing-page.vercel.app/#how-it-works"
+        >{{ 'catalog.howItWorks' | translate }} <span aria-hidden="true">↗</span></a
+      >
+    </div>
+  </div>
+  <div class="catalog-toolbar">
+    <div class="category-pills" [attr.aria-label]="'catalog.categories' | translate">
+      @for (c of categories; track c) {
+        <button
+          type="button"
+          [class.selected]="category() === c"
+          [attr.aria-pressed]="category() === c"
+          (click)="category.set(c)"
+        >
+          <mat-icon aria-hidden="true">{{
+            c === 'all'
+              ? 'apps'
+              : c === 'bakery'
+                ? 'bakery_dining'
+                : c === 'vegetarian'
+                  ? 'eco'
+                  : c === 'desserts'
+                    ? 'cake'
+                    : 'restaurant'
+          }}</mat-icon
+          >{{ 'categories.' + c | translate }}
+        </button>
+      }
+    </div>
+  </div>
+  <div class="filter-row">
+    <mat-form-field appearance="outline" class="filter-search"
+      ><mat-label>{{ 'catalog.search' | translate }}</mat-label
+      ><mat-icon matPrefix>search</mat-icon
+      ><input matInput [ngModel]="query()" (ngModelChange)="query.set($event)"
+    /></mat-form-field>
+    <mat-form-field appearance="outline"
+      ><mat-label>{{ 'business.district' | translate }}</mat-label
+      ><mat-select [ngModel]="district()" (ngModelChange)="district.set($event)"
+        ><mat-option value="all">{{ 'catalog.allDistricts' | translate }}</mat-option>
+        @for (d of districts(); track d) {
+          <mat-option [value]="d">{{ d }}</mat-option>
+        }
+      </mat-select></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>{{ 'catalog.distance' | translate }}</mat-label
+      ><mat-select
+        [ngModel]="radius()"
+        (ngModelChange)="radius.set($event)"
+        [disabled]="!geo.position()"
+        ><mat-option [value]="0">{{ 'catalog.anyDistance' | translate }}</mat-option
+        ><mat-option [value]="2">2 km</mat-option><mat-option [value]="5">5 km</mat-option
+        ><mat-option [value]="10">10 km</mat-option></mat-select
+      ></mat-form-field
+    >
+    <mat-form-field appearance="outline"
+      ><mat-label>{{ 'catalog.pickupBefore' | translate }}</mat-label
+      ><input
+        matInput
+        type="time"
+        [ngModel]="pickupBefore()"
+        (ngModelChange)="pickupBefore.set($event)"
+    /></mat-form-field>
+  </div>
+  <div class="results-header">
+    <p aria-live="polite">
+      <strong>{{ results().length }}</strong> {{ 'catalog.results' | translate }}
+    </p>
+    <mat-checkbox [ngModel]="availableOnly()" (ngModelChange)="availableOnly.set($event)">{{
+      'catalog.availableOnly' | translate
+    }}</mat-checkbox
+    ><button mat-button (click)="clear()">{{ 'catalog.clear' | translate }}</button>
+  </div>
+  @if (!results().length) {
+    <div class="empty-state">
+      <mat-icon>search_off</mat-icon>
+      <h2>{{ 'catalog.emptyTitle' | translate }}</h2>
+      <p>{{ 'catalog.emptyBody' | translate }}</p>
+      <button mat-flat-button (click)="clear()">{{ 'catalog.clear' | translate }}</button>
+    </div>
+  }
+  <div class="trust-row">
+    <span><mat-icon>verified</mat-icon>{{ 'catalog.trust1' | translate }}</span
+    ><span><mat-icon>local_offer</mat-icon>{{ 'catalog.trust2' | translate }}</span
+    ><span><mat-icon>recycling</mat-icon>{{ 'catalog.trust3' | translate }}</span>
+  </div>
+</section>

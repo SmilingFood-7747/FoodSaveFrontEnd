@@ -1,11 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ReservationService } from './reservations/application/reservation.service';
 import { Layout } from './shared/presentation/components/layout/layout';
 import { Content } from './shared/presentation/components/content/content';
-
+import { Footer } from './shared/presentation/components/footer/footer';
 @Component({
   selector: 'app-root',
-  imports: [Layout, Content],
+  imports: [Layout, Content, Footer],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {}
+export class App {
+  private readonly reservationLifecycle = inject(ReservationService);
+}

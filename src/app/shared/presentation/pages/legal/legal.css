@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.legal-content h2 {
+  margin-top: 26px;
+  font-size: 20px;
+}
+
+.legal-content p {
+  font-size: 14px;
+  line-height: 1.8;
+}

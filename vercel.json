@@ -1,0 +1,17 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/frontend-foodsave/browser",
+  "redirects": [
+    {
+      "source": "/landing",
+      "destination": "https://food-save-landing-page.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/landing/:path*",
+      "destination": "https://food-save-landing-page.vercel.app/",
+      "permanent": false
+    }
+  ],
+  "rewrites": [{ "source": "/((?!i18n/|.*\\.).*)", "destination": "/index.html" }]
+}

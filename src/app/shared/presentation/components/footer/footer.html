@@ -1,0 +1,9 @@
+<footer class="footer">
+  <p>© {{ year }} FoodSave · Smiling Food</p>
+  <nav [attr.aria-label]="'nav.legal' | translate">
+    <a routerLink="/terms">{{ 'legal.terms' | translate }}</a
+    ><a routerLink="/privacy">{{ 'legal.privacy' | translate }}</a
+    ><a aria-disabled="true" tabindex="-1">{{ 'nav.support' | translate }}</a>
+  </nav>
+  <span><mat-icon aria-hidden="true">eco</mat-icon>{{ 'brand.footer' | translate }}</span>
+</footer>

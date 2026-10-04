@@ -1,0 +1,44 @@
+<app-header />
+<button
+  mat-stroked-button
+  class="mobile-menu"
+  (click)="menuOpen.set(!menuOpen())"
+  [attr.aria-expanded]="menuOpen()"
+  aria-controls="side-navigation"
+>
+  <mat-icon>menu</mat-icon>{{ 'nav.menu' | translate }}
+</button>
+<div class="app-shell">
+  <aside id="side-navigation" class="sidebar" [class.menu-open]="menuOpen()">
+    <p class="nav-label">{{ 'nav.discover' | translate }}</p>
+    <nav [attr.aria-label]="'nav.main' | translate" (click)="menuOpen.set(false)">
+      <a routerLink="/offers" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        <mat-icon>restaurant</mat-icon>{{ 'nav.offers' | translate }}
+      </a>
+      <a aria-disabled="true" tabindex="-1">
+        <mat-icon>shopping_bag</mat-icon>{{ 'nav.reservations' | translate }}
+      </a>
+      <p class="nav-label">{{ 'nav.account' | translate }}</p>
+      <a aria-disabled="true" tabindex="-1">
+        <mat-icon>person_outline</mat-icon>{{ 'nav.profile' | translate }}
+      </a>
+      <a aria-disabled="true" tabindex="-1">
+        <mat-icon>notifications_none</mat-icon>{{ 'nav.notifications' | translate }}
+      </a>
+      <a aria-disabled="true" tabindex="-1">
+        <mat-icon>help_outline</mat-icon>{{ 'nav.support' | translate }}
+      </a>
+      <a href="https://food-save-landing-page.vercel.app/">
+        <mat-icon>eco</mat-icon>{{ 'nav.about' | translate }}
+      </a>
+    </nav>
+    <div class="sidebar-impact">
+      <div class="impact-icon"><mat-icon>spa</mat-icon></div>
+      <strong>{{ 'brand.smallActions' | translate }}</strong>
+      <p>{{ 'brand.impactBody' | translate }}</p>
+      <a routerLink="/offers">
+        {{ 'brand.startRescue' | translate }} <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </aside>
+</div>

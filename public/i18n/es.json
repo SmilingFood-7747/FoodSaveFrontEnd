@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "FoodSave",
+    "description": "Descubre excedentes de comida de negocios en Lima. Reserva a menor precio y recoge con tu código.",
+    "localDemo": "Demostración local",
+    "demoMetrics": "Cifras calculadas con los datos de demostración de este navegador."
+  },
+  "brand": {
+    "tagline": "Cada comida cuenta",
+    "smallActions": "Pequeñas acciones. Menos desperdicio.",
+    "impactBody": "Dale una segunda oportunidad a la buena comida y apoya a un negocio local.",
+    "startRescue": "Encuentra tu próximo rescate",
+    "footer": "La buena comida merece una segunda oportunidad."
+  },
+  "nav": {
+    "skip": "Ir al contenido principal",
+    "language": "Idioma",
+    "main": "Navegación principal",
+    "menu": "Menú",
+    "discover": "DESCUBRE",
+    "offers": "Explorar ofertas",
+    "reservations": "Mis reservas",
+    "business": "MI NEGOCIO",
+    "dashboard": "Panel de negocio",
+    "manageOffers": "Gestionar ofertas",
+    "pickups": "Reservas y recojo",
+    "businessProfile": "Perfil del negocio",
+    "account": "TU CUENTA",
+    "profile": "Mi perfil",
+    "notifications": "Notificaciones",
+    "support": "Ayuda y soporte",
+    "about": "Conoce FoodSave",
+    "legal": "Información legal"
+  },
+  "common": {
+    "search": "Buscar"
+  },
+  "catalog": {
+    "search": "Buscar comida o negocios"
+  },
+  "auth": {
+    "signIn": "Iniciar sesión"
+  }
+}

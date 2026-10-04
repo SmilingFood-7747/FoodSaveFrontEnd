@@ -1,0 +1,44 @@
+{
+  "app": {
+    "title": "FoodSave",
+    "description": "Discover surplus food from local businesses in Lima. Reserve at a lower price and collect with your pickup code.",
+    "localDemo": "Local demonstration",
+    "demoMetrics": "Figures calculated from the demonstration data in this browser."
+  },
+  "brand": {
+    "tagline": "Every meal matters",
+    "smallActions": "Small actions. Less waste.",
+    "impactBody": "Give good food a second chance and support a local business.",
+    "startRescue": "Find your next rescue",
+    "footer": "Good food deserves a second chance."
+  },
+  "nav": {
+    "skip": "Skip to main content",
+    "language": "Language",
+    "main": "Main navigation",
+    "menu": "Menu",
+    "discover": "DISCOVER",
+    "offers": "Explore offers",
+    "reservations": "My reservations",
+    "business": "MY BUSINESS",
+    "dashboard": "Dashboard",
+    "manageOffers": "Manage offers",
+    "pickups": "Reservations & pickup",
+    "businessProfile": "Business profile",
+    "account": "YOUR ACCOUNT",
+    "profile": "My profile",
+    "notifications": "Notifications",
+    "support": "Help & support",
+    "about": "About FoodSave",
+    "legal": "Legal information"
+  },
+  "common": {
+    "search": "Search"
+  },
+  "catalog": {
+    "search": "Search food or businesses"
+  },
+  "auth": {
+    "signIn": "Sign in"
+  }
+}

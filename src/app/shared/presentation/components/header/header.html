@@ -1,0 +1,26 @@
+<a class="skip-link" href="#main-content" (click)="skip($event)">{{ 'nav.skip' | translate }}</a>
+<header class="topbar">
+  <a class="brand" routerLink="/offers" aria-label="FoodSave">
+    <img class="brand-logo" src="/foodsave-logo-header.png" alt="" width="48" height="48" />
+    <span
+      >Food<span class="brand-accent">Save</span
+      ><small>{{ 'brand.tagline' | translate }}</small></span
+    >
+  </a>
+  <form class="top-search" role="search">
+    <mat-icon aria-hidden="true">search</mat-icon>
+    <input
+      [attr.aria-label]="'catalog.search' | translate"
+      [placeholder]="'catalog.search' | translate"
+      name="search"
+      disabled
+    />
+    <button mat-icon-button type="submit" [attr.aria-label]="'common.search' | translate" disabled>
+      <mat-icon>arrow_forward</mat-icon>
+    </button>
+  </form>
+  <div class="header-actions">
+    <app-language-switcher />
+    <button mat-stroked-button type="button" disabled>{{ 'auth.signIn' | translate }}</button>
+  </div>
+</header>

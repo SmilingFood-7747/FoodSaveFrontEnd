@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UI } from '../../ui';
 @Component({
   selector: 'app-legal',
   imports: UI,
   templateUrl: './legal.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './legal.css',
 })
 export class Legal {

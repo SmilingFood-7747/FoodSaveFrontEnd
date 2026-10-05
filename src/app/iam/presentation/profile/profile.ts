@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
 @Component({
   selector: 'app-profile',
   imports: UI,
   templateUrl: './profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile.css',
 })
 export class Profile {

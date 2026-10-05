@@ -11,7 +11,9 @@
       <span class="large-avatar">{{ session.user()?.fullName?.charAt(0) }}</span>
       <div>
         <h2>{{ session.user()?.fullName }}</h2>
-        <span class="status">{{ 'roles.' + session.user()?.role | translate }}</span>
+        <span class="status">{{
+          'roles.' + $safeNavigationMigration(session.user()?.role) | translate
+        }}</span>
       </div>
     </div>
     <form (ngSubmit)="save()">
@@ -35,7 +37,7 @@
           autocomplete="tel" /></mat-form-field
       ><mat-form-field appearance="outline"
         ><mat-label>{{ 'profile.email' | translate }}</mat-label
-        ><input matInput [value]="session.user()?.email" readonly
+        ><input matInput [value]="$safeNavigationMigration(session.user()?.email)" readonly
       /></mat-form-field>
       @if (message()) {
         <p class="message" role="status">{{ message() | translate }}</p>

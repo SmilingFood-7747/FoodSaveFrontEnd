@@ -1,5 +1,5 @@
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferService } from '../../application/offer.service';
@@ -12,6 +12,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   selector: 'app-offer-detail',
   imports: UI,
   templateUrl: './offer-detail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './offer-detail.css',
 })
 export class OfferDetail {

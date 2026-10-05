@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { FeedbackService } from '../../application/feedback.service';
 import { SessionService } from '../../../iam/application/session.service';
@@ -7,6 +7,7 @@ import { ReservationService } from '../../../reservations/application/reservatio
   selector: 'app-support',
   imports: UI,
   templateUrl: './support.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './support.css',
 })
 export class Support {

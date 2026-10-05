@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
@@ -7,6 +7,7 @@ import { AccountRole } from '../../domain/model/account';
   selector: 'app-auth',
   imports: UI,
   templateUrl: './auth.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './auth.css',
 })
 export class Auth {

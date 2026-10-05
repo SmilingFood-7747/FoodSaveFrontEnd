@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UI } from '../../../shared/presentation/ui';
@@ -10,6 +10,7 @@ import { SessionService } from '../../../iam/application/session.service';
   selector: 'app-business-profile',
   imports: [...UI, OfferCard],
   templateUrl: './business-profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './business-profile.css',
 })
 export class BusinessProfile {

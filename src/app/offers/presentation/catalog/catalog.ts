@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferCard } from '../components/offer-card/offer-card';
@@ -10,6 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   selector: 'app-catalog',
   imports: [...UI, OfferCard],
   templateUrl: './catalog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './catalog.css',
 })
 export class Catalog {

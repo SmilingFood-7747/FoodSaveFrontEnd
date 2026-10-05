@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferService } from '../../application/offer.service';
@@ -9,6 +9,7 @@ import { Offer } from '../../domain/model/offer';
   selector: 'app-offer-editor',
   imports: UI,
   templateUrl: './offer-editor.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './offer-editor.css',
 })
 export class OfferEditor {

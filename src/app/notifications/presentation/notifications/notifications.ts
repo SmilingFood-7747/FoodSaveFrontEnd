@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { NotificationService } from '../../application/notification.service';
 import { ReservationService } from '../../../reservations/application/reservation.service';
@@ -8,6 +8,7 @@ import { BusinessService } from '../../../businesses/application/business.servic
   selector: 'app-notifications',
   imports: UI,
   templateUrl: './notifications.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './notifications.css',
 })
 export class Notifications {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { ReportingService } from '../../application/reporting.service';
 import { BusinessService } from '../../application/business.service';
@@ -7,6 +7,7 @@ import { SessionService } from '../../../iam/application/session.service';
   selector: 'app-dashboard',
   imports: UI,
   templateUrl: './dashboard.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dashboard.css',
 })
 export class Dashboard {

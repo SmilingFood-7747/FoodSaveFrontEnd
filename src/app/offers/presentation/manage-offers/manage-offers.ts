@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { OfferService } from '../../application/offer.service';
@@ -6,6 +6,7 @@ import { OfferService } from '../../application/offer.service';
   selector: 'app-manage-offers',
   imports: UI,
   templateUrl: './manage-offers.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './manage-offers.css',
 })
 export class ManageOffers {

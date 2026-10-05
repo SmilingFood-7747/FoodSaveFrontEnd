@@ -2,7 +2,12 @@
   <div class="page-heading">
     <div>
       <p class="eyebrow">{{ 'dashboard.eyebrow' | translate }}</p>
-      <h1>{{ 'dashboard.greeting' | translate: { name: session.user()?.fullName } }}</h1>
+      <h1>
+        {{
+          'dashboard.greeting'
+            | translate: { name: $safeNavigationMigration(session.user()?.fullName) }
+        }}
+      </h1>
       <p>{{ 'dashboard.subtitle' | translate }}</p>
     </div>
     <a mat-flat-button routerLink="/business/offers/new"

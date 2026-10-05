@@ -1,7 +1,7 @@
 <section class="page">
-  <div class="page-heading">
+  <div class="page-title">
     <div>
-      <p class="eyebrow">
+      <p class="label">
         {{ (publicMode ? 'business.publicLabel' : 'nav.business') | translate }}
       </p>
       <h1>{{ publicMode ? current()?.name : ('business.title' | translate) }}</h1>
@@ -15,7 +15,7 @@
   </div>
   @if (publicMode) {
     @if (current(); as b) {
-      <div class="detail-grid">
+      <div class="details">
         <div class="panel">
           <h2>{{ b.name }}</h2>
           <p>{{ b.address }} · {{ b.district }}</p>
@@ -36,20 +36,20 @@
         </div>
       </div>
       <h2 class="section-title">{{ 'business.availableOffers' | translate }}</h2>
-      <div class="offer-grid">
+      <div class="offers">
         @for (o of publicOffers(); track o.id) {
           <app-offer-card [offer]="o" />
         }
       </div>
     } @else {
-      <div class="empty-state">
+      <div class="empty">
         <h2>{{ 'business.notFound' | translate }}</h2>
       </div>
     }
   } @else {
     <div class="panel form-panel">
       <form (ngSubmit)="save()" #form="ngForm">
-        <div class="form-grid">
+        <div class="fields">
           <mat-form-field appearance="outline"
             ><mat-label>{{ 'business.name' | translate }}</mat-label
             ><input

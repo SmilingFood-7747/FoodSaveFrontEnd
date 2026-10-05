@@ -33,6 +33,6 @@
   font-size: 11px;
 }
 
-.notification-list + .panel {
+.notifications + .panel {
   align-self: start;
 }

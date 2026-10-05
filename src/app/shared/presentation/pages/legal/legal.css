@@ -2,12 +2,12 @@
   display: block;
 }
 
-.legal-content h2 {
+.legal-text h2 {
   margin-top: 26px;
   font-size: 20px;
 }
 
-.legal-content p {
+.legal-text p {
   font-size: 14px;
   line-height: 1.8;
 }

@@ -16,7 +16,7 @@
   border-radius: 10px;
 }
 
-.detail-image {
+.offer-image {
   width: 100%;
   height: 320px;
   object-fit: cover;
@@ -46,30 +46,30 @@
   color: var(--muted);
 }
 
-.detail-fact {
+.info-row {
   display: flex;
   gap: 12px;
   margin-bottom: 20px;
   font-size: 13px;
 }
 
-.detail-fact > mat-icon {
+.info-row > mat-icon {
   color: var(--brand);
 }
 
-.detail-fact p {
+.info-row p {
   color: var(--muted);
   margin: 5px 0;
 }
 
-.total-line {
+.total {
   display: flex;
   justify-content: space-between;
   font-size: 17px;
   padding: 14px 0;
 }
 
-.total-line strong {
+.total strong {
   color: var(--brand);
 }
 
@@ -80,7 +80,7 @@
 }
 
 @media (max-width: 520px) {
-  .detail-image {
+  .offer-image {
     height: 245px;
   }
 }

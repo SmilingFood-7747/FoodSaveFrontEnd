@@ -1,14 +1,14 @@
 <section class="page">
-  <div class="page-heading">
+  <div class="page-title">
     <div>
-      <p class="eyebrow">{{ 'nav.account' | translate }}</p>
+      <p class="label">{{ 'nav.account' | translate }}</p>
       <h1>{{ 'nav.notifications' | translate }}</h1>
       <p>{{ 'notice.subtitle' | translate }}</p>
     </div>
     <span class="status">{{ 'notice.unread' | translate: { count: notifications.unread() } }}</span>
   </div>
-  <div class="detail-grid">
-    <div class="notification-list">
+  <div class="details">
+    <div class="notifications">
       @for (n of notifications.mine(); track n.id) {
         <article class="panel notification-card" [class.unread]="!n.readAt">
           <mat-icon>notifications_none</mat-icon>
@@ -41,7 +41,7 @@
         </article>
       }
       @if (!notifications.mine().length) {
-        <div class="empty-state">
+        <div class="empty">
           <mat-icon>notifications_none</mat-icon>
           <h2>{{ 'notice.empty' | translate }}</h2>
           <p>{{ 'notice.emptyBody' | translate }}</p>

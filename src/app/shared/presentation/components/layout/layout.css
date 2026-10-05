@@ -15,7 +15,7 @@ app-header {
   z-index: 40;
 }
 
-.app-shell {
+.layout {
   display: contents;
 }
 
@@ -33,7 +33,7 @@ app-header {
   overflow-y: auto;
 }
 
-.nav-label {
+.menu-title {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 1.65px;
@@ -72,7 +72,7 @@ app-header {
   height: 21px;
 }
 
-.sidebar-impact {
+.info {
   margin: 35px 3px 15px;
   background: linear-gradient(130deg, #f3f7eb, #e9f1df);
   border: 1px solid #e3ebd8;
@@ -80,7 +80,7 @@ app-header {
   padding: 20px 16px;
 }
 
-.impact-icon {
+.info-icon {
   width: 33px;
   height: 33px;
   display: grid;
@@ -91,22 +91,22 @@ app-header {
   margin-bottom: 12px;
 }
 
-.sidebar-impact strong {
+.info strong {
   font-size: 14px;
 }
 
-.sidebar-impact p {
+.info p {
   font-size: 12px;
   color: var(--muted);
   margin: 7px 0 13px;
 }
 
-.sidebar-impact a {
+.info a {
   font-size: 12px;
   font-weight: 900;
 }
 
-.demo-pill {
+.demo {
   margin-top: auto;
   font-size: 10px;
   letter-spacing: 0.4px;
@@ -114,7 +114,7 @@ app-header {
   padding: 14px 10px;
 }
 
-.demo-pill span {
+.demo span {
   display: inline-block;
   background: #71a64b;
   border-radius: 50%;
@@ -123,7 +123,7 @@ app-header {
   margin-right: 6px;
 }
 
-.mobile-menu {
+.menu-button {
   display: none !important;
 }
 
@@ -137,7 +137,7 @@ app-header {
   .sidebar {
     display: none;
   }
-  .sidebar.menu-open {
+  .sidebar.open {
     display: flex;
     position: fixed;
     top: 125px;
@@ -148,7 +148,7 @@ app-header {
     z-index: 30;
     box-shadow: 10px 0 40px #0002;
   }
-  .mobile-menu {
+  .menu-button {
     grid-column: 1;
     grid-row: 2;
     justify-self: start;

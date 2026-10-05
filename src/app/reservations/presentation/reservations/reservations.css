@@ -45,23 +45,23 @@
   box-shadow: 0 0 0 3px #e9f2e2;
 }
 
-.reservation-thumbnail {
+.reservation-image {
   width: 100px;
   height: 100px;
   object-fit: cover;
   border-radius: 10px;
 }
 
-.reservation-info {
+.reservation-content {
   flex: 1;
 }
 
-.reservation-info h2 {
+.reservation-content h2 {
   font-size: 19px;
   margin: 9px 0 8px;
 }
 
-.reservation-info p {
+.reservation-content p {
   font-size: 12px;
   margin-bottom: 6px;
   color: var(--muted);
@@ -70,7 +70,7 @@
   gap: 5px;
 }
 
-.reservation-info mat-icon {
+.reservation-content mat-icon {
   font-size: 15px;
   width: 15px;
   height: 15px;
@@ -139,14 +139,14 @@
 }
 
 @media (max-width: 520px) {
-  .reservation-thumbnail {
+  .reservation-image {
     width: 68px;
     height: 68px;
   }
   .reservation-card {
     gap: 14px;
   }
-  .reservation-info h2 {
+  .reservation-content h2 {
     font-size: 17px;
   }
   .pickup-form > mat-form-field {

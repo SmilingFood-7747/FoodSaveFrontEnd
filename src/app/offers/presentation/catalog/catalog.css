@@ -2,7 +2,7 @@
   display: block;
 }
 
-.rescue-banner {
+.banner {
   display: flex;
   position: relative;
   overflow: hidden;
@@ -16,13 +16,13 @@
   margin-bottom: 29px;
 }
 
-.rescue-banner > div {
+.banner > div {
   position: relative;
   z-index: 1;
   max-width: 530px;
 }
 
-.banner-eyebrow {
+.banner-label {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -33,13 +33,13 @@
   text-transform: uppercase;
 }
 
-.banner-eyebrow mat-icon {
+.banner-label mat-icon {
   width: 16px;
   height: 16px;
   font-size: 16px;
 }
 
-.rescue-banner h2 {
+.banner h2 {
   font-size: 30px;
   color: #24422c;
   letter-spacing: -0.9px;
@@ -47,26 +47,26 @@
   font-weight: 900;
 }
 
-.rescue-banner p {
+.banner p {
   color: #617460;
   font-size: 14px;
   max-width: 480px;
   margin-bottom: 15px;
 }
 
-.rescue-banner a {
+.banner a {
   font-size: 12px;
   font-weight: 900;
 }
 
-.category-pills {
+.categories {
   display: flex;
   gap: 9px;
   flex-wrap: wrap;
   margin-bottom: 21px;
 }
 
-.category-pills button {
+.categories button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -78,19 +78,19 @@
   color: #5e6b61;
 }
 
-.category-pills button.selected {
+.categories button.selected {
   background: var(--brand);
   border-color: var(--brand);
   color: #fff;
 }
 
-.category-pills mat-icon {
+.categories mat-icon {
   font-size: 19px;
   width: 19px;
   height: 19px;
 }
 
-.results-header {
+.results {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -99,21 +99,21 @@
   margin: 0 0 17px;
 }
 
-.results-header p {
+.results p {
   margin: 0;
   flex: 1;
   color: var(--muted);
 }
 
-.results-header strong {
+.results strong {
   color: var(--ink);
 }
 
-.results-header .mdc-label {
+.results .mdc-label {
   font-size: 12px;
 }
 
-.trust-row {
+.benefits {
   display: flex;
   justify-content: center;
   gap: 27px;
@@ -122,13 +122,13 @@
   color: var(--muted);
 }
 
-.trust-row span {
+.benefits span {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.trust-row mat-icon {
+.benefits mat-icon {
   font-size: 17px;
   width: 17px;
   height: 17px;
@@ -136,51 +136,51 @@
 }
 
 @media (max-width: 1200px) {
-  .rescue-banner > div {
+  .banner > div {
     max-width: 100%;
   }
-  .rescue-banner h2 {
+  .banner h2 {
     font-size: 27px;
   }
 }
 
 @media (max-width: 850px) {
-  .rescue-banner {
+  .banner {
     padding: 26px;
   }
-  .trust-row {
+  .benefits {
     gap: 14px;
     flex-wrap: wrap;
   }
 }
 
 @media (max-width: 520px) {
-  .rescue-banner {
+  .banner {
     min-height: 220px;
     padding: 24px;
   }
-  .rescue-banner > div {
+  .banner > div {
     max-width: 100%;
   }
 
-  .rescue-banner h2 {
+  .banner h2 {
     font-size: 27px;
   }
-  .category-pills {
+  .categories {
     gap: 7px;
   }
-  .category-pills button {
+  .categories button {
     padding: 8px 12px;
     font-size: 11px;
   }
-  .category-pills mat-icon {
+  .categories mat-icon {
     display: none;
   }
-  .results-header {
+  .results {
     flex-wrap: wrap;
     gap: 0;
   }
-  .results-header p {
+  .results p {
     flex-basis: 100%;
   }
 }

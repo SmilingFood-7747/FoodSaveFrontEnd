@@ -10,31 +10,31 @@
   max-width: 1150px;
 }
 
-.auth-story {
+.intro {
   padding: 15px;
 }
 
-.auth-story h1 {
+.intro h1 {
   font-size: 38px;
 }
 
-.auth-story p:not(.eyebrow) {
+.intro p:not(.label) {
   color: var(--muted);
 }
 
-.auth-points {
+.features {
   display: grid;
   gap: 12px;
   font-size: 13px;
 }
 
-.auth-points span {
+.features span {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.auth-points mat-icon {
+.features mat-icon {
   color: var(--brand);
 }
 
@@ -46,19 +46,19 @@
   width: 100%;
 }
 
-.auth-switch {
+.auth-link {
   font-size: 12px;
   text-align: center;
   margin-top: 22px;
 }
 
-.demo-accounts {
+.demo-users {
   border-top: 1px solid var(--border);
   padding-top: 20px;
   font-size: 12px;
 }
 
-.demo-accounts p {
+.demo-users p {
   color: var(--muted);
   font-size: 11px;
   margin: 7px 0 12px;
@@ -68,7 +68,7 @@
   .auth-grid {
     gap: 25px;
   }
-  .auth-story h1 {
+  .intro h1 {
     font-size: 30px;
   }
 }
@@ -78,7 +78,7 @@
     grid-template-columns: 1fr;
     max-width: 620px;
   }
-  .auth-story {
+  .intro {
     display: none;
   }
 }

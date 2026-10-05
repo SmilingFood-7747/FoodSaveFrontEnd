@@ -1,12 +1,12 @@
-<a class="skip-link" href="#main-content" (click)="skip($event)">{{ 'nav.skip' | translate }}</a>
-<header class="topbar">
+<a class="skip" href="#main-content" (click)="skip($event)">{{ 'nav.skip' | translate }}</a>
+<header class="header">
   <a class="brand" routerLink="/offers" aria-label="FoodSave"
-    ><img class="brand-logo" src="/foodsave-logo-header.png" alt="" width="48" height="48" /><span
-      >Food<span class="brand-accent">Save</span
+    ><img class="logo" src="/foodsave-logo-header.png" alt="" width="48" height="48" /><span
+      >Food<span class="brand-color">Save</span
       ><small>{{ 'brand.tagline' | translate }}</small></span
     ></a
   >
-  <form class="top-search" (ngSubmit)="find()" role="search">
+  <form class="search" (ngSubmit)="find()" role="search">
     <mat-icon aria-hidden="true">search</mat-icon
     ><input
       [attr.aria-label]="'catalog.search' | translate"
@@ -18,24 +18,24 @@
       <mat-icon>arrow_forward</mat-icon>
     </button>
   </form>
-  <div class="header-actions">
+  <div class="actions">
     <app-language-switcher />
     @if (session.user(); as user) {
       <a
         mat-icon-button
         routerLink="/notifications"
         [attr.aria-label]="('nav.notifications' | translate) + ' (' + notifications.unread() + ')'"
-        class="notification-button"
+        class="notifications-button"
         ><mat-icon>notifications_none</mat-icon>
         @if (notifications.unread()) {
-          <span class="unread-dot"></span>
+          <span class="unread"></span>
         }
       </a>
-      <a routerLink="/profile" class="user-avatar" [attr.aria-label]="'nav.profile' | translate">{{
+      <a routerLink="/profile" class="avatar" [attr.aria-label]="'nav.profile' | translate">{{
         user.fullName.charAt(0)
       }}</a>
       <button
-        class="logout-button"
+        class="logout"
         mat-icon-button
         (click)="logout()"
         [attr.aria-label]="'auth.signOut' | translate"

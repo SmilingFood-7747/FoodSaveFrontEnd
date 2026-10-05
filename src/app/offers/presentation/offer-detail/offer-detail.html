@@ -3,21 +3,21 @@
     ><mat-icon>arrow_back</mat-icon>{{ 'catalog.back' | translate }}</a
   >
   @if (offer(); as o) {
-    <div class="detail-grid">
+    <div class="details">
       <div>
         @let photo = imageUrl() | async;
         @if (photo && photo !== failedImage()) {
           <img
-            class="detail-image"
+            class="offer-image"
             [src]="photo"
             [alt]="o.title"
             (error)="failedImage.set(photo)"
           />
         } @else {
-          <div class="detail-image no-image">{{ 'common.noImage' | translate }}</div>
+          <div class="offer-image no-image">{{ 'common.noImage' | translate }}</div>
         }
         <div class="panel">
-          <p class="eyebrow">{{ 'categories.' + o.category | translate }}</p>
+          <p class="label">{{ 'categories.' + o.category | translate }}</p>
           <h1>{{ o.title }}</h1>
           <p>{{ o.description }}</p>
           <hr />
@@ -39,7 +39,7 @@
             <strong>{{ o.offerPrice | localized: 'money' : 'es-PE' }}</strong
             ><s>{{ o.originalPrice | localized: 'money' : 'es-PE' }}</s>
           </div>
-          <div class="detail-fact">
+          <div class="info-row">
             <mat-icon>schedule</mat-icon>
             <div>
               <strong>{{ 'detail.pickupWindow' | translate }}</strong>
@@ -49,7 +49,7 @@
               </p>
             </div>
           </div>
-          <div class="detail-fact">
+          <div class="info-row">
             <mat-icon>location_on</mat-icon>
             <div>
               <strong>{{ business()?.address }}</strong>
@@ -67,7 +67,7 @@
               [ngModel]="quantity()"
               (ngModelChange)="quantity.set($event)"
           /></mat-form-field>
-          <div class="total-line">
+          <div class="total">
             <span>{{ 'detail.total' | translate }}</span
             ><strong>{{ o.offerPrice * quantity() | localized: 'money' : 'es-PE' }}</strong>
           </div>
@@ -91,7 +91,7 @@
       </div>
     </div>
   } @else {
-    <div class="empty-state">
+    <div class="empty">
       <mat-icon>restaurant_menu</mat-icon>
       <h1>{{ 'detail.notFound' | translate }}</h1>
       <a mat-flat-button routerLink="/offers">{{ 'catalog.back' | translate }}</a>

@@ -2,14 +2,14 @@
   display: block;
 }
 
-.profile-heading {
+.profile-header {
   display: flex;
   gap: 18px;
   align-items: center;
   margin-bottom: 25px;
 }
 
-.profile-heading h2 {
+.profile-header h2 {
   margin-bottom: 7px;
 }
 

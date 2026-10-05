@@ -1,7 +1,7 @@
 <section class="page">
-  <div class="page-heading">
+  <div class="page-title">
     <div>
-      <p class="eyebrow">{{ 'nav.business' | translate }}</p>
+      <p class="label">{{ 'nav.business' | translate }}</p>
       <h1>{{ 'nav.manageOffers' | translate }}</h1>
       <p>{{ 'editor.manageBody' | translate }}</p>
     </div>
@@ -65,7 +65,7 @@
       </table>
     </div>
     @if (!offers.owned().length) {
-      <div class="empty-state">
+      <div class="empty">
         <mat-icon>restaurant</mat-icon>
         <h2>{{ 'editor.empty' | translate }}</h2>
       </div>

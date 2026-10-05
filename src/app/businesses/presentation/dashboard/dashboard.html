@@ -1,7 +1,7 @@
 <section class="page">
-  <div class="page-title">
+  <div class="page-heading">
     <div>
-      <p class="label">{{ 'dashboard.eyebrow' | translate }}</p>
+      <p class="eyebrow">{{ 'dashboard.eyebrow' | translate }}</p>
       <h1>
         {{
           'dashboard.greeting'
@@ -22,25 +22,25 @@
       ><mat-option [value]="0">{{ 'common.allTime' | translate }}</mat-option></mat-select
     ></mat-form-field
   >
-  <div class="stats">
-    <div class="stat">
+  <div class="stats-grid">
+    <div class="stat-card">
       <mat-icon>restaurant</mat-icon><small>{{ 'dashboard.offers' | translate }}</small
       ><strong>{{ reporting.summary().offers }}</strong>
     </div>
-    <div class="stat">
+    <div class="stat-card">
       <mat-icon>shopping_bag</mat-icon><small>{{ 'dashboard.reservations' | translate }}</small
       ><strong>{{ reporting.summary().reservations }}</strong>
     </div>
-    <div class="stat">
+    <div class="stat-card">
       <mat-icon>eco</mat-icon><small>{{ 'dashboard.collected' | translate }}</small
       ><strong>{{ reporting.summary().collected }}</strong>
     </div>
-    <div class="stat">
+    <div class="stat-card">
       <mat-icon>payments</mat-icon><small>{{ 'dashboard.recovered' | translate }}</small
       ><strong>{{ reporting.summary().recovered | localized }}</strong>
     </div>
   </div>
-  <div class="details">
+  <div class="detail-grid">
     <div class="panel">
       <h2>{{ 'dashboard.operation' | translate }}</h2>
       @for (
@@ -75,7 +75,7 @@
       <mat-icon>volunteer_activism</mat-icon>
       <h2>{{ 'dashboard.impactTitle' | translate }}</h2>
       <p>{{ 'dashboard.impactBody' | translate }}</p>
-      <strong class="number">{{ reporting.summary().saved | localized }}</strong
+      <strong class="big-number">{{ reporting.summary().saved | localized }}</strong
       ><span>{{ 'dashboard.customerSavings' | translate }}</span>
     </div>
   </div>

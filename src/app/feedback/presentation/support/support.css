@@ -1,28 +1,28 @@
-:host {
+app-support {
   display: block;
 }
 
-.faq {
+app-support .faq {
   border-bottom: 1px solid var(--border);
   padding: 17px 0;
 }
 
-.faq summary {
+app-support .faq summary {
   cursor: pointer;
   font-size: 14px;
   font-weight: 700;
 }
 
-.faq p {
+app-support .faq p {
   font-size: 13px;
   color: var(--muted);
   margin: 12px 0 0;
 }
 
-.ticket h3 {
+app-support .support-ticket h3 {
   margin-top: 14px;
 }
 
-.ticket p {
+app-support .support-ticket p {
   font-size: 13px;
 }

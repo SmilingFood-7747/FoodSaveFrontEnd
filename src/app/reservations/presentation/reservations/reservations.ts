@@ -1,5 +1,5 @@
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UI } from '../../../shared/presentation/ui';
@@ -9,6 +9,7 @@ import { BusinessService } from '../../../businesses/application/business.servic
 import { FeedbackService } from '../../../feedback/application/feedback.service';
 @Component({
   selector: 'app-reservations',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './reservations.html',
   changeDetection: ChangeDetectionStrategy.Eager,

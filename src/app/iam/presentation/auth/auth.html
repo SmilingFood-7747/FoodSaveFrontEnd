@@ -1,9 +1,9 @@
 <section class="page auth-grid">
-  <div class="intro">
-    <p class="label">FOODSAVE</p>
+  <div class="auth-story">
+    <p class="eyebrow">FOODSAVE</p>
     <h1>{{ 'auth.heroTitle' | translate }}</h1>
     <p>{{ 'auth.heroBody' | translate }}</p>
-    <div class="features">
+    <div class="auth-points">
       <span><mat-icon>eco</mat-icon>{{ 'auth.point1' | translate }}</span
       ><span><mat-icon>local_offer</mat-icon>{{ 'auth.point2' | translate }}</span
       ><span><mat-icon>verified</mat-icon>{{ 'auth.point3' | translate }}</span>
@@ -93,14 +93,14 @@
         }}
       </button>
     </form>
-    <p class="auth-link">
+    <p class="auth-switch">
       {{ (registering ? 'auth.haveAccount' : 'auth.noAccount') | translate }}
       <a [routerLink]="registering ? '/sign-in' : '/sign-up'" [queryParams]="{ role: role() }">{{
         (registering ? 'auth.signIn' : 'auth.createAccount') | translate
       }}</a>
     </p>
     @if (!registering) {
-      <div class="demo-users">
+      <div class="demo-accounts">
         <strong>{{ 'auth.demoAccounts' | translate }}</strong>
         <p>{{ 'auth.demoBody' | translate }}</p>
         <div class="button-row">

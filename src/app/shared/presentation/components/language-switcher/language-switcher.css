@@ -1,9 +1,9 @@
-:host {
+app-language-switcher {
   display: inline-flex;
   flex-shrink: 0;
 }
 
-mat-button-toggle-group {
+app-language-switcher mat-button-toggle-group {
   --mat-button-toggle-height: 32px;
   --mat-button-toggle-selected-state-background-color: var(--brand);
   --mat-button-toggle-selected-state-text-color: #fff;
@@ -12,18 +12,18 @@ mat-button-toggle-group {
   border-radius: 8px;
 }
 
-mat-button-toggle {
+app-language-switcher mat-button-toggle {
   width: 40px;
   font-size: 12px;
   font-weight: 700;
 }
 
 @media (max-width: 520px) {
-  mat-button-toggle-group {
+  app-language-switcher mat-button-toggle-group {
     --mat-button-toggle-label-text-size: 11px;
   }
 
-  mat-button-toggle {
+  app-language-switcher mat-button-toggle {
     width: 34px;
     font-size: 11px;
   }

@@ -1,8 +1,8 @@
-:host {
+app-offer-card {
   display: block;
 }
 
-.no-image {
+app-offer-card .no-image {
   display: grid;
   place-items: center;
   width: 100%;
@@ -12,7 +12,7 @@
   font-size: 14px;
 }
 
-.card {
+app-offer-card .offer-card {
   background: #fff;
   border: 1px solid var(--border);
   border-radius: 13px;
@@ -22,12 +22,12 @@
     box-shadow 0.18s;
 }
 
-.card:hover {
+app-offer-card .offer-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 22px #243c2010;
 }
 
-.photo {
+app-offer-card .food-cover {
   display: block;
   position: relative;
   height: 180px;
@@ -35,13 +35,13 @@
   overflow: hidden;
 }
 
-.photo img {
+app-offer-card .food-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.discount {
+app-offer-card .discount-badge {
   position: absolute;
   top: 12px;
   left: 12px;
@@ -54,7 +54,7 @@
   box-shadow: 0 2px 7px #0001;
 }
 
-.stock {
+app-offer-card .units-badge {
   position: absolute;
   right: 10px;
   bottom: 10px;
@@ -68,17 +68,17 @@
   padding: 4px 7px;
 }
 
-.stock mat-icon {
+app-offer-card .units-badge mat-icon {
   font-size: 13px;
   width: 13px;
   height: 13px;
 }
 
-.card-content {
+app-offer-card .offer-card-body {
   padding: 17px 18px 13px;
 }
 
-.business-info {
+app-offer-card .restaurant-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -88,29 +88,29 @@
   margin-bottom: 9px;
 }
 
-.business-info > span:last-child {
+app-offer-card .restaurant-line > span:last-child {
   display: flex;
   align-items: center;
   gap: 2px;
 }
 
-.business-info mat-icon {
+app-offer-card .restaurant-line mat-icon {
   font-size: 12px;
   width: 12px;
   height: 12px;
 }
 
-.card h2 {
+app-offer-card .offer-card h2 {
   font-size: 17px;
   margin: 0 0 10px;
   font-weight: 900;
 }
 
-.card h2 a {
+app-offer-card .offer-card h2 a {
   color: var(--ink);
 }
 
-.pickup {
+app-offer-card .pickup-line {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -119,13 +119,13 @@
   margin-bottom: 15px;
 }
 
-.pickup mat-icon {
+app-offer-card .pickup-line mat-icon {
   font-size: 14px;
   width: 14px;
   height: 14px;
 }
 
-.card-footer {
+app-offer-card .card-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -133,24 +133,24 @@
   padding-top: 12px;
 }
 
-.price {
+app-offer-card .price {
   display: flex;
   align-items: baseline;
   gap: 8px;
 }
 
-.price strong {
+app-offer-card .price strong {
   font-size: 22px;
   color: var(--brand);
   font-weight: 900;
 }
 
-.price s {
+app-offer-card .price s {
   font-size: 12px;
   color: #90978e;
 }
 
-.card-footer .mat-mdc-icon-button {
+app-offer-card .card-bottom .mat-mdc-icon-button {
   background: #edf4e9;
   color: var(--brand);
   --mdc-icon-button-state-layer-size: 34px;
@@ -160,20 +160,20 @@
 }
 
 @media (min-width: 1650px) {
-  .photo {
+  app-offer-card .food-cover {
     height: 220px;
   }
 }
 
 @media (max-width: 520px) {
-  .photo {
+  app-offer-card .food-cover {
     height: 205px;
   }
-  .card h2 {
+  app-offer-card .offer-card h2 {
     font-size: 20px;
   }
-  .business-info,
-  .pickup {
+  app-offer-card .restaurant-line,
+  app-offer-card .pickup-line {
     font-size: 12px;
   }
 }

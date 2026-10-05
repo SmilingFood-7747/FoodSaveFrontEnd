@@ -1,8 +1,8 @@
-:host {
+app-auth {
   display: block;
 }
 
-.auth-grid {
+app-auth .auth-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 50px;
@@ -10,75 +10,75 @@
   max-width: 1150px;
 }
 
-.intro {
+app-auth .auth-story {
   padding: 15px;
 }
 
-.intro h1 {
+app-auth .auth-story h1 {
   font-size: 38px;
 }
 
-.intro p:not(.label) {
+app-auth .auth-story p:not(.eyebrow) {
   color: var(--muted);
 }
 
-.features {
+app-auth .auth-points {
   display: grid;
   gap: 12px;
   font-size: 13px;
 }
 
-.features span {
+app-auth .auth-points span {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.features mat-icon {
+app-auth .auth-points mat-icon {
   color: var(--brand);
 }
 
-.auth-panel h2 {
+app-auth .auth-panel h2 {
   font-size: 27px;
 }
 
-.auth-panel form mat-form-field {
+app-auth .auth-panel form mat-form-field {
   width: 100%;
 }
 
-.auth-link {
+app-auth .auth-switch {
   font-size: 12px;
   text-align: center;
   margin-top: 22px;
 }
 
-.demo-users {
+app-auth .demo-accounts {
   border-top: 1px solid var(--border);
   padding-top: 20px;
   font-size: 12px;
 }
 
-.demo-users p {
+app-auth .demo-accounts p {
   color: var(--muted);
   font-size: 11px;
   margin: 7px 0 12px;
 }
 
 @media (max-width: 1200px) {
-  .auth-grid {
+  app-auth .auth-grid {
     gap: 25px;
   }
-  .intro h1 {
+  app-auth .auth-story h1 {
     font-size: 30px;
   }
 }
 
 @media (max-width: 850px) {
-  .auth-grid {
+  app-auth .auth-grid {
     grid-template-columns: 1fr;
     max-width: 620px;
   }
-  .intro {
+  app-auth .auth-story {
     display: none;
   }
 }

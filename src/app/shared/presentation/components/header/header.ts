@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { UI } from '../../ui';
 import { LanguageSwitcher } from '../language-switcher/language-switcher';
@@ -7,6 +7,7 @@ import { NotificationService } from '../../../../notifications/application/notif
 import { DOCUMENT } from '@angular/common';
 @Component({
   selector: 'app-header',
+  encapsulation: ViewEncapsulation.None,
   imports: [...UI, LanguageSwitcher],
   templateUrl: './header.html',
   changeDetection: ChangeDetectionStrategy.Eager,

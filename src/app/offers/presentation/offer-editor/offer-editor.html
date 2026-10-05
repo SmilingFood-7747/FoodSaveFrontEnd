@@ -2,15 +2,15 @@
   <a class="back-link" routerLink="/business/offers"
     ><mat-icon>arrow_back</mat-icon>{{ 'nav.manageOffers' | translate }}</a
   >
-  <div class="page-title">
+  <div class="page-heading">
     <div>
-      <p class="label">{{ 'nav.business' | translate }}</p>
+      <p class="eyebrow">{{ 'nav.business' | translate }}</p>
       <h1>{{ (id ? 'editor.edit' : 'editor.publish') | translate }}</h1>
       <p>{{ 'editor.subtitle' | translate }}</p>
     </div>
   </div>
   @if (!businesses.owned().length) {
-    <div class="empty">
+    <div class="empty-state">
       <mat-icon>storefront</mat-icon>
       <h2>{{ 'editor.businessFirst' | translate }}</h2>
       <a mat-flat-button routerLink="/business/profile">{{ 'business.register' | translate }}</a>
@@ -18,7 +18,7 @@
   } @else {
     <div class="panel form-panel">
       <form (ngSubmit)="save()" #form="ngForm">
-        <div class="fields">
+        <div class="form-grid">
           <mat-form-field appearance="outline"
             ><mat-label>{{ 'business.name' | translate }}</mat-label
             ><mat-select
@@ -64,7 +64,7 @@
             rows="3"
           ></textarea>
         </mat-form-field>
-        <div class="fields">
+        <div class="form-grid">
           <mat-form-field appearance="outline"
             ><mat-label>{{ 'editor.originalPrice' | translate }}</mat-label
             ><input
@@ -125,7 +125,7 @@
               required
           /></mat-form-field>
         </div>
-        <section class="upload" aria-labelledby="offer-photo-label">
+        <section class="image-upload" aria-labelledby="offer-photo-label">
           <h3 id="offer-photo-label">{{ 'editor.image' | translate }}</h3>
           <p id="offer-photo-hint" class="caption">{{ 'editor.imageHint' | translate }}</p>
           <input
@@ -158,13 +158,13 @@
           @let photo = preview() || (existingImage | async);
           @if (photo && photo !== failedImage()) {
             <img
-              class="image-preview"
+              class="offer-photo-preview"
               [src]="photo"
               [alt]="'editor.preview' | translate"
               (error)="failedImage.set(photo)"
             />
           } @else {
-            <div class="image-preview no-image">{{ 'common.noImage' | translate }}</div>
+            <div class="offer-photo-preview no-image">{{ 'common.noImage' | translate }}</div>
           }
           @if (selectedImage(); as file) {
             <p class="caption">{{ file.name }}</p>

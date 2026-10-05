@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { NotificationService } from '../../application/notification.service';
 import { ReservationService } from '../../../reservations/application/reservation.service';
@@ -6,6 +6,7 @@ import { OfferService } from '../../../offers/application/offer.service';
 import { BusinessService } from '../../../businesses/application/business.service';
 @Component({
   selector: 'app-notifications',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './notifications.html',
   changeDetection: ChangeDetectionStrategy.Eager,

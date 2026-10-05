@@ -1,19 +1,19 @@
-:host {
+app-profile {
   display: block;
 }
 
-.profile-header {
+app-profile .profile-heading {
   display: flex;
   gap: 18px;
   align-items: center;
   margin-bottom: 25px;
 }
 
-.profile-header h2 {
+app-profile .profile-heading h2 {
   margin-bottom: 7px;
 }
 
-.large-avatar {
+app-profile .large-avatar {
   display: grid;
   place-items: center;
   border-radius: 50%;

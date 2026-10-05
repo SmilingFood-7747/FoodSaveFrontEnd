@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UI } from '../../../shared/presentation/ui';
@@ -8,6 +8,7 @@ import { OfferCard } from '../../../offers/presentation/components/offer-card/of
 import { SessionService } from '../../../iam/application/session.service';
 @Component({
   selector: 'app-business-profile',
+  encapsulation: ViewEncapsulation.None,
   imports: [...UI, OfferCard],
   templateUrl: './business-profile.html',
   changeDetection: ChangeDetectionStrategy.Eager,

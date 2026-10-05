@@ -1,13 +1,13 @@
-:host {
+app-layout {
   display: contents;
 }
 
-app-header {
+app-layout app-header {
   grid-column: 1 / -1;
   grid-row: 1;
 }
 
-.alert {
+app-layout .alert {
   position: fixed;
   top: 88px;
   left: 20px;
@@ -15,11 +15,11 @@ app-header {
   z-index: 40;
 }
 
-.layout {
+app-layout .app-shell {
   display: contents;
 }
 
-.sidebar {
+app-layout .sidebar {
   grid-column: 1;
   grid-row: 2 / 4;
   background: #fff;
@@ -33,7 +33,7 @@ app-header {
   overflow-y: auto;
 }
 
-.menu-title {
+app-layout .nav-label {
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 1.65px;
@@ -42,7 +42,7 @@ app-header {
   margin: 8px 14px 12px;
 }
 
-.sidebar nav a {
+app-layout .sidebar nav a {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -54,25 +54,25 @@ app-header {
   white-space: nowrap;
 }
 
-.sidebar nav a:hover {
+app-layout .sidebar nav a:hover {
   background: #f5f8f2;
   text-decoration: none;
 }
 
-.sidebar nav a.active {
+app-layout .sidebar nav a.active {
   background: #eaf3e7;
   color: var(--brand);
   font-weight: 900;
   box-shadow: inset 3px 0 var(--brand);
 }
 
-.sidebar nav mat-icon {
+app-layout .sidebar nav mat-icon {
   font-size: 21px;
   width: 21px;
   height: 21px;
 }
 
-.info {
+app-layout .sidebar-impact {
   margin: 35px 3px 15px;
   background: linear-gradient(130deg, #f3f7eb, #e9f1df);
   border: 1px solid #e3ebd8;
@@ -80,7 +80,7 @@ app-header {
   padding: 20px 16px;
 }
 
-.info-icon {
+app-layout .impact-icon {
   width: 33px;
   height: 33px;
   display: grid;
@@ -91,53 +91,36 @@ app-header {
   margin-bottom: 12px;
 }
 
-.info strong {
+app-layout .sidebar-impact strong {
   font-size: 14px;
 }
 
-.info p {
+app-layout .sidebar-impact p {
   font-size: 12px;
   color: var(--muted);
   margin: 7px 0 13px;
 }
 
-.info a {
+app-layout .sidebar-impact a {
   font-size: 12px;
   font-weight: 900;
 }
 
-.demo {
-  margin-top: auto;
-  font-size: 10px;
-  letter-spacing: 0.4px;
-  color: var(--muted);
-  padding: 14px 10px;
-}
-
-.demo span {
-  display: inline-block;
-  background: #71a64b;
-  border-radius: 50%;
-  width: 6px;
-  height: 6px;
-  margin-right: 6px;
-}
-
-.menu-button {
+app-layout .mobile-menu {
   display: none !important;
 }
 
 @media (max-width: 1200px) {
-  .sidebar {
+  app-layout .sidebar {
     padding: 22px 12px;
   }
 }
 
 @media (max-width: 850px) {
-  .sidebar {
+  app-layout .sidebar {
     display: none;
   }
-  .sidebar.open {
+  app-layout .sidebar.menu-open {
     display: flex;
     position: fixed;
     top: 125px;
@@ -148,14 +131,14 @@ app-header {
     z-index: 30;
     box-shadow: 10px 0 40px #0002;
   }
-  .menu-button {
+  app-layout .mobile-menu {
     grid-column: 1;
     grid-row: 2;
     justify-self: start;
     display: inline-flex !important;
     margin: 8px 20px !important;
   }
-  .alert {
+  app-layout .alert {
     top: 75px;
   }
 }

@@ -4,16 +4,16 @@
 }
 <button
   mat-stroked-button
-  class="menu-button"
+  class="mobile-menu"
   (click)="menuOpen.set(!menuOpen())"
   [attr.aria-expanded]="menuOpen()"
-  aria-controls="navigation"
+  aria-controls="side-navigation"
 >
   <mat-icon>menu</mat-icon>{{ 'nav.menu' | translate }}
 </button>
-<div class="layout">
-  <aside id="navigation" class="sidebar" [class.open]="menuOpen()">
-    <p class="menu-title">{{ 'nav.discover' | translate }}</p>
+<div class="app-shell">
+  <aside id="side-navigation" class="sidebar" [class.menu-open]="menuOpen()">
+    <p class="nav-label">{{ 'nav.discover' | translate }}</p>
     <nav [attr.aria-label]="'nav.main' | translate" (click)="menuOpen.set(false)">
       <a routerLink="/offers" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
         ><mat-icon>restaurant</mat-icon>{{ 'nav.offers' | translate }}</a
@@ -24,7 +24,7 @@
         >
       }
       @if (session.isBusinessOwner()) {
-        <p class="menu-title">{{ 'nav.business' | translate }}</p>
+        <p class="nav-label">{{ 'nav.business' | translate }}</p>
         <a routerLink="/business/dashboard" routerLinkActive="active"
           ><mat-icon>space_dashboard</mat-icon>{{ 'nav.dashboard' | translate }}</a
         >
@@ -38,7 +38,7 @@
           ><mat-icon>business</mat-icon>{{ 'nav.businessProfile' | translate }}</a
         >
       }
-      <p class="menu-title">{{ 'nav.account' | translate }}</p>
+      <p class="nav-label">{{ 'nav.account' | translate }}</p>
       <a routerLink="/profile" routerLinkActive="active"
         ><mat-icon>person_outline</mat-icon>{{ 'nav.profile' | translate }}</a
       >
@@ -52,14 +52,13 @@
         ><mat-icon>eco</mat-icon>{{ 'nav.about' | translate }}</a
       >
     </nav>
-    <div class="info">
-      <div class="info-icon"><mat-icon>spa</mat-icon></div>
+    <div class="sidebar-impact">
+      <div class="impact-icon"><mat-icon>spa</mat-icon></div>
       <strong>{{ 'brand.smallActions' | translate }}</strong>
       <p>{{ 'brand.impactBody' | translate }}</p>
       <a routerLink="/offers"
         >{{ 'brand.startRescue' | translate }} <span aria-hidden="true">↗</span></a
       >
     </div>
-    <div class="demo"><span></span>{{ 'app.localDemo' | translate }}</div>
   </aside>
 </div>

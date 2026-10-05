@@ -1,8 +1,9 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
 @Component({
   selector: 'app-profile',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './profile.html',
   changeDetection: ChangeDetectionStrategy.Eager,

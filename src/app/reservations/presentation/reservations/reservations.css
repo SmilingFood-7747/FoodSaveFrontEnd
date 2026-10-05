@@ -1,8 +1,8 @@
-:host {
+app-reservations {
   display: block;
 }
 
-.no-image {
+app-reservations .no-image {
   display: grid;
   place-items: center;
   background: var(--canvas);
@@ -11,57 +11,57 @@
   flex-shrink: 0;
 }
 
-.pickup-form {
+app-reservations .pickup-form {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
-.pickup-form > div {
+app-reservations .pickup-form > div {
   flex: 1;
 }
 
-.pickup-form h2 {
+app-reservations .pickup-form h2 {
   margin-bottom: 7px;
 }
 
-.pickup-form p {
+app-reservations .pickup-form p {
   font-size: 12px;
   margin: 0;
 }
 
-.pickup-form mat-form-field {
+app-reservations .pickup-form mat-form-field {
   margin-bottom: -20px;
 }
 
-.reservation-card {
+app-reservations .reservation-card {
   display: flex;
   gap: 23px;
   align-items: center;
 }
 
-.reservation-card.just-created {
+app-reservations .reservation-card.just-created {
   border-color: #7aaf69;
   box-shadow: 0 0 0 3px #e9f2e2;
 }
 
-.reservation-image {
+app-reservations .reservation-thumbnail {
   width: 100px;
   height: 100px;
   object-fit: cover;
   border-radius: 10px;
 }
 
-.reservation-content {
+app-reservations .reservation-info {
   flex: 1;
 }
 
-.reservation-content h2 {
+app-reservations .reservation-info h2 {
   font-size: 19px;
   margin: 9px 0 8px;
 }
 
-.reservation-content p {
+app-reservations .reservation-info p {
   font-size: 12px;
   margin-bottom: 6px;
   color: var(--muted);
@@ -70,24 +70,24 @@
   gap: 5px;
 }
 
-.reservation-content mat-icon {
+app-reservations .reservation-info mat-icon {
   font-size: 15px;
   width: 15px;
   height: 15px;
 }
 
-.pickup-code {
+app-reservations .pickup-code {
   text-align: right;
   max-width: 230px;
 }
 
-.pickup-code > small {
+app-reservations .pickup-code > small {
   display: block;
   font-size: 10px;
   color: var(--muted);
 }
 
-.pickup-code > strong {
+app-reservations .pickup-code > strong {
   display: block;
   font-family: monospace;
   font-size: 21px;
@@ -95,64 +95,64 @@
   color: var(--brand);
 }
 
-.pickup-code p {
+app-reservations .pickup-code p {
   max-width: 210px;
   margin-bottom: 10px;
 }
 
-.review-panel {
+app-reservations .review-panel {
   max-width: 700px;
 }
 
-.review-panel mat-form-field {
+app-reservations .review-panel mat-form-field {
   display: block;
   width: 100%;
 }
 
 @media (max-width: 1200px) {
-  .pickup-form {
+  app-reservations .pickup-form {
     flex-wrap: wrap;
   }
-  .pickup-form > div {
+  app-reservations .pickup-form > div {
     width: 100%;
     flex-basis: 100%;
   }
 }
 
 @media (max-width: 850px) {
-  .reservation-card {
+  app-reservations .reservation-card {
     flex-wrap: wrap;
   }
-  .pickup-code {
+  app-reservations .pickup-code {
     width: 100%;
     max-width: none;
     text-align: left;
     padding: 16px 0 0;
     border-top: 1px solid var(--border);
   }
-  .pickup-code > strong {
+  app-reservations .pickup-code > strong {
     font-size: 23px;
   }
-  .pickup-code p {
+  app-reservations .pickup-code p {
     max-width: none;
   }
 }
 
 @media (max-width: 520px) {
-  .reservation-image {
+  app-reservations .reservation-thumbnail {
     width: 68px;
     height: 68px;
   }
-  .reservation-card {
+  app-reservations .reservation-card {
     gap: 14px;
   }
-  .reservation-content h2 {
+  app-reservations .reservation-info h2 {
     font-size: 17px;
   }
-  .pickup-form > mat-form-field {
+  app-reservations .pickup-form > mat-form-field {
     width: 100%;
   }
-  .pickup-form > button {
+  app-reservations .pickup-form > button {
     width: 100%;
   }
 }

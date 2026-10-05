@@ -1,19 +1,19 @@
-<article class="card">
-  <a [routerLink]="['/offers', offer().id]" class="photo" [attr.aria-label]="offer().title">
+<article class="offer-card">
+  <a [routerLink]="['/offers', offer().id]" class="food-cover" [attr.aria-label]="offer().title">
     @let photo = imageUrl() | async;
     @if (photo && photo !== failedImage()) {
       <img [src]="photo" [alt]="offer().title" loading="lazy" (error)="failedImage.set(photo)" />
     } @else {
       <span class="no-image">Sin imagen</span>
     }
-    <span class="discount">−{{ discount() }}%</span
-    ><span class="stock"
+    <span class="discount-badge">−{{ discount() }}%</span
+    ><span class="units-badge"
       ><mat-icon aria-hidden="true">shopping_bag</mat-icon
       >{{ offer().availableUnits }} disponibles</span
     ></a
   >
-  <div class="card-content">
-    <div class="business-info">
+  <div class="offer-card-body">
+    <div class="restaurant-line">
       <span>{{ businesses.get(offer().businessId)?.name }}</span
       ><span
         ><mat-icon aria-hidden="true">location_on</mat-icon
@@ -23,12 +23,12 @@
     <h2>
       <a [routerLink]="['/offers', offer().id]">{{ offer().title }}</a>
     </h2>
-    <p class="pickup">
+    <p class="pickup-line">
       <mat-icon aria-hidden="true">schedule</mat-icon>Recojo
       {{ offer().pickupStartAt | localized: 'time' : 'es-PE' }} –
       {{ offer().pickupEndAt | localized: 'time' : 'es-PE' }}
     </p>
-    <div class="card-footer">
+    <div class="card-bottom">
       <div class="price">
         <strong>{{ offer().offerPrice | localized: 'money' : 'es-PE' }}</strong
         ><s>{{ offer().originalPrice | localized: 'money' : 'es-PE' }}</s>

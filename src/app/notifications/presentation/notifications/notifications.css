@@ -1,38 +1,38 @@
-:host {
+app-notifications {
   display: block;
 }
 
-.notification-card {
+app-notifications .notification-card {
   display: flex;
   gap: 18px;
   align-items: flex-start;
 }
 
-.notification-card > mat-icon {
+app-notifications .notification-card > mat-icon {
   color: var(--brand);
 }
 
-.notification-card > div {
+app-notifications .notification-card > div {
   flex: 1;
 }
 
-.notification-card h2 {
+app-notifications .notification-card h2 {
   font-size: 17px;
   margin-bottom: 8px;
 }
 
-.notification-card p {
+app-notifications .notification-card p {
   font-size: 13px;
 }
 
-.notification-card.unread {
+app-notifications .notification-card.unread {
   border-left: 4px solid var(--brand);
 }
 
-.notification-card small {
+app-notifications .notification-card small {
   font-size: 11px;
 }
 
-.notifications + .panel {
+app-notifications .notification-list + .panel {
   align-self: start;
 }

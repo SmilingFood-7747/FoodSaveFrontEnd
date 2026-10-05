@@ -105,19 +105,19 @@ hr {
   margin: auto;
   padding: 38px 42px 40px;
 }
-.page-title {
+.page-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 25px;
   margin-bottom: 28px;
 }
-.page-title p:not(.label) {
+.page-heading p:not(.eyebrow) {
   color: var(--muted);
   font-size: 14px;
   margin: 0;
 }
-.label {
+.eyebrow {
   color: var(--brand);
   font-size: 10px;
   letter-spacing: 1.9px;
@@ -139,7 +139,7 @@ hr {
   flex: 2;
   min-width: 210px;
 }
-.offers {
+.offer-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 21px;
@@ -151,7 +151,7 @@ hr {
   padding: 28px;
   margin-bottom: 22px;
 }
-.details {
+.detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 25px;
@@ -206,32 +206,32 @@ hr {
   background: #e8f3e7;
   color: #266a31;
 }
-.empty {
+.empty-state {
   text-align: center;
   padding: 55px 20px;
 }
-.empty > mat-icon {
+.empty-state > mat-icon {
   font-size: 46px;
   width: 46px;
   height: 46px;
   color: #86a47d;
   margin-bottom: 20px;
 }
-.empty p {
+.empty-state p {
   color: var(--muted);
 }
-.small-page {
+.narrow-page {
   max-width: 850px;
 }
 .form-panel {
   max-width: 940px;
 }
-.fields {
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0 20px;
 }
-.fields mat-form-field {
+.form-grid mat-form-field {
   width: 100%;
 }
 .button-row {
@@ -240,7 +240,7 @@ hr {
   align-items: center;
   flex-wrap: wrap;
 }
-.small-page form mat-form-field {
+.narrow-page form mat-form-field {
   display: block;
   width: 100%;
 }
@@ -273,7 +273,7 @@ td:first-child {
   width: 100%;
 }
 @media (min-width: 1650px) {
-  .offers {
+  .offer-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
@@ -281,7 +281,7 @@ td:first-child {
   .page {
     padding: 30px 26px;
   }
-  .offers {
+  .offer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -289,13 +289,13 @@ td:first-child {
   .page {
     padding: 24px 22px;
   }
-  .page-title {
+  .page-heading {
     align-items: flex-start;
   }
-  .details {
+  .detail-grid {
     grid-template-columns: 1fr;
   }
-  .details .panel {
+  .detail-grid .panel {
     margin-bottom: 0;
   }
 }
@@ -303,14 +303,14 @@ td:first-child {
   .page {
     padding: 20px 16px;
   }
-  .page-title {
+  .page-heading {
     flex-wrap: wrap;
     margin-bottom: 22px;
   }
-  .page-title h1 {
+  .page-heading h1 {
     font-size: 30px;
   }
-  .offers {
+  .offer-grid {
     grid-template-columns: 1fr;
     gap: 17px;
   }
@@ -323,7 +323,7 @@ td:first-child {
   .panel {
     padding: 21px;
   }
-  .fields {
+  .form-grid {
     grid-template-columns: 1fr;
     gap: 0;
   }

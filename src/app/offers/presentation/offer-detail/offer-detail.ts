@@ -1,5 +1,5 @@
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferService } from '../../application/offer.service';
@@ -10,6 +10,7 @@ import { Offer } from '../../domain/model/offer';
 import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'app-offer-detail',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './offer-detail.html',
   changeDetection: ChangeDetectionStrategy.Eager,

@@ -1,10 +1,11 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Language, LanguageService } from '../../../application/language.service';
 
 @Component({
   selector: 'app-language-switcher',
+  encapsulation: ViewEncapsulation.None,
   imports: [MatButtonToggleGroup, MatButtonToggle, TranslatePipe],
   templateUrl: './language-switcher.html',
   changeDetection: ChangeDetectionStrategy.Eager,

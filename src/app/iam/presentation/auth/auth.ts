@@ -1,10 +1,11 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
 import { AccountRole } from '../../domain/model/account';
 @Component({
   selector: 'app-auth',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './auth.html',
   changeDetection: ChangeDetectionStrategy.Eager,

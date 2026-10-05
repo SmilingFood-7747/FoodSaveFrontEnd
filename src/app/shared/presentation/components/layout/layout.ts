@@ -1,10 +1,11 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { Header } from '../header/header';
 import { UI } from '../../ui';
 import { SessionService } from '../../../../iam/application/session.service';
 import { BrowserDatabase } from '../../../infrastructure/browser-database';
 @Component({
   selector: 'app-layout',
+  encapsulation: ViewEncapsulation.None,
   imports: [...UI, Header],
   templateUrl: './layout.html',
   changeDetection: ChangeDetectionStrategy.Eager,

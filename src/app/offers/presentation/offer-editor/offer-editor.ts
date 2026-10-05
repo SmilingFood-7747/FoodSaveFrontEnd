@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferService } from '../../application/offer.service';
@@ -7,6 +7,7 @@ import { BrowserImageStorage } from '../../../shared/infrastructure/browser-imag
 import { Offer } from '../../domain/model/offer';
 @Component({
   selector: 'app-offer-editor',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './offer-editor.html',
   changeDetection: ChangeDetectionStrategy.Eager,

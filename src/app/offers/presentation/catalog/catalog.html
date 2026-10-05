@@ -1,7 +1,7 @@
 <section class="page catalog-page">
-  <div class="page-title">
+  <div class="page-heading">
     <div>
-      <p class="label">{{ 'catalog.eyebrow' | translate }}</p>
+      <p class="eyebrow">{{ 'catalog.eyebrow' | translate }}</p>
       <h1>{{ 'catalog.title' | translate }}</h1>
       <p>{{ 'catalog.subtitle' | translate }}</p>
     </div>
@@ -13,9 +13,9 @@
   @if (locationError()) {
     <p class="message error" role="alert">{{ 'errors.location' | translate }}</p>
   }
-  <div class="banner">
+  <div class="rescue-banner">
     <div>
-      <span class="banner-label"
+      <span class="banner-eyebrow"
         ><mat-icon aria-hidden="true">eco</mat-icon>{{ 'catalog.bannerLabel' | translate }}</span
       >
       <h2>{{ 'catalog.bannerTitle' | translate }}</h2>
@@ -25,8 +25,8 @@
       >
     </div>
   </div>
-  <div class="toolbar">
-    <div class="categories" [attr.aria-label]="'catalog.categories' | translate">
+  <div class="catalog-toolbar">
+    <div class="category-pills" [attr.aria-label]="'catalog.categories' | translate">
       @for (c of categories; track c) {
         <button
           type="button"
@@ -85,7 +85,7 @@
         (ngModelChange)="pickupBefore.set($event)"
     /></mat-form-field>
   </div>
-  <div class="results">
+  <div class="results-header">
     <p aria-live="polite">
       <strong>{{ results().length }}</strong> {{ 'catalog.results' | translate }}
     </p>
@@ -94,20 +94,20 @@
     }}</mat-checkbox
     ><button mat-button (click)="clear()">{{ 'catalog.clear' | translate }}</button>
   </div>
-  <div class="offers">
+  <div class="offer-grid">
     @for (offer of results(); track offer.id) {
       <app-offer-card [offer]="offer" />
     }
   </div>
   @if (!results().length) {
-    <div class="empty">
+    <div class="empty-state">
       <mat-icon>search_off</mat-icon>
       <h2>{{ 'catalog.emptyTitle' | translate }}</h2>
       <p>{{ 'catalog.emptyBody' | translate }}</p>
       <button mat-flat-button (click)="clear()">{{ 'catalog.clear' | translate }}</button>
     </div>
   }
-  <div class="benefits">
+  <div class="trust-row">
     <span><mat-icon>verified</mat-icon>{{ 'catalog.trust1' | translate }}</span
     ><span><mat-icon>local_offer</mat-icon>{{ 'catalog.trust2' | translate }}</span
     ><span><mat-icon>recycling</mat-icon>{{ 'catalog.trust3' | translate }}</span>

@@ -1,15 +1,15 @@
-:host {
+app-dashboard {
   display: block;
 }
 
-.stats {
+app-dashboard .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 20px;
   margin-bottom: 30px;
 }
 
-.stat {
+app-dashboard .stat-card {
   background: #fff;
   border: 1px solid var(--border);
   padding: 23px;
@@ -17,20 +17,20 @@
   position: relative;
 }
 
-.stat small {
+app-dashboard .stat-card small {
   display: block;
   color: var(--muted);
   font-size: 11px;
   margin: 12px 0 8px;
 }
 
-.stat strong {
+app-dashboard .stat-card strong {
   font-size: 30px;
   display: block;
   letter-spacing: -1px;
 }
 
-.stat mat-icon {
+app-dashboard .stat-card mat-icon {
   color: var(--brand);
   background: var(--light-green);
   padding: 6px;
@@ -39,39 +39,39 @@
   border-radius: 9px;
 }
 
-.chart-row {
+app-dashboard .chart-row {
   margin: 20px 0;
 }
 
-.chart-row > div:first-child {
+app-dashboard .chart-row > div:first-child {
   display: flex;
   justify-content: space-between;
   font-size: 12px;
   margin-bottom: 8px;
 }
 
-.chart-track {
+app-dashboard .chart-track {
   height: 8px;
   border-radius: 5px;
   background: #edf1e9;
   overflow: hidden;
 }
 
-.chart-track span {
+app-dashboard .chart-track span {
   display: block;
   height: 100%;
   background: var(--brand);
   border-radius: 5px;
 }
 
-.impact-panel {
+app-dashboard .impact-panel {
   background: #eaf2df;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.impact-panel > mat-icon {
+app-dashboard .impact-panel > mat-icon {
   font-size: 36px;
   width: 36px;
   height: 36px;
@@ -79,43 +79,43 @@
   margin-bottom: 20px;
 }
 
-.impact-panel p {
+app-dashboard .impact-panel p {
   font-size: 13px;
   color: #63755c;
 }
 
-.number {
+app-dashboard .big-number {
   font-size: 40px;
   color: var(--brand);
   font-weight: 900;
 }
 
-.impact-panel > span {
+app-dashboard .impact-panel > span {
   font-size: 12px;
 }
 
-.definitions {
+app-dashboard .definitions {
   font-size: 13px;
 }
 
-.definitions h2 {
+app-dashboard .definitions h2 {
   font-size: 17px;
 }
 
 @media (max-width: 1200px) {
-  .stats {
+  app-dashboard .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 520px) {
-  .stats {
+  app-dashboard .stats-grid {
     gap: 12px;
   }
-  .stat {
+  app-dashboard .stat-card {
     padding: 18px;
   }
-  .stat strong {
+  app-dashboard .stat-card strong {
     font-size: 26px;
   }
 }

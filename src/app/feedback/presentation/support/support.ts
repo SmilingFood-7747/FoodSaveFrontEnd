@@ -1,10 +1,11 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { FeedbackService } from '../../application/feedback.service';
 import { SessionService } from '../../../iam/application/session.service';
 import { ReservationService } from '../../../reservations/application/reservation.service';
 @Component({
   selector: 'app-support',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './support.html',
   changeDetection: ChangeDetectionStrategy.Eager,

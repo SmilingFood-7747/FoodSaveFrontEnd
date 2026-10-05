@@ -1,8 +1,8 @@
-:host {
+app-catalog {
   display: block;
 }
 
-.banner {
+app-catalog .rescue-banner {
   display: flex;
   position: relative;
   overflow: hidden;
@@ -16,13 +16,13 @@
   margin-bottom: 29px;
 }
 
-.banner > div {
+app-catalog .rescue-banner > div {
   position: relative;
   z-index: 1;
   max-width: 530px;
 }
 
-.banner-label {
+app-catalog .banner-eyebrow {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -33,13 +33,13 @@
   text-transform: uppercase;
 }
 
-.banner-label mat-icon {
+app-catalog .banner-eyebrow mat-icon {
   width: 16px;
   height: 16px;
   font-size: 16px;
 }
 
-.banner h2 {
+app-catalog .rescue-banner h2 {
   font-size: 30px;
   color: #24422c;
   letter-spacing: -0.9px;
@@ -47,26 +47,26 @@
   font-weight: 900;
 }
 
-.banner p {
+app-catalog .rescue-banner p {
   color: #617460;
   font-size: 14px;
   max-width: 480px;
   margin-bottom: 15px;
 }
 
-.banner a {
+app-catalog .rescue-banner a {
   font-size: 12px;
   font-weight: 900;
 }
 
-.categories {
+app-catalog .category-pills {
   display: flex;
   gap: 9px;
   flex-wrap: wrap;
   margin-bottom: 21px;
 }
 
-.categories button {
+app-catalog .category-pills button {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -78,19 +78,19 @@
   color: #5e6b61;
 }
 
-.categories button.selected {
+app-catalog .category-pills button.selected {
   background: var(--brand);
   border-color: var(--brand);
   color: #fff;
 }
 
-.categories mat-icon {
+app-catalog .category-pills mat-icon {
   font-size: 19px;
   width: 19px;
   height: 19px;
 }
 
-.results {
+app-catalog .results-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -99,21 +99,21 @@
   margin: 0 0 17px;
 }
 
-.results p {
+app-catalog .results-header p {
   margin: 0;
   flex: 1;
   color: var(--muted);
 }
 
-.results strong {
+app-catalog .results-header strong {
   color: var(--ink);
 }
 
-.results .mdc-label {
+app-catalog .results-header .mdc-label {
   font-size: 12px;
 }
 
-.benefits {
+app-catalog .trust-row {
   display: flex;
   justify-content: center;
   gap: 27px;
@@ -122,13 +122,13 @@
   color: var(--muted);
 }
 
-.benefits span {
+app-catalog .trust-row span {
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
-.benefits mat-icon {
+app-catalog .trust-row mat-icon {
   font-size: 17px;
   width: 17px;
   height: 17px;
@@ -136,51 +136,51 @@
 }
 
 @media (max-width: 1200px) {
-  .banner > div {
+  app-catalog .rescue-banner > div {
     max-width: 100%;
   }
-  .banner h2 {
+  app-catalog .rescue-banner h2 {
     font-size: 27px;
   }
 }
 
 @media (max-width: 850px) {
-  .banner {
+  app-catalog .rescue-banner {
     padding: 26px;
   }
-  .benefits {
+  app-catalog .trust-row {
     gap: 14px;
     flex-wrap: wrap;
   }
 }
 
 @media (max-width: 520px) {
-  .banner {
+  app-catalog .rescue-banner {
     min-height: 220px;
     padding: 24px;
   }
-  .banner > div {
+  app-catalog .rescue-banner > div {
     max-width: 100%;
   }
 
-  .banner h2 {
+  app-catalog .rescue-banner h2 {
     font-size: 27px;
   }
-  .categories {
+  app-catalog .category-pills {
     gap: 7px;
   }
-  .categories button {
+  app-catalog .category-pills button {
     padding: 8px 12px;
     font-size: 11px;
   }
-  .categories mat-icon {
+  app-catalog .category-pills mat-icon {
     display: none;
   }
-  .results {
+  app-catalog .results-header {
     flex-wrap: wrap;
     gap: 0;
   }
-  .results p {
+  app-catalog .results-header p {
     flex-basis: 100%;
   }
 }

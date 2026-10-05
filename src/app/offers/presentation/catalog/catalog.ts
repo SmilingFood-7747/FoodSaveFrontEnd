@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferCard } from '../components/offer-card/offer-card';
@@ -8,6 +8,7 @@ import { GeolocationService } from '../../../shared/application/geolocation.serv
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-catalog',
+  encapsulation: ViewEncapsulation.None,
   imports: [...UI, OfferCard],
   templateUrl: './catalog.html',
   changeDetection: ChangeDetectionStrategy.Eager,

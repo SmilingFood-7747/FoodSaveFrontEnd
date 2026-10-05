@@ -1,19 +1,19 @@
-:host {
+app-offer-editor {
   display: block;
 }
 
-.upload {
+app-offer-editor .image-upload {
   margin: 0 0 24px;
   padding: 20px;
   border: 1px solid #dce5dc;
   border-radius: 16px;
 }
 
-.upload h3 {
+app-offer-editor .image-upload h3 {
   margin-top: 0;
 }
 
-.image-preview {
+app-offer-editor .offer-photo-preview {
   display: block;
   width: min(100%, 360px);
   height: 220px;
@@ -23,11 +23,11 @@
   margin-top: 16px;
 }
 
-.upload .caption {
+app-offer-editor .image-upload .caption {
   overflow-wrap: anywhere;
 }
 
-.image-preview.no-image {
+app-offer-editor .offer-photo-preview.no-image {
   display: grid;
   place-items: center;
   color: var(--muted);

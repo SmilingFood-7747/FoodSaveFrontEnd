@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../ui';
 @Component({
   selector: 'app-footer',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './footer.html',
   changeDetection: ChangeDetectionStrategy.Eager,

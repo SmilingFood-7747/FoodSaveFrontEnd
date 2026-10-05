@@ -1,11 +1,11 @@
-:host {
+app-header {
   display: block;
   position: sticky;
   top: 0;
   z-index: 20;
 }
 
-.skip {
+app-header .skip-link {
   position: fixed;
   left: 20px;
   top: -80px;
@@ -15,11 +15,11 @@
   box-shadow: 0 2px 12px #0003;
 }
 
-.skip:focus {
+app-header .skip-link:focus {
   top: 12px;
 }
 
-.header {
+app-header .topbar {
   height: 88px;
   padding: 0 32px;
   display: flex;
@@ -32,7 +32,7 @@
   z-index: 20;
 }
 
-.brand {
+app-header .brand {
   display: flex;
   align-items: center;
   gap: 11px;
@@ -44,22 +44,22 @@
   line-height: 1;
 }
 
-.brand:hover {
+app-header .brand:hover {
   text-decoration: none;
 }
 
-.logo {
+app-header .brand-logo {
   width: 48px;
   height: 48px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
-.brand-color {
+app-header .brand-accent {
   color: var(--brand);
 }
 
-.brand small {
+app-header .brand small {
   display: block;
   font-size: 10px;
   letter-spacing: 1.3px;
@@ -69,7 +69,7 @@
   font-weight: 700;
 }
 
-.search {
+app-header .top-search {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -81,11 +81,11 @@
   padding: 0 8px 0 15px;
 }
 
-.search > mat-icon {
+app-header .top-search > mat-icon {
   color: #8a978c;
 }
 
-.search input {
+app-header .top-search input {
   background: transparent;
   border: 0;
   outline: 0;
@@ -94,14 +94,14 @@
   font-size: 14px;
 }
 
-.actions {
+app-header .header-actions {
   margin-left: auto;
   display: flex;
   align-items: center;
   gap: 13px;
 }
 
-.avatar {
+app-header .user-avatar {
   display: grid;
   place-items: center;
   width: 39px;
@@ -113,11 +113,11 @@
   font-size: 18px;
 }
 
-.notifications-button {
+app-header .notification-button {
   position: relative;
 }
 
-.unread {
+app-header .unread-dot {
   position: absolute;
   top: 7px;
   right: 9px;
@@ -129,49 +129,49 @@
 }
 
 @media (max-width: 1200px) {
-  .header {
+  app-header .topbar {
     padding: 0 22px;
     gap: 24px;
   }
 }
 
 @media (max-width: 850px) {
-  .search {
+  app-header .top-search {
     display: none;
   }
-  .header {
+  app-header .topbar {
     height: 75px;
   }
-  .logout {
+  app-header .logout-button {
     display: none !important;
   }
 }
 
 @media (max-width: 520px) {
-  .header {
+  app-header .topbar {
     padding: 0 16px;
     gap: 8px;
   }
-  .brand {
+  app-header .brand {
     min-width: 0;
     font-size: 25px;
   }
-  .logo {
+  app-header .brand-logo {
     width: 34px;
     height: 34px;
   }
-  .brand small {
+  app-header .brand small {
     font-size: 8px;
   }
 
-  .actions {
+  app-header .header-actions {
     gap: 3px;
   }
-  .actions .mat-mdc-outlined-button {
+  app-header .header-actions .mat-mdc-outlined-button {
     padding: 0 12px;
     font-size: 11px;
   }
-  .avatar {
+  app-header .user-avatar {
     width: 33px;
     height: 33px;
   }

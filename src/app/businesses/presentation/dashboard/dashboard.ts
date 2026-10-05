@@ -1,10 +1,11 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { ReportingService } from '../../application/reporting.service';
 import { BusinessService } from '../../application/business.service';
 import { SessionService } from '../../../iam/application/session.service';
 @Component({
   selector: 'app-dashboard',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './dashboard.html',
   changeDetection: ChangeDetectionStrategy.Eager,

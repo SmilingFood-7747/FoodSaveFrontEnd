@@ -1,19 +1,19 @@
-:host {
+app-business-profile {
   display: block;
 }
 
-.map-panel {
+app-business-profile .map-panel {
   padding: 8px;
 }
 
-.map-panel iframe {
+app-business-profile .map-panel iframe {
   width: 100%;
   height: 280px;
   border: 0;
   border-radius: 10px;
 }
 
-.map-panel small {
+app-business-profile .map-panel small {
   padding: 6px;
   display: block;
   color: var(--muted);

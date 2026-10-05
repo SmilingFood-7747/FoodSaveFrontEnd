@@ -1,12 +1,12 @@
-:host {
+app-manage-offers {
   display: block;
 }
 
-.table-panel {
+app-manage-offers .table-panel {
   padding: 0;
   overflow: hidden;
 }
 
-.table-scroll {
+app-manage-offers .table-scroll {
   overflow-x: auto;
 }

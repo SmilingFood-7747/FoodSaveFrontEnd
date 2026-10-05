@@ -1,9 +1,10 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { OfferService } from '../../application/offer.service';
 @Component({
   selector: 'app-manage-offers',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './manage-offers.html',
   changeDetection: ChangeDetectionStrategy.Eager,

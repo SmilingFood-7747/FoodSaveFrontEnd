@@ -1,7 +1,7 @@
 <section class="page">
-  <div class="page-title">
+  <div class="page-heading">
     <div>
-      <p class="label">{{ (businessMode ? 'nav.business' : 'nav.account') | translate }}</p>
+      <p class="eyebrow">{{ (businessMode ? 'nav.business' : 'nav.account') | translate }}</p>
       <h1>{{ (businessMode ? 'reservation.businessTitle' : 'reservation.title') | translate }}</h1>
       <p>{{ (businessMode ? 'reservation.businessBody' : 'reservation.subtitle') | translate }}</p>
     </div>
@@ -62,16 +62,16 @@
       ></mat-form-field
     >
   </div>
-  <div class="reservations">
+  <div class="reservation-list">
     @for (r of results(); track r.id) {
       <article class="panel reservation-card" [class.just-created]="r.id === createdId">
         @let photo = imageUrls()[r.offerId] | async;
         @if (photo && !failedImages().includes(photo)) {
-          <img [src]="photo" alt="" class="reservation-image" (error)="imageFailed(photo)" />
+          <img [src]="photo" alt="" class="reservation-thumbnail" (error)="imageFailed(photo)" />
         } @else {
-          <div class="reservation-image no-image">{{ 'common.noImage' | translate }}</div>
+          <div class="reservation-thumbnail no-image">{{ 'common.noImage' | translate }}</div>
         }
-        <div class="reservation-content">
+        <div class="reservation-info">
           <span class="status" [class.status-inactive]="r.status !== 'ACTIVE'">{{
             'status.' + r.status | translate
           }}</span>
@@ -108,7 +108,7 @@
       </article>
     }
     @if (!results().length) {
-      <div class="empty">
+      <div class="empty-state">
         <mat-icon>shopping_bag</mat-icon>
         <h2>{{ 'reservation.empty' | translate }}</h2>
         <p>{{ 'reservation.emptyBody' | translate }}</p>

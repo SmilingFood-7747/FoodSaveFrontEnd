@@ -1,13 +1,13 @@
-:host {
+app-legal {
   display: block;
 }
 
-.legal-text h2 {
+app-legal .legal-content h2 {
   margin-top: 26px;
   font-size: 20px;
 }
 
-.legal-text p {
+app-legal .legal-content p {
   font-size: 14px;
   line-height: 1.8;
 }

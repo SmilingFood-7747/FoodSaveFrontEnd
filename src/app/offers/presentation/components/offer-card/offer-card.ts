@@ -1,11 +1,12 @@
 import { BrowserImageStorage } from '../../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 import { UI } from '../../../../shared/presentation/ui';
 import { Offer, OfferData } from '../../../domain/model/offer';
 import { BusinessService } from '../../../../businesses/application/business.service';
 import { GeolocationService } from '../../../../shared/application/geolocation.service';
 @Component({
   selector: 'app-offer-card',
+  encapsulation: ViewEncapsulation.None,
   imports: UI,
   templateUrl: './offer-card.html',
   changeDetection: ChangeDetectionStrategy.Eager,

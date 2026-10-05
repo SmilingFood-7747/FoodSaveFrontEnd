@@ -1,12 +1,12 @@
 <section class="page">
-  <div class="page-title">
+  <div class="page-heading">
     <div>
-      <p class="label">{{ 'support.eyebrow' | translate }}</p>
+      <p class="eyebrow">{{ 'support.eyebrow' | translate }}</p>
       <h1>{{ 'support.title' | translate }}</h1>
       <p>{{ 'support.subtitle' | translate }}</p>
     </div>
   </div>
-  <div class="details">
+  <div class="detail-grid">
     <div class="panel">
       <h2>{{ 'support.faq' | translate }}</h2>
       @for (n of [1, 2, 3, 4]; track n) {
@@ -78,7 +78,7 @@
   @if (feedback.requests().length) {
     <h2 class="section-title">{{ 'support.myRequests' | translate }}</h2>
     @for (r of feedback.requests(); track r.id) {
-      <article class="panel ticket">
+      <article class="panel support-ticket">
         <span class="status">{{ 'support.open' | translate }}</span>
         <h3>#{{ r.id }} · {{ r.subject }}</h3>
         <p>{{ r.description }}</p>

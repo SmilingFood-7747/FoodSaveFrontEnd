@@ -1,7 +1,14 @@
-import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
+import { BrowserDatabase } from '../../../shared/infrastructure/browser-database';
 import { AccountRole } from '../../domain/model/account';
 @Component({
   selector: 'app-auth',
@@ -15,6 +22,7 @@ export class Auth {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly session = inject(SessionService);
+  private readonly db = inject(BrowserDatabase);
   readonly registering = this.route.snapshot.data['register'] === true;
   readonly fullName = signal('');
   readonly email = signal('');
@@ -49,9 +57,11 @@ export class Auth {
       const destination =
         redirect?.startsWith('/') && !redirect.startsWith('//')
           ? redirect
-          : this.session.isBusinessOwner()
-            ? '/business/dashboard'
-            : '/offers';
+          : this.session.isAdmin()
+            ? '/admin'
+            : this.session.isBusinessOwner()
+              ? '/business/dashboard'
+              : '/offers';
       await this.router.navigateByUrl(destination);
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
@@ -60,7 +70,13 @@ export class Auth {
     }
   }
   demo(role: AccountRole): void {
-    this.email.set(role === 'CUSTOMER' ? 'cliente@gmail.com' : 'negocio@gmail.com');
+    this.email.set(
+      role === 'ADMIN'
+        ? (this.db.state().accounts.find((a) => a.role === 'ADMIN')?.email ?? 'admin@gmail.com')
+        : role === 'CUSTOMER'
+          ? 'cliente@gmail.com'
+          : 'negocio@gmail.com',
+    );
     this.password.set('FoodSave123!');
   }
 }

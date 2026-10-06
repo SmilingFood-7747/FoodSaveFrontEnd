@@ -119,3 +119,55 @@ app-dashboard .definitions h2 {
     font-size: 26px;
   }
 }
+
+app-dashboard .earnings h2 {
+  margin-bottom: 6px;
+}
+app-dashboard .earnings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 20px 0;
+}
+app-dashboard .earnings-grid small {
+  color: var(--muted);
+  font-size: 11px;
+  display: block;
+}
+app-dashboard .earnings-grid strong {
+  display: block;
+  font-size: 24px;
+  color: var(--brand-dark);
+}
+app-dashboard .balance-line {
+  padding: 12px 15px;
+  background: #f0f6eb;
+  border-radius: 8px;
+}
+app-dashboard .balance-line strong {
+  margin-left: 12px;
+}
+app-dashboard .table-scroll {
+  overflow-x: auto;
+  margin: 18px 0;
+}
+app-dashboard table {
+  width: 100%;
+  min-width: 620px;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+app-dashboard th,
+app-dashboard td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+app-dashboard .earnings .button-row {
+  margin-top: 18px;
+}
+@media (max-width: 900px) {
+  app-dashboard .earnings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

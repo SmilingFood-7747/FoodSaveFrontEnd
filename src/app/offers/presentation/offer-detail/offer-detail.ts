@@ -1,5 +1,13 @@
+import { BillingService } from '../../../billing/application/billing.service';
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferService } from '../../application/offer.service';
@@ -20,6 +28,10 @@ export class OfferDetail {
   private readonly images = inject(BrowserImageStorage);
   readonly offers = inject(OfferService);
   readonly businesses = inject(BusinessService);
+  readonly billing = inject(BillingService);
+  readonly quote = computed(() =>
+    this.billing.quote((this.offer()?.offerPrice ?? 0) * this.quantity()),
+  );
   readonly session = inject(SessionService);
   private readonly reservations = inject(ReservationService);
   private readonly router = inject(Router);

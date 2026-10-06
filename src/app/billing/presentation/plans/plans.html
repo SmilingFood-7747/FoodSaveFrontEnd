@@ -1,0 +1,251 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">{{ 'plans.eyebrow' | translate }}</p>
+      <h1>{{ 'plans.title' | translate }}</h1>
+      <p>{{ 'plans.subtitle' | translate }}</p>
+    </div>
+  </div>
+  <div class="audience" role="group" [attr.aria-label]="'plans.audience' | translate">
+    <button
+      mat-stroked-button
+      [class.selected]="audience() === 'CUSTOMER'"
+      [attr.aria-pressed]="audience() === 'CUSTOMER'"
+      (click)="selectAudience('CUSTOMER')"
+    >
+      <mat-icon>shopping_bag</mat-icon>{{ 'plans.forCustomers' | translate }}
+    </button>
+    <button
+      mat-stroked-button
+      [class.selected]="audience() === 'BUSINESS_OWNER'"
+      [attr.aria-pressed]="audience() === 'BUSINESS_OWNER'"
+      (click)="selectAudience('BUSINESS_OWNER')"
+    >
+      <mat-icon>storefront</mat-icon>{{ 'plans.forBusinesses' | translate }}
+    </button>
+  </div>
+  @if (ownAudience()) {
+    <div class="panel current-plan">
+      <div>
+        <span class="status">{{ 'plans.current' | translate }}</span>
+        <h2>{{ 'plans.names.' + billing.currentPlan().id | translate }}</h2>
+        @if (billing.current()?.expiresAt; as expires) {
+          <p class="muted">
+            {{ 'plans.validUntil' | translate }} {{ expires | localized: 'date' }}
+          </p>
+        }
+        @if (billing.current()?.nextPlanId; as next) {
+          <p>
+            {{ 'plans.nextChoice' | translate }}
+            <strong>{{ 'plans.names.' + next | translate }}</strong>
+          </p>
+        }
+      </div>
+      @if (audience() === 'CUSTOMER' && billing.currentPlan().discountRate) {
+        <div>
+          <span>{{ 'plans.remainingDiscount' | translate }}</span
+          ><strong class="amount">{{ remaining() | localized }}</strong
+          ><small>{{ 'plans.limitIncludesReservations' | translate }}</small>
+        </div>
+      }
+      @if (audience() === 'BUSINESS_OWNER') {
+        <a mat-stroked-button routerLink="/business/dashboard">{{
+          'plans.viewSales' | translate
+        }}</a>
+      }
+    </div>
+  }
+  @if (message()) {
+    <p class="message success" role="status">{{ message() | translate }}</p>
+  }
+  @if (error()) {
+    <p class="message error" role="alert">{{ error() | translate }}</p>
+  }
+  @if (pending(); as plan) {
+    <div
+      class="panel confirmation"
+      role="region"
+      [attr.aria-label]="'plans.confirmTitle' | translate"
+    >
+      <h2>{{ 'plans.confirmTitle' | translate }}: {{ 'plans.names.' + plan.id | translate }}</h2>
+      @if (billing.current()?.expiresAt; as expires) {
+        <p>
+          {{ 'plans.nextCycle' | translate }} {{ expires | localized: 'date' }}.
+          {{ 'plans.manualRenewal' | translate }}
+        </p>
+      } @else {
+        <p>
+          {{ 'plans.confirmPrice' | translate }}
+          <strong>{{ plan.monthlyPrice | localized }} / {{ 'plans.month' | translate }}</strong>
+        </p>
+      }
+      @if (audience() === 'BUSINESS_OWNER') {
+        <p>
+          {{ 'plans.confirmCommission' | translate }} <strong>{{ plan.commissionRate }} %</strong>.
+          {{ 'finance.onCollected' | translate }}
+        </p>
+      }
+      <p>{{ 'plans.noRealPayment' | translate }}</p>
+      <mat-checkbox [ngModel]="accepted()" (ngModelChange)="accepted.set($event)">{{
+        'plans.accept' | translate
+      }}</mat-checkbox>
+      <div class="button-row">
+        <button mat-flat-button [disabled]="!accepted()" (click)="confirm()">
+          {{ 'plans.confirm' | translate }}</button
+        ><button mat-stroked-button (click)="pending.set(null)">
+          {{ 'common.cancel' | translate }}
+        </button>
+      </div>
+    </div>
+  }
+  <div class="plans-grid">
+    @for (plan of plans(); track plan.id) {
+      <article class="panel plan-card" [class.recommended]="plan.id === 'PLUS'">
+        @if (plan.id === 'PLUS') {
+          <span class="recommendation">{{ 'plans.recommended' | translate }}</span>
+        }
+        <div class="plan-heading">
+          <mat-icon>{{
+            plan.id === 'FREE' ? 'eco' : plan.id === 'PLUS' ? 'workspace_premium' : 'diamond'
+          }}</mat-icon>
+          <h2>{{ 'plans.names.' + plan.id | translate }}</h2>
+        </div>
+        <p class="plan-description">
+          {{ 'plans.descriptions.' + audience() + '.' + plan.id | translate }}
+        </p>
+        <div class="plan-price">
+          <strong>{{ plan.monthlyPrice | localized }}</strong
+          ><span>/ {{ 'plans.month' | translate }}</span>
+        </div>
+        <ul>
+          @if (audience() === 'CUSTOMER') {
+            <li><mat-icon>check_circle</mat-icon>{{ 'plans.customerBase' | translate }}</li>
+            @if (plan.discountRate) {
+              <li>
+                <mat-icon>check_circle</mat-icon
+                >{{ 'plans.discountBenefit' | translate: { rate: plan.discountRate } }}
+              </li>
+              <li>
+                <mat-icon>check_circle</mat-icon>{{ 'plans.discountLimit' | translate }}
+                {{ plan.monthlyDiscountLimit | localized }}
+              </li>
+            } @else {
+              <li><mat-icon>check_circle</mat-icon>{{ 'plans.noMonthlyFee' | translate }}</li>
+            }
+            <li><mat-icon>check_circle</mat-icon>{{ 'plans.customerHistory' | translate }}</li>
+          } @else {
+            <li>
+              <mat-icon>check_circle</mat-icon
+              >{{
+                (plan.activeOfferLimit === null ? 'plans.unlimitedOffers' : 'plans.offerLimit')
+                  | translate: { count: plan.activeOfferLimit }
+              }}
+            </li>
+            <li><mat-icon>check_circle</mat-icon>{{ 'plans.businessBase' | translate }}</li>
+            @if (plan.exportReports) {
+              <li><mat-icon>check_circle</mat-icon>{{ 'plans.csvBenefit' | translate }}</li>
+            }
+            @if (plan.featuredOffers) {
+              <li><mat-icon>check_circle</mat-icon>{{ 'plans.featuredBenefit' | translate }}</li>
+            }
+            @if (plan.id === 'FREE') {
+              <li><mat-icon>check_circle</mat-icon>{{ 'plans.noMonthlyFee' | translate }}</li>
+            }
+          }
+        </ul>
+        @if (ownAudience()) {
+          <button
+            mat-flat-button
+            class="full-width"
+            [disabled]="billing.currentPlan().id === plan.id && !billing.current()?.nextPlanId"
+            (click)="select(plan)"
+          >
+            {{
+              (billing.currentPlan().id === plan.id
+                ? 'plans.current'
+                : billing.current()?.expiresAt
+                  ? 'plans.chooseNext'
+                  : 'plans.choose'
+              ) | translate
+            }}
+          </button>
+        } @else if (!session.user()) {
+          <a
+            mat-stroked-button
+            class="full-width"
+            routerLink="/sign-in"
+            [queryParams]="{ redirect: '/plans', role: audience() }"
+            >{{ 'plans.signIn' | translate }}</a
+          >
+        } @else {
+          <p class="caption">{{ 'plans.otherAudience' | translate }}</p>
+        }
+      </article>
+    }
+  </div>
+  @if (audience() === 'CUSTOMER') {
+    <section class="panel calculator">
+      <div>
+        <h2>{{ 'plans.calculator' | translate }}</h2>
+        <p class="muted">{{ 'plans.calculatorBody' | translate }}</p>
+        <mat-form-field appearance="outline"
+          ><mat-label>{{ 'plans.monthlySpend' | translate }}</mat-label
+          ><input
+            matInput
+            type="number"
+            min="0"
+            step="10"
+            [ngModel]="monthlySpend()"
+            (ngModelChange)="monthlySpend.set(+$event)"
+          /><span matTextPrefix>S/ </span></mat-form-field
+        >
+      </div>
+      <div class="savings-grid">
+        @for (plan of plans(); track plan.id) {
+          <div>
+            <span>{{ 'plans.names.' + plan.id | translate }}</span
+            ><strong [class.negative]="savings(plan) < 0">{{ savings(plan) | localized }}</strong
+            ><small>{{ 'plans.netSavings' | translate }}</small>
+          </div>
+        }
+      </div>
+    </section>
+    <p class="caption">{{ 'plans.discountExplanation' | translate }}</p>
+  } @else {
+    <p class="caption">{{ 'plans.businessExplanation' | translate }}</p>
+  }
+  <p class="caption">
+    {{ 'plans.noRealPayment' | translate }} {{ 'plans.manualRenewal' | translate }}
+  </p>
+  @if (ownAudience() && billing.charges().length) {
+    <section class="panel payments">
+      <h2>{{ 'plans.history' | translate }}</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ 'finance.date' | translate }}</th>
+              <th>{{ 'finance.plan' | translate }}</th>
+              <th>{{ 'finance.amount' | translate }}</th>
+              <th>{{ 'plans.validUntil' | translate }}</th>
+              <th>{{ 'common.status' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (charge of billing.charges(); track charge.id) {
+              <tr>
+                <td>{{ charge.createdAt | localized: 'date' }}</td>
+                <td>{{ 'plans.names.' + charge.planId | translate }}</td>
+                <td>{{ charge.amount | localized }}</td>
+                <td>{{ charge.periodEndAt | localized: 'date' }}</td>
+                <td>
+                  <span class="status">{{ 'plans.simulated' | translate }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+</section>

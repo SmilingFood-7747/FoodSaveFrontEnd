@@ -3,6 +3,13 @@ export type ReservationStatus = 'ACTIVE' | 'COLLECTED' | 'CANCELLED' | 'EXPIRED'
 export interface ReservationData {
   id: number;
   offerId: number;
+  businessId?: number;
+  commissionRate?: number;
+  commissionAmount?: number;
+  customerDiscountRate?: number;
+  customerDiscountAmount?: number;
+  customerPaidAmount?: number;
+  discountPeriodStartAt?: string;
   customerUserId: number;
   quantity: number;
   unitPrice: number;

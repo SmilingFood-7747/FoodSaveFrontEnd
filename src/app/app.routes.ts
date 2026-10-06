@@ -1,6 +1,16 @@
 import { Routes } from '@angular/router';
-import { sessionGuard, ownerGuard } from './iam/presentation/guards/session.guard';
+import { sessionGuard, ownerGuard, adminGuard } from './iam/presentation/guards/session.guard';
 export const routes: Routes = [
+  {
+    path: 'admin',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./admin/presentation/dashboard/admin-dashboard').then((m) => m.AdminDashboard),
+  },
+  {
+    path: 'plans',
+    loadComponent: () => import('./billing/presentation/plans/plans').then((m) => m.Plans),
+  },
   { path: '', redirectTo: 'offers', pathMatch: 'full' },
   {
     path: 'offers',

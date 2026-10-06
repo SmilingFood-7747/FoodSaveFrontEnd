@@ -9,6 +9,7 @@ export class SessionService {
   private readonly db = inject(BrowserDatabase);
   readonly user = signal<Session | null>(this.restore());
   readonly isBusinessOwner = computed(() => this.user()?.role === 'BUSINESS_OWNER');
+  readonly isAdmin = computed(() => this.user()?.role === 'ADMIN');
   private restore(): Session | null {
     try {
       const id = Number(sessionStorage.getItem('foodsave-session'));
@@ -55,6 +56,8 @@ export class SessionService {
     password: string;
     role: AccountRole;
   }): Promise<void> {
+    if (data.role !== 'CUSTOMER' && data.role !== 'BUSINESS_OWNER')
+      throw new DomainError('errors.forbidden');
     if (
       !data.fullName.trim() ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) ||

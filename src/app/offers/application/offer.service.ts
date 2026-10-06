@@ -1,3 +1,4 @@
+import { BillingService } from '../../billing/application/billing.service';
 import { computed, inject, Injectable } from '@angular/core';
 import { Offer, OfferData } from '../domain/model/offer';
 import { OfferRepository } from '../domain/repositories/offer.repository';
@@ -8,6 +9,7 @@ import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
 @Injectable({ providedIn: 'root' })
 export class OfferService {
+  private readonly billing = inject(BillingService);
   private readonly repository = inject(OfferRepository);
   private readonly businesses = inject(BusinessService);
   private readonly session = inject(SessionService);
@@ -45,6 +47,7 @@ export class OfferService {
       status: 'ACTIVE' as const,
     };
     Offer.validate(next);
+    this.billing.assertCanPublish(data.businessId, id);
     this.repository.save(next);
     return next;
   }

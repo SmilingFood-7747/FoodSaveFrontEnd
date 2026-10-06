@@ -1,5 +1,14 @@
+import { BillingService } from '../../../../billing/application/billing.service';
 import { BrowserImageStorage } from '../../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, input, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { UI } from '../../../../shared/presentation/ui';
 import { Offer, OfferData } from '../../../domain/model/offer';
 import { BusinessService } from '../../../../businesses/application/business.service';
@@ -17,6 +26,7 @@ export class OfferCard {
   readonly offer = input.required<OfferData>();
   readonly imageUrl = computed(() => this.images.resolve(this.offer().image));
   readonly failedImage = signal<string | null>(null);
+  readonly billing = inject(BillingService);
   readonly businesses = inject(BusinessService);
   readonly geo = inject(GeolocationService);
   discount(): number {

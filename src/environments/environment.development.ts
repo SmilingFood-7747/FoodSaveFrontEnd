@@ -8,5 +8,7 @@ export const environment = {
   platformProviderNotificationsEndpointPath: '/notifications',
   platformProviderReviewsEndpointPath: '/reviews',
   platformProviderRequestsEndpointPath: '/requests',
+  platformProviderSubscriptionsEndpointPath: '/subscriptions',
+  platformProviderSubscriptionChargesEndpointPath: '/subscriptionCharges',
   platformProviderPreferencesEndpointPath: '/preferences',
 };

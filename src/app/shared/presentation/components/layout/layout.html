@@ -18,7 +18,7 @@
       <a routerLink="/offers" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
         ><mat-icon>restaurant</mat-icon>{{ 'nav.offers' | translate }}</a
       >
-      @if (!session.isBusinessOwner()) {
+      @if (!session.isBusinessOwner() && !session.isAdmin()) {
         <a routerLink="/reservations" routerLinkActive="active"
           ><mat-icon>shopping_bag</mat-icon>{{ 'nav.reservations' | translate }}</a
         >
@@ -38,6 +38,15 @@
           ><mat-icon>business</mat-icon>{{ 'nav.businessProfile' | translate }}</a
         >
       }
+      @if (session.isAdmin()) {
+        <p class="nav-label">{{ 'nav.admin' | translate }}</p>
+        <a routerLink="/admin" routerLinkActive="active"
+          ><mat-icon>admin_panel_settings</mat-icon>{{ 'nav.adminDashboard' | translate }}</a
+        >
+      }
+      <a routerLink="/plans" routerLinkActive="active"
+        ><mat-icon>workspace_premium</mat-icon>{{ 'nav.plans' | translate }}</a
+      >
       <p class="nav-label">{{ 'nav.account' | translate }}</p>
       <a routerLink="/profile" routerLinkActive="active"
         ><mat-icon>person_outline</mat-icon>{{ 'nav.profile' | translate }}</a

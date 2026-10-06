@@ -47,6 +47,15 @@ export function createDemoAccounts(): Account[] {
       passwordHash: '',
       salt: 'foodsave-demo-salad',
     },
+    {
+      id: 103,
+      fullName: 'Administrador FoodSave',
+      email: 'admin@gmail.com',
+      phone: '',
+      role: 'ADMIN',
+      passwordHash: '',
+      salt: 'foodsave-demo-admin',
+    },
   ];
   return accounts;
 }

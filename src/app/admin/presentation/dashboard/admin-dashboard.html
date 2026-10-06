@@ -1,0 +1,186 @@
+<section class="page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">FOODSAVE · {{ 'nav.admin' | translate }}</p>
+      <h1>{{ 'admin.title' | translate }}</h1>
+      <p>{{ 'admin.subtitle' | translate }}</p>
+    </div>
+    <a mat-stroked-button routerLink="/plans"
+      ><mat-icon>workspace_premium</mat-icon>{{ 'nav.plans' | translate }}</a
+    >
+  </div>
+  <mat-form-field appearance="outline"
+    ><mat-label>{{ 'common.period' | translate }}</mat-label
+    ><mat-select [ngModel]="admin.period()" (ngModelChange)="admin.period.set($event)"
+      ><mat-option [value]="7">{{ 'common.last7' | translate }}</mat-option
+      ><mat-option [value]="30">{{ 'common.last30' | translate }}</mat-option
+      ><mat-option [value]="0">{{ 'common.allTime' | translate }}</mat-option></mat-select
+    ></mat-form-field
+  >
+  <div class="stats-grid">
+    <div class="stat-card">
+      <mat-icon>storefront</mat-icon><small>{{ 'finance.gross' | translate }}</small
+      ><strong>{{ admin.summary().gross | localized }}</strong
+      ><span>{{ 'finance.onCollected' | translate }}</span>
+    </div>
+    <div class="stat-card">
+      <mat-icon>percent</mat-icon><small>{{ 'finance.commission' | translate }}</small
+      ><strong>{{ admin.summary().commission | localized }}</strong
+      ><span>{{ 'admin.commissionBody' | translate }}</span>
+    </div>
+    <div class="stat-card">
+      <mat-icon>workspace_premium</mat-icon
+      ><small>{{ 'admin.subscriptionIncome' | translate }}</small
+      ><strong>{{ admin.summary().subscriptions | localized }}</strong
+      ><span>{{ 'plans.simulated' | translate }}</span>
+    </div>
+    <div class="stat-card total">
+      <mat-icon>account_balance_wallet</mat-icon><small>{{ 'admin.balance' | translate }}</small
+      ><strong>{{ admin.summary().platformBalance | localized }}</strong
+      ><span>{{ 'admin.balanceBody' | translate }}</span>
+    </div>
+  </div>
+  <div class="summary-strip">
+    <div>
+      <small>{{ 'admin.businesses' | translate }}</small
+      ><strong>{{ admin.businesses().length }}</strong>
+    </div>
+    <div>
+      <small>{{ 'admin.paidSubscribers' | translate }}</small
+      ><strong>{{ admin.subscriptions().length }}</strong>
+    </div>
+    <div>
+      <small>{{ 'admin.monthlyProjection' | translate }}</small
+      ><strong>{{ admin.monthlyRevenue() | localized }}</strong>
+    </div>
+    <div>
+      <small>{{ 'admin.discounts' | translate }}</small
+      ><strong>{{ admin.summary().discounts | localized }}</strong>
+    </div>
+  </div>
+  <section class="panel">
+    <h2>{{ 'admin.businessRevenue' | translate }}</h2>
+    <div class="filter-row">
+      <mat-form-field appearance="outline"
+        ><mat-label>{{ 'admin.search' | translate }}</mat-label
+        ><input
+          matInput
+          [ngModel]="admin.query()"
+          (ngModelChange)="admin.query.set($event)" /></mat-form-field
+      ><mat-form-field appearance="outline"
+        ><mat-label>{{ 'finance.plan' | translate }}</mat-label
+        ><mat-select [ngModel]="admin.planFilter()" (ngModelChange)="admin.planFilter.set($event)"
+          ><mat-option value="ALL">{{ 'common.all' | translate }}</mat-option>
+          @for (id of ['FREE', 'PLUS', 'PRO']; track id) {
+            <mat-option [value]="id">{{ 'plans.names.' + id | translate }}</mat-option>
+          }
+        </mat-select></mat-form-field
+      >
+    </div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'finance.business' | translate }}</th>
+            <th>{{ 'finance.plan' | translate }}</th>
+            <th>{{ 'finance.rate' | translate }}</th>
+            <th>{{ 'finance.gross' | translate }}</th>
+            <th>{{ 'finance.commission' | translate }}</th>
+            <th>{{ 'finance.net' | translate }}</th>
+            <th>{{ 'admin.pickups' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of admin.results(); track row.business.id) {
+            <tr>
+              <td>
+                <strong>{{ row.business.name }}</strong
+                ><small>{{ row.owner?.email }} · {{ row.business.district }}</small>
+              </td>
+              <td>
+                <span class="status">{{ 'plans.names.' + row.plan.id | translate }}</span>
+              </td>
+              <td>{{ row.plan.commissionRate }} %</td>
+              <td>{{ row.report.gross | localized }}</td>
+              <td>{{ row.report.commission | localized }}</td>
+              <td class="net">{{ row.report.businessNet | localized }}</td>
+              <td>{{ row.report.rows.length }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="7">{{ 'admin.noBusinesses' | translate }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">{{ 'admin.historicalRate' | translate }}</p>
+  </section>
+  <section class="panel">
+    <h2>{{ 'admin.subscriptions' | translate }}</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'admin.account' | translate }}</th>
+            <th>{{ 'profile.role' | translate }}</th>
+            <th>{{ 'finance.plan' | translate }}</th>
+            <th>{{ 'admin.monthlyFee' | translate }}</th>
+            <th>{{ 'plans.validUntil' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of admin.subscriptions(); track s.id) {
+            <tr>
+              <td>
+                <strong>{{ s.account?.fullName }}</strong
+                ><small>{{ s.account?.email }}</small>
+              </td>
+              <td>{{ 'roles.' + s.audience | translate }}</td>
+              <td>{{ 'plans.names.' + s.planId | translate }}</td>
+              <td>{{ s.plan.monthlyPrice | localized }}</td>
+              <td>{{ s.expiresAt | localized: 'date' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">{{ 'admin.noSubscribers' | translate }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">{{ 'admin.projectionNote' | translate }}</p>
+  </section>
+  <section class="panel">
+    <h2>{{ 'admin.chargeHistory' | translate }}</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'finance.date' | translate }}</th>
+            <th>{{ 'admin.account' | translate }}</th>
+            <th>{{ 'finance.plan' | translate }}</th>
+            <th>{{ 'finance.amount' | translate }}</th>
+            <th>{{ 'common.status' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (charge of admin.charges(); track charge.id) {
+            <tr>
+              <td>{{ charge.createdAt | localized: 'date' }}</td>
+              <td>{{ charge.account?.email }}</td>
+              <td>{{ 'plans.names.' + charge.planId | translate }}</td>
+              <td>{{ charge.amount | localized }}</td>
+              <td>{{ 'plans.simulated' | translate }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">{{ 'admin.noCharges' | translate }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <p class="caption">{{ 'admin.scope' | translate }}</p>
+</section>

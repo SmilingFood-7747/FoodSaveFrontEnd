@@ -1,4 +1,4 @@
-export type AccountRole = 'CUSTOMER' | 'BUSINESS_OWNER';
+export type AccountRole = 'CUSTOMER' | 'BUSINESS_OWNER' | 'ADMIN';
 export interface Account {
   id: number;
   fullName: string;

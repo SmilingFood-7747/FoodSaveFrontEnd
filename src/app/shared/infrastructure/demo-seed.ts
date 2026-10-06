@@ -6,6 +6,8 @@ import { createDemoReservations } from '../../reservations/infrastructure/reserv
 export function demoSeed() {
   const now = Date.now();
   return {
+    subscriptions: [],
+    subscriptionCharges: [],
     accounts: createDemoAccounts(),
     businesses: createDemoBusinesses(),
     offers: createDemoOffers(now),

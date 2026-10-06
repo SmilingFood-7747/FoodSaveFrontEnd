@@ -40,6 +40,81 @@
       ><strong>{{ reporting.summary().recovered | localized }}</strong>
     </div>
   </div>
+  <section class="panel earnings">
+    <div class="page-heading">
+      <div>
+        <h2>{{ 'finance.businessIncome' | translate }}</h2>
+        <p>{{ 'finance.onCollected' | translate }}</p>
+      </div>
+      <a mat-stroked-button routerLink="/plans">{{ 'nav.plans' | translate }}</a>
+    </div>
+    <div class="earnings-grid">
+      <div>
+        <small>{{ 'finance.gross' | translate }}</small
+        ><strong>{{ finance().gross | localized }}</strong>
+      </div>
+      <div>
+        <small>{{ 'finance.commission' | translate }}</small
+        ><strong>−{{ finance().commission | localized }}</strong>
+      </div>
+      <div>
+        <small>{{ 'finance.net' | translate }}</small
+        ><strong>{{ finance().businessNet | localized }}</strong>
+      </div>
+      <div>
+        <small>{{ 'finance.subscriptionCosts' | translate }}</small
+        ><strong>−{{ finance().subscriptions | localized }}</strong>
+      </div>
+    </div>
+    <p class="balance-line">
+      {{ 'finance.afterPlan' | translate }}
+      <strong>{{ finance().businessNet - finance().subscriptions | localized }}</strong>
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ 'finance.business' | translate }}</th>
+            <th>{{ 'finance.plan' | translate }}</th>
+            <th>{{ 'finance.rate' | translate }}</th>
+            <th>{{ 'finance.gross' | translate }}</th>
+            <th>{{ 'finance.commission' | translate }}</th>
+            <th>{{ 'finance.net' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of businessRows(); track row.business.id) {
+            <tr>
+              <td>{{ row.business.name }}</td>
+              <td>{{ 'plans.names.' + row.plan.id | translate }}</td>
+              <td>{{ row.plan.commissionRate }} %</td>
+              <td>{{ row.report.gross | localized }}</td>
+              <td>{{ row.report.commission | localized }}</td>
+              <td>{{ row.report.businessNet | localized }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">
+      {{ 'finance.ownerPlan' | translate }} {{ 'finance.discountFunding' | translate }}
+    </p>
+    <div class="button-row">
+      <button
+        mat-stroked-button
+        (click)="export()"
+        [disabled]="!billing.currentPlan().exportReports || !businesses.owned().length"
+      >
+        <mat-icon>download</mat-icon>{{ 'finance.export' | translate }}
+      </button>
+      @if (!billing.currentPlan().exportReports) {
+        <a routerLink="/plans">{{ 'finance.exportUpgrade' | translate }}</a>
+      }
+    </div>
+    @if (exportError()) {
+      <p class="message error" role="alert">{{ exportError() | translate }}</p>
+    }
+  </section>
   <div class="detail-grid">
     <div class="panel">
       <h2>{{ 'dashboard.operation' | translate }}</h2>

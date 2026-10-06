@@ -85,7 +85,21 @@
             >{{ r.pickupStartAt | localized: 'date' }} —
             {{ r.pickupDeadlineAt | localized: 'time' }}
           </p>
-          <strong>{{ r.unitPrice * r.quantity | localized }}</strong>
+          <strong
+            >{{
+              (businessMode
+                ? r.unitPrice * r.quantity
+                : (r.customerPaidAmount ?? r.unitPrice * r.quantity)
+              ) | localized
+            }}
+            @if (!businessMode && r.customerDiscountAmount) {
+              <small class="muted"
+                >{{ 'finance.memberDiscount' | translate }}: −{{
+                  r.customerDiscountAmount | localized
+                }}</small
+              >
+            }
+          </strong>
         </div>
         <div class="pickup-code">
           <small>{{ 'reservation.code' | translate }}</small

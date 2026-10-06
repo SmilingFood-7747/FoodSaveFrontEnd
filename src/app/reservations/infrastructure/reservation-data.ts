@@ -6,6 +6,11 @@ export function createDemoReservations(now: number): ReservationData[] {
     {
       id: 1,
       offerId: 1,
+      businessId: 1,
+      commissionRate: 5,
+      commissionAmount: 0.8,
+      customerDiscountAmount: 0,
+      customerPaidAmount: 16,
       customerUserId: 1,
       quantity: 1,
       unitPrice: 16,

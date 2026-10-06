@@ -1,3 +1,5 @@
+import { BillingService } from '../../billing/application/billing.service';
+import { cents, money } from '../../billing/domain/model/subscription';
 import { computed, effect, inject, Injectable } from '@angular/core';
 import { Notification } from '../../notifications/domain/model/notification';
 import { Reservation, ReservationData } from '../domain/model/reservation';
@@ -11,6 +13,7 @@ import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
+  private readonly billing = inject(BillingService);
   private readonly repository = inject(ReservationRepository);
   private readonly offers = inject(OfferService);
   private readonly businesses = inject(BusinessService);
@@ -62,6 +65,16 @@ export class ReservationService {
       created = {
         id: this.db.nextId(s.reservations),
         offerId,
+        businessId: data.businessId,
+        commissionRate: this.billing.businessPlan(data.businessId).commissionRate,
+        commissionAmount: money(
+          Math.round(
+            (cents(data.offerPrice * quantity) *
+              this.billing.businessPlan(data.businessId).commissionRate) /
+              100,
+          ),
+        ),
+        ...this.billing.quote(data.offerPrice * quantity, customer.id),
         customerUserId: customer.id,
         quantity,
         unitPrice: data.offerPrice,

@@ -14,3 +14,11 @@ export const ownerGuard: CanActivateFn = (_, state) => {
     });
   return session.isBusinessOwner() ? true : router.createUrlTree(['/offers']);
 };
+
+export const adminGuard: CanActivateFn = (_, state) => {
+  const session = inject(SessionService);
+  const router = inject(Router);
+  if (!session.user())
+    return router.createUrlTree(['/sign-in'], { queryParams: { redirect: state.url } });
+  return session.isAdmin() ? true : router.createUrlTree(['/offers']);
+};

@@ -67,9 +67,20 @@
               [ngModel]="quantity()"
               (ngModelChange)="quantity.set($event)"
           /></mat-form-field>
+          @if (quote().customerDiscountAmount) {
+            <div class="total-line">
+              <span>{{ 'finance.subtotal' | translate }}</span
+              ><strong>{{ o.offerPrice * quantity() | localized }}</strong>
+            </div>
+            <p class="message success">
+              {{ 'finance.memberDiscount' | translate }}: −{{
+                quote().customerDiscountAmount | localized
+              }}
+            </p>
+          }
           <div class="total-line">
             <span>{{ 'detail.total' | translate }}</span
-            ><strong>{{ o.offerPrice * quantity() | localized: 'money' : 'es-PE' }}</strong>
+            ><strong>{{ quote().customerPaidAmount | localized: 'money' : 'es-PE' }}</strong>
           </div>
           <p class="muted">{{ 'detail.payment' | translate }}</p>
           <mat-checkbox [ngModel]="confirmed()" (ngModelChange)="confirmed.set($event)">{{

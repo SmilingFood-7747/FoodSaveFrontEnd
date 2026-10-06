@@ -8,8 +8,16 @@ import {
   NotificationPreferences,
 } from '../../notifications/domain/model/notification';
 import { Review, SupportRequest } from '../../feedback/domain/model/review';
+import {
+  cents,
+  money,
+  Subscription,
+  SubscriptionCharge,
+} from '../../billing/domain/model/subscription';
 import { demoSeed } from './demo-seed';
 export interface LocalDatabase {
+  subscriptions: Subscription[];
+  subscriptionCharges: SubscriptionCharge[];
   accounts: Account[];
   businesses: Business[];
   offers: OfferData[];
@@ -42,6 +50,7 @@ export class BrowserDatabase {
           database = this.upgradeDemoContent(database);
           database = this.upgradeDemoOffers(database);
           database = this.upgradeDemoAccounts(database);
+          database = this.upgradeBilling(database);
           return database;
         }
       }
@@ -218,6 +227,28 @@ export class BrowserDatabase {
       localStorage.setItem(this.key, JSON.stringify(next));
     } catch {}
     return next;
+  }
+  private upgradeBilling(value: LocalDatabase): LocalDatabase {
+    value.subscriptions ??= [];
+    value.subscriptionCharges ??= [];
+    if (!value.accounts.some((a) => a.role === 'ADMIN')) {
+      const sample = demoSeed().accounts.find((a) => a.role === 'ADMIN')!;
+      const email = value.accounts.some((a) => a.email.toLowerCase() === sample.email)
+        ? 'admin+foodsave@gmail.com'
+        : sample.email;
+      value.accounts.push({ ...sample, id: this.nextId(value.accounts), email });
+    }
+    value.reservations = value.reservations.map((r) => ({
+      ...r,
+      businessId: r.businessId ?? value.offers.find((o) => o.id === r.offerId)?.businessId,
+      commissionRate: r.commissionRate ?? 5,
+      commissionAmount:
+        r.commissionAmount ??
+        money(Math.round((cents(r.unitPrice * r.quantity) * (r.commissionRate ?? 5)) / 100)),
+      customerDiscountAmount: r.customerDiscountAmount ?? 0,
+      customerPaidAmount: r.customerPaidAmount ?? money(cents(r.unitPrice * r.quantity)),
+    }));
+    return value;
   }
   commit(change: (current: LocalDatabase) => LocalDatabase): void {
     const next = change(structuredClone(this.state()));

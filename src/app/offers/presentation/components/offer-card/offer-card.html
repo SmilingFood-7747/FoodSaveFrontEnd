@@ -20,6 +20,11 @@
         >{{ businesses.get(offer().businessId)?.district }}</span
       >
     </div>
+    @if (billing.businessPlan(offer().businessId).featuredOffers) {
+      <span class="featured-label"
+        ><mat-icon>star</mat-icon>{{ 'plans.featured' | translate }}</span
+      >
+    }
     <h2>
       <a [routerLink]="['/offers', offer().id]">{{ offer().title }}</a>
     </h2>

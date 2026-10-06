@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   platformProviderApiBaseUrl: 'http://localhost:3000',
   platformProviderAccountsEndpointPath: '/accounts',
   platformProviderBusinessesEndpointPath: '/businesses',

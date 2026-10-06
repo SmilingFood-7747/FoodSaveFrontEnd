@@ -71,7 +71,7 @@
         ><mat-label>{{ 'finance.plan' | translate }}</mat-label
         ><mat-select [ngModel]="admin.planFilter()" (ngModelChange)="admin.planFilter.set($event)"
           ><mat-option value="ALL">{{ 'common.all' | translate }}</mat-option>
-          @for (id of ['FREE', 'PLUS', 'PRO']; track id) {
+          @for (id of ['FREE', 'PLUS']; track id) {
             <mat-option [value]="id">{{ 'plans.names.' + id | translate }}</mat-option>
           }
         </mat-select></mat-form-field

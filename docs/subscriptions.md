@@ -10,29 +10,27 @@ Cuenta de administrador de demostración: `admin@gmail.com`, contraseña `FoodSa
 
 ## Clientes
 
-| Plan   | Mensualidad | Descuento adicional          | Límite por ciclo |
-| ------ | ----------- | ---------------------------- | ---------------- |
-| Gratis | S/0         | Sin descuento de suscripción | —                |
-| Plus   | S/9.90      | 5 %                          | S/15             |
-| Pro    | S/19.90     | 10 %                         | S/40             |
+| Plan         | Mensualidad | Descuento adicional          | Límite por ciclo |
+| ------------ | ----------- | ---------------------------- | ---------------- |
+| foodSaveFREE | S/0         | Sin descuento de suscripción | —                |
+| foodSavePlus | S/9.90      | 5 %                          | S/15             |
 
 El descuento se aplica sobre el precio de oferta y FoodSave cubre su coste. Los negocios conservan sus ventas antes de la comisión. Las reservas activas y recogidas consumen el presupuesto del ciclo; las canceladas y vencidas lo liberan. El total se muestra antes de reservar y se conserva en el historial.
 
 ## Negocios
 
-| Plan   | Mensualidad | Comisión por recojo confirmado | Ofertas activas por local | Beneficios                                            |
-| ------ | ----------- | ------------------------------ | ------------------------- | ----------------------------------------------------- |
-| Gratis | S/0         | 5 %                            | 5                         | Reservas, recojos e ingresos                          |
-| Plus   | S/29        | 7 %                            | 20                        | Reportes exportables a CSV                            |
-| Pro    | S/79        | 10 %                           | Sin límite                | CSV y prioridad con etiqueta Destacado en el catálogo |
+| Plan         | Mensualidad | Comisión por recojo confirmado | Ofertas activas por local | Beneficios                   |
+| ------------ | ----------- | ------------------------------ | ------------------------- | ---------------------------- |
+| foodSaveFREE | S/0         | 5 %                            | 5                         | Reservas, recojos e ingresos |
+| foodSavePlus | S/29        | 7 %                            | 20                        | Reportes exportables a CSV   |
 
-La comisión del plan Gratis se muestra en el desglose de ingresos y en los términos, sin incorporarla a la descripción de su tarjeta. La mensualidad se registra una vez por cuenta propietaria, aunque tenga varios establecimientos.
+La comisión del plan foodSaveFREE se muestra en el desglose de ingresos y en los términos, sin incorporarla a la descripción de su tarjeta. La mensualidad se registra una vez por cuenta propietaria, aunque tenga varios establecimientos.
 
 Una oferta existente se conserva cuando vence una suscripción. El límite se aplica a nuevas ofertas o a la reactivación de ofertas pausadas; se permite editar las ofertas ya activas.
 
 ## Ciclos y cálculos
 
-Gratis es el plan predeterminado. Un plan de pago tiene vigencia de un mes calendario y vuelve a Gratis al vencer. Si cambia de plan durante un ciclo, conserva sus beneficios hasta el vencimiento y guarda su elección para la renovación manual; no se genera otro pago durante ese cambio.
+foodSaveFREE es el plan predeterminado. Un plan de pago tiene vigencia de un mes calendario y vuelve a foodSaveFREE al vencer. Si cambia de plan durante un ciclo, conserva sus beneficios hasta el vencimiento y guarda su elección para la renovación manual; no se genera otro pago durante ese cambio.
 
 Cada reserva conserva el porcentaje y el importe de comisión de su creación. Un cambio de plan solo afecta nuevas reservas. Las comisiones se reconocen únicamente en recojos confirmados, usando la fecha de recojo para filtrar el periodo. Los cálculos monetarios se redondean a céntimos por reserva.
 
@@ -41,3 +39,5 @@ Balance de FoodSave = comisiones + contrataciones de suscripción − descuentos
 ## Datos del frontend
 
 Las suscripciones y contrataciones se guardan en el navegador y están representadas en `db.json` mediante `/subscriptions` y `/subscriptionCharges`. El frontend aún no consume JSON Server. Las contrataciones son simuladas y no realizan cobros, transferencias ni renovaciones automáticas. Los datos no se sincronizan entre dispositivos y los roles se controlan en el frontend.
+
+Las suscripciones del antiguo plan Pro pasan a foodSavePlus conservando su fecha de vencimiento. El historial conserva los importes y planes originales de las contrataciones, sin generar un cobro nuevo.

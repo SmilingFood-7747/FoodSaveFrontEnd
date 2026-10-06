@@ -284,7 +284,7 @@
     "terms3Title": "3. Offers and food information",
     "terms3Body": "Read prices, allergens, ingredients, availability and pickup conditions before reserving. Businesses must keep food information accurate. Ask the business about allergies and cross-contact; a missing declaration does not mean the food is allergen-free.",
     "terms4Title": "4. Reservations, pickup and cancellation",
-    "terms4Body": "Reserve only an active offer with enough units. Cancellation is available before pickup starts. Show the one-use pickup code during the stated window. Reservations expire when that window ends. This demonstration does not process online payments, delivery or refunds. Business sales carry a plan-based commission: Free 5%, Plus 7%, Pro 10%. Subscriptions have monthly prices and simulated payments. FoodSave covers customer subscription discounts.",
+    "terms4Body": "Reserve only an active offer with enough units. Cancellation is available before pickup starts. Show the one-use pickup code during the stated window. Reservations expire when that window ends. This demonstration does not process online payments, delivery or refunds. Business sales carry a plan-based commission: foodSaveFREE 5%, foodSavePlus 7%. Subscriptions have monthly prices and simulated payments. FoodSave covers customer subscription discounts.",
     "terms5Title": "5. Reviews and help",
     "terms5Body": "A customer may submit one rating after a confirmed pickup. Use respectful, relevant comments. The help page lets you record a local request; it does not send messages to a support team in this demonstration.",
     "privacy1Title": "1. Information entered",
@@ -326,7 +326,7 @@
     "imageStorage": "The photo could not be saved. Check available browser storage and try again.",
     "plan": "Select a valid plan.",
     "offerLimit": "You reached the active offer limit for your plan. Pause an offer or change plans.",
-    "reportPlan": "Report exports are available with Plus and Pro."
+    "reportPlan": "Report exports are available with foodSavePlus."
   },
   "finance": {
     "date": "Date",
@@ -348,7 +348,7 @@
     "ownerPlan": "The business monthly fee is charged once per account, even when it manages multiple locations.",
     "discountFunding": "FoodSave covers customer subscription discounts; they do not reduce the business net amount.",
     "export": "Export CSV report",
-    "exportUpgrade": "Available with Plus and Pro",
+    "exportUpgrade": "Available with foodSavePlus",
     "subtotal": "Subtotal"
   },
   "plans": {
@@ -359,20 +359,18 @@
     "forCustomers": "For customers",
     "forBusinesses": "For businesses",
     "names": {
-      "FREE": "Free",
-      "PLUS": "Plus",
-      "PRO": "Pro"
+      "FREE": "foodSaveFREE",
+      "PLUS": "foodSavePlus",
+      "PRO": "foodSavePro (retired)"
     },
     "descriptions": {
       "CUSTOMER": {
         "FREE": "Discover offers and reserve meals without a monthly fee.",
-        "PLUS": "An extra discount for your regular purchases.",
-        "PRO": "A bigger discount and a higher monthly savings limit."
+        "PLUS": "An extra discount for your regular purchases."
       },
       "BUSINESS_OWNER": {
         "FREE": "Start selling surplus food and manage your pickups.",
-        "PLUS": "Publish more offers and keep track of your results.",
-        "PRO": "Expand your catalog and highlight offers to reach more customers."
+        "PLUS": "Publish more offers and keep track of your results."
       }
     },
     "month": "month",
@@ -404,7 +402,7 @@
     "confirm": "Confirm plan",
     "accept": "I accept the price and conditions of the selected plan.",
     "noRealPayment": "Subscription purchases and payments are simulated; no real charge is made.",
-    "manualRenewal": "Each cycle lasts one month. Renewal is confirmed manually; the Free plan applies upon expiry.",
+    "manualRenewal": "Each cycle lasts one month. Renewal is confirmed manually; the foodSaveFREE plan applies upon expiry.",
     "nextCycle": "Your current benefits remain available until",
     "activated": "Plan activated. A one-month simulated subscription was recorded.",
     "scheduled": "Your choice for the next cycle was saved. Your current plan remains active and no additional payment was recorded.",

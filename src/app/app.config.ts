@@ -33,7 +33,11 @@ export const appConfig: ApplicationConfig = {
     ),
     provideTranslateService({
       fallbackLang: 'en',
-      loader: provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
+      loader: provideTranslateHttpLoader({
+        prefix: '/i18n/',
+        suffix: '.json',
+        enforceLoading: true,
+      }),
     }),
     provideAppInitializer(() => inject(LanguageService).initialize()),
     { provide: AccountRepository, useClass: BrowserAccountRepository },

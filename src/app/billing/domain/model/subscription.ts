@@ -1,4 +1,4 @@
-export type PlanId = 'FREE' | 'PLUS' | 'PRO';
+export type PlanId = 'FREE' | 'PLUS';
 export type PlanAudience = 'CUSTOMER' | 'BUSINESS_OWNER';
 export interface SubscriptionPlan {
   id: PlanId;
@@ -23,7 +23,7 @@ export interface SubscriptionCharge {
   id: number;
   accountId: number;
   audience: PlanAudience;
-  planId: PlanId;
+  planId: PlanId | 'PRO';
   amount: number;
   createdAt: string;
   periodStartAt: string;
@@ -52,16 +52,6 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       exportReports: false,
       featuredOffers: false,
     },
-    {
-      id: 'PRO',
-      monthlyPrice: 19.9,
-      commissionRate: 0,
-      discountRate: 10,
-      monthlyDiscountLimit: 40,
-      activeOfferLimit: null,
-      exportReports: false,
-      featuredOffers: false,
-    },
   ],
   BUSINESS_OWNER: [
     {
@@ -83,16 +73,6 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       activeOfferLimit: 20,
       exportReports: true,
       featuredOffers: false,
-    },
-    {
-      id: 'PRO',
-      monthlyPrice: 79,
-      commissionRate: 10,
-      discountRate: 0,
-      monthlyDiscountLimit: 0,
-      activeOfferLimit: null,
-      exportReports: true,
-      featuredOffers: true,
     },
   ],
 };

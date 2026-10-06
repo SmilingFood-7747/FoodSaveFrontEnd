@@ -231,6 +231,14 @@ export class BrowserDatabase {
   private upgradeBilling(value: LocalDatabase): LocalDatabase {
     value.subscriptions ??= [];
     value.subscriptionCharges ??= [];
+    value.subscriptions = value.subscriptions.map((subscription) => ({
+      ...subscription,
+      planId: (subscription.planId as string) === 'PRO' ? 'PLUS' : subscription.planId,
+      nextPlanId:
+        (subscription.nextPlanId as string | undefined) === 'PRO'
+          ? 'PLUS'
+          : subscription.nextPlanId,
+    }));
     if (!value.accounts.some((a) => a.role === 'ADMIN')) {
       const sample = demoSeed().accounts.find((a) => a.role === 'ADMIN')!;
       const email = value.accounts.some((a) => a.email.toLowerCase() === sample.email)

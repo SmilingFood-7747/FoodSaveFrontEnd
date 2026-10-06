@@ -105,9 +105,7 @@
           <span class="recommendation">{{ 'plans.recommended' | translate }}</span>
         }
         <div class="plan-heading">
-          <mat-icon>{{
-            plan.id === 'FREE' ? 'eco' : plan.id === 'PLUS' ? 'workspace_premium' : 'diamond'
-          }}</mat-icon>
+          <mat-icon>{{ plan.id === 'FREE' ? 'eco' : 'workspace_premium' }}</mat-icon>
           <h2>{{ 'plans.names.' + plan.id | translate }}</h2>
         </div>
         <p class="plan-description">

@@ -158,6 +158,15 @@ export class BrowserDatabase {
       if (account.email === 'negocio@foodsave.demo' && account.salt === 'foodsave-demo-business') {
         email = 'negocio@gmail.com';
       }
+      if (account.email === 'pan@foodsave.demo' && account.salt === 'foodsave-demo-bakery') {
+        email = 'pan@gmail.com';
+      }
+      if (account.email === 'sazon@foodsave.demo' && account.salt === 'foodsave-demo-meals') {
+        email = 'sazon@gmail.com';
+      }
+      if (account.email === 'verde@foodsave.demo' && account.salt === 'foodsave-demo-salad') {
+        email = 'verde@gmail.com';
+      }
       if (
         email === account.email ||
         value.accounts.some((item) => item.email.toLowerCase() === email)

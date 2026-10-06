@@ -23,7 +23,7 @@ export function createDemoAccounts(): Account[] {
     {
       id: 100,
       fullName: 'Lucía Torres',
-      email: 'pan@foodsave.demo',
+      email: 'pan@gmail.com',
       phone: '999444555',
       role: 'BUSINESS_OWNER',
       passwordHash: '',
@@ -32,7 +32,7 @@ export function createDemoAccounts(): Account[] {
     {
       id: 101,
       fullName: 'Diego Ramos',
-      email: 'sazon@foodsave.demo',
+      email: 'sazon@gmail.com',
       phone: '999555666',
       role: 'BUSINESS_OWNER',
       passwordHash: '',
@@ -41,7 +41,7 @@ export function createDemoAccounts(): Account[] {
     {
       id: 102,
       fullName: 'María Rojas',
-      email: 'verde@foodsave.demo',
+      email: 'verde@gmail.com',
       phone: '999777888',
       role: 'BUSINESS_OWNER',
       passwordHash: '',

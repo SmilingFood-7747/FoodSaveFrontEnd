@@ -123,9 +123,7 @@
     "password": "Password (at least 8 characters)",
     "acceptTerms": "I accept the terms and have read the privacy notice.",
     "haveAccount": "Already have an account?",
-    "noAccount": "New to FoodSave?",
-    "demoAccounts": "Explore the demonstration",
-    "demoBody": "Choose an account to fill the form. Both use FoodSave123! Data stays in this browser."
+    "noAccount": "New to FoodSave?"
   },
   "roles": {
     "CUSTOMER": "Customer",

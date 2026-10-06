@@ -123,9 +123,7 @@
     "password": "Contraseña (mínimo 8 caracteres)",
     "acceptTerms": "Acepto los términos y he leído el aviso de privacidad.",
     "haveAccount": "¿Ya tienes una cuenta?",
-    "noAccount": "¿Primera vez en FoodSave?",
-    "demoAccounts": "Explora la demostración",
-    "demoBody": "Elige una cuenta para completar el formulario. Ambas usan FoodSave123! Los datos se guardan en este navegador."
+    "noAccount": "¿Primera vez en FoodSave?"
   },
   "roles": {
     "CUSTOMER": "Cliente comprador",

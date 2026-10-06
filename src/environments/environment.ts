@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  platformProviderApiBaseUrl: 'http://localhost:3000',
+  platformProviderApiBaseUrl: 'https://foodsavefakeapi.onrender.com',
   platformProviderAccountsEndpointPath: '/accounts',
   platformProviderBusinessesEndpointPath: '/businesses',
   platformProviderOffersEndpointPath: '/offers',

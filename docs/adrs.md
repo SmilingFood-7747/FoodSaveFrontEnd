@@ -147,7 +147,7 @@ El desarrollo necesita datos de muestra y una configuración de acceso a recurso
 
 ### Decisión
 
-Usar JSON Server 0.17.4 como dependencia de desarrollo, `db.json` en la raíz y `npm run server` para exponer CRUD en el puerto 3000. Definir `environment.ts` y `environment.development.ts` con URL base y rutas de las ocho colecciones. Configurar `fileReplacements` para desarrollo. Ambos entornos apuntan por ahora a `http://localhost:3000`. El frontend conserva sus adaptadores locales hasta implementar la conexión HTTP.
+Separar la fake API en `D:\FoodSaveFakeApi`, con JSON Server 0.17.4, su propio `db.json`, `package.json`, `package-lock.json` y `.gitignore`. Ejecutar `npm run server` desde esa carpeta para exponer CRUD en el puerto 3000. Definir `environment.ts` y `environment.development.ts` con URL base y rutas de las diez colecciones. Configurar `fileReplacements` para desarrollo. Ambos entornos apuntan por ahora a `http://localhost:3000`. El frontend conserva sus adaptadores locales hasta implementar la conexión HTTP.
 
 ### Consecuencias
 
@@ -165,7 +165,7 @@ Usar JSON Server 0.17.4 como dependencia de desarrollo, `db.json` en la raíz y 
 
 ### Evidencia en el proyecto
 
-`db.json`, `package.json`, `angular.json`, `src/environments/environment.ts`, `src/environments/environment.development.ts`.
+`D:\FoodSaveFakeApi\db.json`, `D:\FoodSaveFakeApi\package.json`, `angular.json`, `src/environments/environment.ts`, `src/environments/environment.development.ts`.
 
 ---
 
@@ -327,4 +327,3 @@ Publicar `dist/frontend-foodsave/browser` en Firebase Hosting, proyecto `foodsav
 ### Evidencia en el proyecto
 
 `firebase.json`, `.firebaserc`, `.github/workflows/main_foodsavefronttest.yml`, configuración de remotos de Git.
-

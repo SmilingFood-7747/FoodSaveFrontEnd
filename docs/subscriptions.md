@@ -38,6 +38,6 @@ Balance de FoodSave = comisiones + contrataciones de suscripción − descuentos
 
 ## Datos del frontend
 
-Las suscripciones y contrataciones se guardan en el navegador y están representadas en `db.json` mediante `/subscriptions` y `/subscriptionCharges`. El frontend aún no consume JSON Server. Las contrataciones son simuladas y no realizan cobros, transferencias ni renovaciones automáticas. Los datos no se sincronizan entre dispositivos y los roles se controlan en el frontend.
+Las suscripciones y contrataciones se guardan en el navegador y están representadas en `D:\FoodSaveFakeApi\db.json` mediante `/subscriptions` y `/subscriptionCharges`. El frontend aún no consume JSON Server. Las contrataciones son simuladas y no realizan cobros, transferencias ni renovaciones automáticas. Los datos no se sincronizan entre dispositivos y los roles se controlan en el frontend.
 
 Las suscripciones del antiguo plan Pro pasan a foodSavePlus conservando su fecha de vencimiento. El historial conserva los importes y planes originales de las contrataciones, sin generar un cobro nuevo.

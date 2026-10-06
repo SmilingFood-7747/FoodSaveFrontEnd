@@ -1,0 +1,77 @@
+@startuml
+title FoodSave - Notificaciones
+hide empty members
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam ArrowColor #61736A
+skinparam ArrowThickness 1.2
+skinparam BackgroundColor white
+skinparam PackageBorderColor #A7B8AE
+skinparam PackageBackgroundColor #FAFCFB
+skinparam ClassBorderColor #446452
+skinparam ClassBackgroundColor #F1F7F3
+skinparam ClassHeaderBackgroundColor #DEEBE2
+skinparam ClassFontColor #182B21
+skinparam PackageFontColor #30483A
+skinparam TitleFontSize 22
+skinparam TitleFontColor #182B21
+
+package "notifications" as notifications_context {
+    interface "Notification" as Notification {
+      +id: number
+      +recipientAccountId: number
+      +reservationId?: number
+      +type: Notification["type"]
+      +titleKey: string
+      +body: string
+      +createdAt: string
+      +readAt?: string
+    }
+    interface "NotificationPreferences" as NotificationPreferences {
+      +emailEnabled: boolean
+      +pushEnabled: boolean
+      +remindersEnabled: boolean
+    }
+    abstract class "NotificationRepository" as NotificationRepository {
+      +all(): Notification[]
+      +save(notification: Notification): void
+    }
+    class "NotificationService" as NotificationService <<Service>> {
+      +mine
+      +unread
+      +preferences
+      +markRead(id: number): void
+      +savePreferences(preferences: NotificationPreferences): void
+    }
+    class "BrowserNotificationRepository" as BrowserNotificationRepository <<Adapter>> {
+      +all(): Notification[]
+      +save(notification: Notification): void
+    }
+    class "Notifications" as Notifications <<Component>> {
+    }
+}
+package "Dependencias de otros contextos" as external_context {
+  class "BrowserDatabase" as BrowserDatabase <<Adapter>>
+  class "ClockService" as ClockService <<Service>>
+  class "SessionService" as SessionService <<Service>>
+}
+
+
+NotificationService ..> NotificationRepository
+NotificationRepository <|-- BrowserNotificationRepository
+Notifications ..> NotificationService
+NotificationService ..> BrowserDatabase
+NotificationService ..> SessionService
+NotificationService ..> ClockService
+BrowserNotificationRepository ..> BrowserDatabase
+interface "Account" as Account
+interface "ReservationData" as ReservationData
+Notification "0..*" --> "1" Account : destinatario
+Notification "0..*" --> "0..1" ReservationData : reserva
+Account "1" -- "0..1" NotificationPreferences : preferencias
+@enduml

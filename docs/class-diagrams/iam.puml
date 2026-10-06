@@ -1,0 +1,75 @@
+@startuml
+title FoodSave - Identidad y acceso
+hide empty members
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam ArrowColor #61736A
+skinparam ArrowThickness 1.2
+skinparam BackgroundColor white
+skinparam PackageBorderColor #A7B8AE
+skinparam PackageBackgroundColor #FAFCFB
+skinparam ClassBorderColor #446452
+skinparam ClassBackgroundColor #F1F7F3
+skinparam ClassHeaderBackgroundColor #DEEBE2
+skinparam ClassFontColor #182B21
+skinparam PackageFontColor #30483A
+skinparam TitleFontSize 22
+skinparam TitleFontColor #182B21
+
+package "iam" as iam_context {
+    enum "AccountRole" as AccountRole {
+      CUSTOMER
+      BUSINESS_OWNER
+    }
+    interface "Account" as Account {
+      +id: number
+      +fullName: string
+      +email: string
+      +phone: string
+      +role: AccountRole
+      +passwordHash: string
+      +salt: string
+    }
+    abstract class "AccountRepository" as AccountRepository {
+      +findByEmail(email: string): Account | undefined
+      +get(id: number): Account | undefined
+      +save(account: Account): void
+    }
+    class "SessionService" as SessionService <<Service>> {
+      +user
+      +isBusinessOwner
+      +signIn(email: string, password: string): Promise<void>
+      +signUp(data): Promise<void>
+      +updateProfile(fullName: string, phone: string): void
+      +require(role?: AccountRole): Session
+      +signOut(): void
+    }
+    class "BrowserAccountRepository" as BrowserAccountRepository <<Adapter>> {
+      +findByEmail(email: string): Account | undefined
+      +get(id: number): Account | undefined
+      +save(account: Account): void
+    }
+    class "Auth" as Auth <<Component>> {
+    }
+    class "Profile" as Profile <<Component>> {
+    }
+}
+package "Dependencias de otros contextos" as external_context {
+  class "BrowserDatabase" as BrowserDatabase <<Adapter>>
+}
+
+
+SessionService ..> AccountRepository
+AccountRepository <|-- BrowserAccountRepository
+Auth ..> SessionService
+Profile ..> SessionService
+Account --> AccountRole : role
+SessionService ..> BrowserDatabase
+BrowserAccountRepository ..> BrowserDatabase
+
+@enduml

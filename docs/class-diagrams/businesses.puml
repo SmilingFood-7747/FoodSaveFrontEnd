@@ -1,0 +1,81 @@
+@startuml
+title FoodSave - Negocios y resultados
+hide empty members
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam ArrowColor #61736A
+skinparam ArrowThickness 1.2
+skinparam BackgroundColor white
+skinparam PackageBorderColor #A7B8AE
+skinparam PackageBackgroundColor #FAFCFB
+skinparam ClassBorderColor #446452
+skinparam ClassBackgroundColor #F1F7F3
+skinparam ClassHeaderBackgroundColor #DEEBE2
+skinparam ClassFontColor #182B21
+skinparam PackageFontColor #30483A
+skinparam TitleFontSize 22
+skinparam TitleFontColor #182B21
+
+package "businesses" as businesses_context {
+    interface "Business" as Business {
+      +id: number
+      +ownerAccountId: number
+      +name: string
+      +address: string
+      +district: string
+      +latitude: number
+      +longitude: number
+      +contactPhone: string
+      +pickupConditions: string
+      +isActive: boolean
+    }
+    abstract class "BusinessRepository" as BusinessRepository {
+      +all(): Business[]
+      +save(business: Business): void
+    }
+    class "BusinessService" as BusinessService <<Service>> {
+      +all
+      +owned
+      +get(id: number): Business | undefined
+      +save(data, id?: number): Business
+    }
+    class "ReportingService" as ReportingService <<Service>> {
+      +period
+      +rows
+      +summary
+    }
+    class "BrowserBusinessRepository" as BrowserBusinessRepository <<Adapter>> {
+      +all(): Business[]
+      +save(business: Business): void
+    }
+    class "BusinessProfile" as BusinessProfile <<Component>> {
+    }
+    class "Dashboard" as Dashboard <<Component>> {
+    }
+}
+package "Dependencias de otros contextos" as external_context {
+  class "BrowserDatabase" as BrowserDatabase <<Adapter>>
+  class "OfferService" as OfferService <<Service>>
+  class "ReservationService" as ReservationService <<Service>>
+  class "SessionService" as SessionService <<Service>>
+}
+
+
+BusinessService ..> BusinessRepository
+BusinessRepository <|-- BrowserBusinessRepository
+BusinessProfile ..> BusinessService
+Dashboard ..> ReportingService
+Dashboard ..> BusinessService
+BusinessService ..> SessionService
+BusinessService ..> BrowserDatabase
+ReportingService ..> OfferService
+ReportingService ..> ReservationService
+BrowserBusinessRepository ..> BrowserDatabase
+interface "Account" as Account
+Business "0..*" --> "1" Account : propietario
+@enduml

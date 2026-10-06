@@ -1,0 +1,81 @@
+@startuml
+title FoodSave - Soporte y opiniones
+hide empty members
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam ArrowColor #61736A
+skinparam ArrowThickness 1.2
+skinparam BackgroundColor white
+skinparam PackageBorderColor #A7B8AE
+skinparam PackageBackgroundColor #FAFCFB
+skinparam ClassBorderColor #446452
+skinparam ClassBackgroundColor #F1F7F3
+skinparam ClassHeaderBackgroundColor #DEEBE2
+skinparam ClassFontColor #182B21
+skinparam PackageFontColor #30483A
+skinparam TitleFontSize 22
+skinparam TitleFontColor #182B21
+
+package "feedback" as feedback_context {
+    interface "Review" as Review {
+      +id: number
+      +reservationId: number
+      +rating: number
+      +comment: string
+      +createdAt: string
+    }
+    interface "SupportRequest" as SupportRequest {
+      +id: number
+      +requesterAccountId: number
+      +reservationId?: number
+      +subject: string
+      +description: string
+      +status: 'OPEN' | 'CLOSED'
+      +createdAt: string
+    }
+    abstract class "FeedbackRepository" as FeedbackRepository {
+      +reviews(): Review[]
+      +requests(): SupportRequest[]
+      +saveReview(review: Review): void
+      +saveRequest(request: SupportRequest): void
+    }
+    class "FeedbackService" as FeedbackService <<Service>> {
+      +reviews
+      +requests
+      +review(reservationId: number, rating: number, comment: string): void
+      +request(subject: string, description: string, reservationId?: number): void
+    }
+    class "BrowserFeedbackRepository" as BrowserFeedbackRepository <<Adapter>> {
+      +reviews(): Review[]
+      +requests(): SupportRequest[]
+      +saveReview(review: Review): void
+      +saveRequest(request: SupportRequest): void
+    }
+    class "Support" as Support <<Component>> {
+    }
+}
+package "Dependencias de otros contextos" as external_context {
+  class "BrowserDatabase" as BrowserDatabase <<Adapter>>
+  class "ReservationService" as ReservationService <<Service>>
+  class "SessionService" as SessionService <<Service>>
+}
+
+
+FeedbackService ..> FeedbackRepository
+FeedbackRepository <|-- BrowserFeedbackRepository
+Support ..> FeedbackService
+FeedbackService ..> SessionService
+FeedbackService ..> ReservationService
+FeedbackService ..> BrowserDatabase
+BrowserFeedbackRepository ..> BrowserDatabase
+interface "Account" as Account
+interface "ReservationData" as ReservationData
+Review "0..1" --> "1" ReservationData : reserva
+SupportRequest "0..*" --> "0..1" ReservationData : reserva
+SupportRequest "0..*" --> "1" Account : solicitante
+@enduml

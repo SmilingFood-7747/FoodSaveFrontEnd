@@ -1,0 +1,94 @@
+@startuml
+title FoodSave - Servicios compartidos y aplicación
+hide empty members
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam nodesep 35
+skinparam ranksep 45
+skinparam ArrowColor #61736A
+skinparam ArrowThickness 1.2
+skinparam BackgroundColor white
+skinparam PackageBorderColor #A7B8AE
+skinparam PackageBackgroundColor #FAFCFB
+skinparam ClassBorderColor #446452
+skinparam ClassBackgroundColor #F1F7F3
+skinparam ClassHeaderBackgroundColor #DEEBE2
+skinparam ClassFontColor #182B21
+skinparam PackageFontColor #30483A
+skinparam TitleFontSize 22
+skinparam TitleFontColor #182B21
+
+package "shared" as shared_context {
+    class "DomainError" as DomainError {
+    }
+    class "ClockService" as ClockService <<Service>> {
+      +now
+    }
+    class "GeolocationService" as GeolocationService <<Service>> {
+      +position
+      +locating
+      +locate(): Promise<void>
+      +distance(latitude: number, longitude: number): number | null
+    }
+    enum "Language" as Language {
+      en
+      es
+    }
+    class "LanguageService" as LanguageService <<Service>> {
+      +current
+      +initialize(): Promise<void>
+      +change(language: Language): Promise<void>
+    }
+    interface "LocalDatabase" as LocalDatabase {
+      +accounts: Account[]
+      +businesses: Business[]
+      +offers: OfferData[]
+      +reservations: ReservationData[]
+      +notifications: Notification[]
+      +reviews: Review[]
+      +requests: SupportRequest[]
+      +preferences: Record<string, NotificationPreferences>
+    }
+    class "BrowserDatabase" as BrowserDatabase <<Adapter>> {
+      +state
+      +storageError
+      +commit(change: (current: LocalDatabase) => LocalDatabase): void
+      +nextId(items: { id: number }[]): number
+    }
+    class "BrowserImageStorage" as BrowserImageStorage <<Adapter>> {
+      +save(file: File): Promise<string>
+      +resolve(reference?: string): Promise<string | null>
+      +remove(reference: string): Promise<void>
+    }
+    class "Content" as Content <<Component>> {
+    }
+    class "Footer" as Footer <<Component>> {
+    }
+    class "Header" as Header <<Component>> {
+    }
+    class "LanguageSwitcher" as LanguageSwitcher <<Component>> {
+    }
+    class "Layout" as Layout <<Component>> {
+    }
+    class "Legal" as Legal <<Component>> {
+    }
+    class "NotFound" as NotFound <<Component>> {
+    }
+}
+package "app" as app_context {
+  class "App" as App <<Component>>
+}
+
+LanguageSwitcher ..> LanguageService
+Layout ..> BrowserDatabase
+App --> Layout
+App --> Content
+App --> Footer
+Layout --> Header
+Header --> LanguageSwitcher
+BrowserDatabase --> LocalDatabase : estado local
+
+@enduml

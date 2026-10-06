@@ -1,34 +1,32 @@
-# FoodSave: historias de usuario y requisitos funcionales
+# FoodSave frontend: historias de usuario y requisitos funcionales
 
 ## Fuente y alcance
 
-Fuente: informe de SmilingFood `202620-1asi0729-7747-SmilingFood-report-av1.pdf`, sección 3.1 (páginas 31-42 del PDF) y backlog de la sección 3.3 (páginas 44-45). Se conservan los identificadores US01-US32 y EP01-EP07. La copia `report-av1cambio` contiene el mismo documento.
+Fuente: informe de SmilingFood `202620-1asi0729-7747-SmilingFood-report-av1.pdf`, sección 3.1 (páginas 31-42 del PDF) y backlog de la sección 3.3 (páginas 44-45). Se seleccionan las 29 historias aplicables al frontend (US02-US30) y se conservan sus identificadores y épicas de origen EP01-EP06. La copia `report-av1cambio` contiene el mismo documento.
 
-La estructura sigue `docs/user-stories.md` del ejemplo Learning Center: descripción, contexto, matriz de trazabilidad y criterios de aceptación. La redacción se centra en actor, necesidad, beneficio y resultados del sistema; no exige una página, botón, tarjeta o formulario concreto. Los criterios se precisan con las reglas actuales del dominio. US31 y US32 describen requisitos del servicio futuro.
+La estructura sigue `docs/user-stories.md` del ejemplo Learning Center: descripción, contexto, matriz de trazabilidad y criterios de aceptación. La redacción se centra en actor, necesidad, beneficio y resultados del sistema; no exige una página, botón, tarjeta o formulario concreto. Los criterios se precisan con las reglas actuales del dominio. Se excluyen US01, correspondiente al contenido de la landing externa, y US31-US32, correspondientes a contratos y operaciones del backend. US02 se incluye por su requisito de acceso público al catálogo de esta aplicación.
 
-Roles: visitante, cliente comprador, responsable de negocio, usuario registrado y desarrollador de experiencias cliente.
+Roles: visitante, cliente comprador, responsable de negocio y usuario registrado.
 
 ### Épicas de origen
 
 | ID | Épica en el informe | Historias |
 |---|---|---|
-| EP01 | Landing Page | US01-US07 |
+| EP01 | Landing Page | US02-US07 |
 | EP02 | Gestión de ofertas | US08-US12 |
 | EP03 | Gestión de usuarios | US13-US17 |
 | EP04 | Operación del negocio | US18-US22 |
 | EP05 | Comunicación y confianza | US23-US27 |
 | EP06 | Soporte y mejora continua | US28-US30 |
-| EP07 | Servicios y seguridad | US31-US32 |
 
-EP01 se conserva para trazar el informe; sus requisitos de consulta pública se asignan a los contextos funcionales del frontend, sin obligar a implementarlos en una landing.
+EP01 conserva el nombre del informe para mantener la trazabilidad; aquí solo se incluyen sus requisitos aplicables a la aplicación web: acceso público, consulta y búsqueda de ofertas, términos e idioma.
 
 ## Matriz de trazabilidad de requisitos (RTM)
 
-La evidencia indica dónde se expresa el requisito en el código; no representa una certificación de cumplimiento ni resultados de pruebas. **Local**: lógica del prototipo en el navegador. **Parcial**: cobertura limitada al prototipo, sin envío externo de notificaciones ni servicios permanentes. **Externo**: contenido de la landing de otro proyecto. **Pendiente API**: requiere un backend con reglas de negocio. JSON Server y los entornos están configurados; el frontend aún no consume la fake API.
+La evidencia indica dónde se expresa el requisito en el código; no representa una certificación de cumplimiento ni resultados de pruebas. **Local**: lógica del prototipo en el navegador. **Parcial**: cobertura limitada al prototipo, sin envío externo de notificaciones ni servicios permanentes. JSON Server y los entornos están configurados; el frontend aún no consume la fake API.
 
 | ID | Requisito | Épica | Contexto | Elementos relacionados | Alcance actual |
 |---|---|---|---|---|---|
-| US01 | Comprender el modelo FoodSave | EP01 | `shared` | Información pública en la landing externa; enlace en `Layout`. | Externo |
 | US02 | Acceder a ofertas disponibles | EP01 | `offers / shared` | `Catalog`, `OfferService`, `OfferDetail`, `SessionService`. | Local |
 | US03 | Explorar ofertas vigentes | EP01 | `offers` | `Offer`, `OfferService.active`, `Catalog`, `OfferCard`, `BusinessService`. | Local |
 | US04 | Encontrar ofertas según necesidades | EP01 | `offers / shared` | `Catalog.results`, `GeolocationService`, `BusinessService`. | Local |
@@ -58,8 +56,6 @@ La evidencia indica dónde se expresa el requisito en el código; no representa 
 | US28 | Solicitar apoyo sobre una operación | EP06 | `feedback` | `FeedbackService.request`, `SupportRequest`, `Support`. | Local |
 | US29 | Calificar una experiencia de recojo | EP06 | `feedback / reservations` | `FeedbackService.review`, `validateRating`, `Review`, `Reservations`. | Local |
 | US30 | Evaluar resultados del negocio | EP06 | `businesses` | `ReportingService.summary/rows`, `Dashboard`, `OfferService`, `ReservationService`. | Local |
-| US31 | Consultar ofertas mediante un servicio | EP07 | `offers / infraestructura de API` | `db.json` y `/offers` ofrecen CRUD de muestras; contrato de negocio del backend pendiente. | Pendiente API |
-| US32 | Crear reservas mediante un servicio | EP07 | `reservations / infraestructura de API` | Reglas locales en `ReservationService.create`; `POST /reservations` de JSON Server no implementa la transacción de negocio. | Pendiente API |
 
 ## Reglas operativas de referencia
 
@@ -71,26 +67,9 @@ La evidencia indica dónde se expresa el requisito en el código; no representa 
 - Los avisos actuales son internos. Las preferencias de correo y push no constituyen un servicio de envío implementado.
 - El conteo de ofertas del resumen actual es total; el período filtra las reservas. Una métrica de ofertas publicadas durante un período requeriría registrar su fecha de publicación.
 
-El informe usa `/api/v1/offers` como contrato propuesto. La fake API actual expone `/offers` en `http://localhost:3000`; no tiene el prefijo `/api/v1`, autenticación de servidor, vencimiento calculado ni transacciones de reserva.
+La fake API local aporta datos de muestra para el desarrollo. Los contratos del backend y sus garantías de autenticación y consistencia quedan fuera de estas historias del frontend.
 
 ## Historias de usuario
-
----
-
-## US01: Comprender el modelo FoodSave
-
-**Épica:** EP01  
-**Contexto:** `shared`  
-**Alcance actual:** Externo
-
-**Descripción:**
-
-Como visitante, quiero comprender la propuesta de FoodSave y el proceso de reserva y recojo para decidir si responde a mis necesidades.
-
-**Criterios de aceptación:**
-
-- **AC1.1:** Dado un visitante sin cuenta, cuando solicita información de FoodSave, entonces obtiene el problema que aborda, los beneficios para clientes y negocios y los pasos de reserva y recojo.
-- **AC1.2:** Dado un visitante que identifica su rol, cuando consulta las condiciones de participación, entonces conoce cómo comenzar como cliente o responsable de negocio.
 
 ---
 
@@ -611,39 +590,3 @@ Como responsable de negocio, quiero conocer los resultados de ofertas, reservas 
 - **AC30.1:** Dado un responsable autenticado y un período, cuando solicita resultados, entonces se calculan indicadores usando solo actividad de sus establecimientos.
 - **AC30.2:** Dadas reservas recogidas, cuando se calculan unidades e importes recuperados, entonces se usa la cantidad y el precio confirmados en cada reserva.
 - **AC30.3:** Dadas reservas canceladas o vencidas, cuando se calculan importes recuperados por entrega, entonces no se cuentan como ventas recogidas.
-
----
-
-## US31: Consultar ofertas mediante un servicio
-
-**Épica:** EP07  
-**Contexto:** `offers / infraestructura de API`  
-**Alcance actual:** Pendiente API
-
-**Descripción:**
-
-Como desarrollador de una experiencia cliente, quiero consultar ofertas vigentes mediante un contrato de API para presentar información de disponibilidad consistente.
-
-**Criterios de aceptación:**
-
-- **AC31.1:** Dada una solicitud GET válida al recurso de ofertas vigentes, cuando el servicio la procesa, entonces devuelve identificadores, datos de oferta, negocio y disponibilidad con un resultado HTTP exitoso.
-- **AC31.2:** Dadas ofertas pausadas o vencidas, cuando el servicio resuelve una consulta de ofertas vigentes, entonces no las devuelve como reservables.
-- **AC31.3:** Dada una solicitud inválida o un fallo del servicio, cuando se responde, entonces se entrega un estado HTTP apropiado y un error comprensible sin detalles internos.
-
----
-
-## US32: Crear reservas mediante un servicio
-
-**Épica:** EP07  
-**Contexto:** `reservations / infraestructura de API`  
-**Alcance actual:** Pendiente API
-
-**Descripción:**
-
-Como desarrollador de una experiencia cliente, quiero crear reservas mediante un contrato de API que proteja el stock para mantener consistentes la reserva y la disponibilidad.
-
-**Criterios de aceptación:**
-
-- **AC32.1:** Dada una identidad de cliente válida, una oferta vigente y una cantidad disponible, cuando el servicio acepta la reserva, entonces persiste reserva y descuento de stock como una operación consistente y devuelve el código de recojo.
-- **AC32.2:** Dadas solicitudes simultáneas por las últimas unidades, cuando se procesan, entonces el servicio no acepta más unidades de las disponibles.
-- **AC32.3:** Dada una solicitud inválida, no autorizada o sin stock, cuando el servicio la rechaza, entonces no se crean reservas parciales ni se descuenta disponibilidad.

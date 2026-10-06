@@ -1,16 +1,14 @@
 # FoodSave frontend: historias de usuario y requisitos funcionales
 
-## Fuente y alcance
+## Alcance
 
-Fuente: informe de SmilingFood `202620-1asi0729-7747-SmilingFood-report-av1.pdf`, sección 3.1 (páginas 31-42 del PDF) y backlog de la sección 3.3 (páginas 44-45). Se seleccionan las 29 historias aplicables al frontend (US02-US30) y se conservan sus identificadores y épicas de origen EP01-EP06. La copia `report-av1cambio` contiene el mismo documento.
-
-La estructura sigue `docs/user-stories.md` del ejemplo Learning Center: descripción, contexto, matriz de trazabilidad y criterios de aceptación. La redacción se centra en actor, necesidad, beneficio y resultados del sistema; no exige una página, botón, tarjeta o formulario concreto. Los criterios se precisan con las reglas actuales del dominio. Se excluyen US01, correspondiente al contenido de la landing externa, y US31-US32, correspondientes a contratos y operaciones del backend. US02 se incluye por su requisito de acceso público al catálogo de esta aplicación.
+Este documento contiene las 29 historias de usuario del frontend (US02-US30), con descripción, contexto, criterios de aceptación y matriz de trazabilidad.
 
 Roles: visitante, cliente comprador, responsable de negocio y usuario registrado.
 
-### Épicas de origen
+### Épicas
 
-| ID | Épica en el informe | Historias |
+| ID | Épica | Historias |
 |---|---|---|
 | EP01 | Landing Page | US02-US07 |
 | EP02 | Gestión de ofertas | US08-US12 |
@@ -19,7 +17,7 @@ Roles: visitante, cliente comprador, responsable de negocio y usuario registrado
 | EP05 | Comunicación y confianza | US23-US27 |
 | EP06 | Soporte y mejora continua | US28-US30 |
 
-EP01 conserva el nombre del informe para mantener la trazabilidad; aquí solo se incluyen sus requisitos aplicables a la aplicación web: acceso público, consulta y búsqueda de ofertas, términos e idioma.
+EP01 incluye los requisitos de acceso público, consulta y búsqueda de ofertas, términos e idioma de la aplicación web.
 
 ## Matriz de trazabilidad de requisitos (RTM)
 

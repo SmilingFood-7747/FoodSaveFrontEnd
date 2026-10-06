@@ -1,10 +1,8 @@
 # FoodSave: registros de decisiones de arquitectura (ADRs)
 
-## Fuente y alcance
+## Alcance
 
-El informe de SmilingFood `202620-1asi0729-7747-SmilingFood-report-av1.pdf` define el dominio y los requisitos (secciones 2.5 y 3.1). La sección 4.6 y la sección 4.7, en la página 70 del PDF, contienen encabezados sin decisiones desarrolladas ni un diagrama de clases. Estos ADR documentan las decisiones reflejadas en el frontend actual; no se presentan como textos extraídos literalmente del informe.
-
-La estructura sigue `docs/adrs.md` del ejemplo Learning Center: estado, contexto, decisión y consecuencias. Fecha de registro: 2026-10-06. Una decisión aceptada para el prototipo no implica que los requisitos de producción estén implementados.
+Estos registros describen las decisiones de arquitectura del frontend, con su contexto, decisión y consecuencias.
 
 ---
 
@@ -16,7 +14,7 @@ Aceptada
 
 ### Contexto
 
-FoodSave reúne identidad, negocios, ofertas, reservas, comunicación y soporte. La sección 2.5 del informe define el lenguaje de ofertas, reservas, recojo y vencimiento.
+FoodSave reúne identidad, negocios, ofertas, reservas, comunicación y soporte.
 
 ### Decisión
 
@@ -145,11 +143,11 @@ Aceptada para desarrollo
 
 ### Contexto
 
-El ejemplo Learning Center usa `db.json`, JSON Server y dos archivos de entorno para preparar el acceso a recursos HTTP.
+El desarrollo necesita datos de muestra y una configuración de acceso a recursos HTTP por entorno.
 
 ### Decisión
 
-Usar JSON Server 0.17.4 como dependencia de desarrollo, `db.json` en la raíz y `npm run server` para exponer CRUD en el puerto 3000. Definir `environment.ts` y `environment.development.ts` con URL base y rutas de las ocho colecciones. Configurar `fileReplacements` para desarrollo. Ambos entornos apuntan por ahora a `http://localhost:3000`, siguiendo el ejemplo. El frontend conserva sus adaptadores locales hasta implementar la conexión HTTP.
+Usar JSON Server 0.17.4 como dependencia de desarrollo, `db.json` en la raíz y `npm run server` para exponer CRUD en el puerto 3000. Definir `environment.ts` y `environment.development.ts` con URL base y rutas de las ocho colecciones. Configurar `fileReplacements` para desarrollo. Ambos entornos apuntan por ahora a `http://localhost:3000`. El frontend conserva sus adaptadores locales hasta implementar la conexión HTTP.
 
 ### Consecuencias
 
@@ -163,7 +161,7 @@ Usar JSON Server 0.17.4 como dependencia de desarrollo, `db.json` en la raíz y 
 - JSON Server ofrece CRUD de muestras; no implementa autenticación, autorización, cálculo de vencimiento ni reserva transaccional.
 - Las fechas de las muestras son fijas y deben mantenerse para escenarios dependientes del tiempo.
 - La URL de producción debe cambiar a un backend alojado antes de conectar la aplicación publicada.
-- El informe propone `/api/v1/offers`; las rutas actuales del mock no usan `/api/v1`.
+- Las rutas actuales de la fake API no usan el prefijo `/api/v1`.
 
 ### Evidencia en el proyecto
 
@@ -211,7 +209,7 @@ Aceptada
 
 ### Contexto
 
-El informe US07 requiere comprender la plataforma en español e inglés y conservar la preferencia de idioma.
+US07 requiere comprender la plataforma en español e inglés y conservar la preferencia de idioma.
 
 ### Decisión
 

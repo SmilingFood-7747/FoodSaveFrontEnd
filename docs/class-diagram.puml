@@ -495,14 +495,4 @@ OfferData --> OfferStatus : status
 ReservationData --> ReservationStatus : status
 Account --> AccountRole : role
 
-legend bottom
-  Fuente: clases e interfaces de src/app al 2026-10-06.
-  Las asociaciones por identificador son relaciones del modelo;
-  no representan claves foráneas validadas por JSON Server.
-  Los miembros visibles resumen el contrato público.
-  Los componentes muestran dependencias, sin detallar cada control.
-  Los Browser*Repository usan BrowserDatabase y persistencia local.
-  db.json y los entornos preparan la fake API; HTTP aún no está conectado.
-  No se incluyen clases de backend ni adaptadores HTTP inexistentes.
-endlegend
 @enduml

@@ -50,8 +50,7 @@ When a hosted backend is connected, set its URL in the production environment.
 
 - [User stories and requirement traceability](docs/user-stories.md): 29 frontend stories (US02-US30) with acceptance criteria and links to the current implementation.
 - [Architectural Decision Records](docs/adrs.md): decisions reflected in the FoodSave frontend, including the scope of browser storage and the local fake API.
-- [Class diagram source](docs/class-diagram.puml): editable PlantUML overview of the main frontend models and relationships.
-- [Class diagram preview](docs/class-diagram.svg): vector preview of the overview.
-- [Detailed class diagrams](docs/class-diagrams/README.md): models, services, repositories and components grouped by context.
+- [Class diagram source](docs/class-diagram.puml): editable PlantUML diagram of the current models, repositories, services and components.
+- [Class diagram preview](docs/class-diagram.svg): vector preview; open it separately and zoom to read the full diagram.
 
 The user stories cover this frontend and retain their story IDs; separate landing content and backend service stories are excluded. The frontend has not yet been connected to JSON Server.

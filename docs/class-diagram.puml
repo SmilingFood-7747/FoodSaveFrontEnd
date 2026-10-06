@@ -1,143 +1,498 @@
 @startuml
-title FoodSave - Clases principales del frontend
-left to right direction
+title FoodSave - Diagrama de clases del frontend
 hide empty members
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam classAttributeIconSize 0
-skinparam defaultFontName Arial
-skinparam defaultFontSize 14
-skinparam nodesep 35
-skinparam ranksep 45
-skinparam ArrowColor #61736A
-skinparam ArrowThickness 1.2
-skinparam BackgroundColor white
-skinparam PackageBorderColor #A7B8AE
-skinparam PackageBackgroundColor #FAFCFB
-skinparam ClassBorderColor #446452
-skinparam ClassBackgroundColor #F1F7F3
-skinparam ClassHeaderBackgroundColor #DEEBE2
-skinparam ClassFontColor #182B21
-skinparam PackageFontColor #30483A
-skinparam TitleFontSize 22
-skinparam TitleFontColor #182B21
+skinparam defaultFontName SansSerif
 
-interface "Account" as Account  {
+package "iam" as iam_context {
+  package "domain.model" as iam_domain_model {
+    enum "AccountRole" as AccountRole {
+      CUSTOMER
+      BUSINESS_OWNER
+    }
+    interface "Account" as Account {
       +id: number
       +fullName: string
       +email: string
+      +phone: string
       +role: AccountRole
+      +passwordHash: string
+      +salt: string
+    }
+  }
+  package "domain.repositories" as iam_domain_repositories {
+    abstract class "AccountRepository" as AccountRepository {
+      +findByEmail(email: string): Account | undefined
+      +get(id: number): Account | undefined
+      +save(account: Account): void
+    }
+  }
+  package "application" as iam_application {
+    class "SessionService" as SessionService <<Service>> {
+      +user
+      +isBusinessOwner
+      +signIn(email: string, password: string): Promise<void>
+      +signUp(data: { fullName: string; email: string; phone: string; password: string; role: AccountRole; }): Promise<void>
+      +updateProfile(fullName: string, phone: string): void
+      +require(role?: AccountRole): Session
+      +signOut(): void
+    }
+  }
+  package "infrastructure" as iam_infrastructure {
+    class "BrowserAccountRepository" as BrowserAccountRepository <<Adapter>> {
+      +findByEmail(email: string): Account | undefined
+      +get(id: number): Account | undefined
+      +save(account: Account): void
+    }
+  }
+  package "presentation" as iam_presentation {
+    class "Auth" as Auth <<Component>> {
+    }
+    class "Profile" as Profile <<Component>> {
+    }
+  }
 }
 
-interface "Business" as Business  {
+package "businesses" as businesses_context {
+  package "domain.model" as businesses_domain_model {
+    interface "Business" as Business {
       +id: number
       +ownerAccountId: number
       +name: string
       +address: string
       +district: string
+      +latitude: number
+      +longitude: number
+      +contactPhone: string
+      +pickupConditions: string
+      +isActive: boolean
+    }
+  }
+  package "domain.repositories" as businesses_domain_repositories {
+    abstract class "BusinessRepository" as BusinessRepository {
+      +all(): Business[]
+      +save(business: Business): void
+    }
+  }
+  package "application" as businesses_application {
+    class "BusinessService" as BusinessService <<Service>> {
+      +all
+      +owned
+      +get(id: number): Business | undefined
+      +save(data: Omit<Business, 'id' | 'ownerAccountId' | 'isActive'>, id?: number): Business
+    }
+    class "ReportingService" as ReportingService <<Service>> {
+      +period
+      +rows
+      +summary
+    }
+  }
+  package "infrastructure" as businesses_infrastructure {
+    class "BrowserBusinessRepository" as BrowserBusinessRepository <<Adapter>> {
+      +all(): Business[]
+      +save(business: Business): void
+    }
+  }
+  package "presentation" as businesses_presentation {
+    class "BusinessProfile" as BusinessProfile <<Component>> {
+    }
+    class "Dashboard" as Dashboard <<Component>> {
+    }
+  }
 }
 
-interface "OfferData" as OfferData  {
-      +id: number
-      +businessId: number
-      +title: string
-      +offerPrice: number
-      +availableUnits: number
-      +status: OfferStatus
-}
-
-interface "ReservationData" as ReservationData  {
-      +id: number
-      +offerId: number
-      +customerUserId: number
-      +quantity: number
-      +pickupCode: string
-      +status: ReservationStatus
-}
-
-interface "Notification" as Notification  {
-      +id: number
-      +recipientAccountId: number
-      +reservationId?: number
-      +type: Notification["type"]
-      +readAt?: string
-}
-
-interface "NotificationPreferences" as NotificationPreferences  {
-      +emailEnabled: boolean
-      +pushEnabled: boolean
-      +remindersEnabled: boolean
-}
-
-interface "Review" as Review  {
-      +id: number
-      +reservationId: number
-      +rating: number
-      +comment: string
-}
-
-interface "SupportRequest" as SupportRequest  {
-      +id: number
-      +requesterAccountId: number
-      +reservationId?: number
-      +subject: string
-      +status: 'OPEN' | 'CLOSED'
-}
-
-class "Offer" as Offer  {
-
-      +{static} validate(data: OfferData): void
-      +status: OfferStatus
-      +discount: number
-      +isReservable(quantity: number): boolean
-      +allocate(quantity: number): OfferData
-      +release(quantity: number): OfferData
-    
-}
-
-class "Reservation" as Reservation  {
-
-      +status: ReservationStatus
-      +cancel(): ReservationData
-      +collect(): ReservationData
-    
-}
-
-enum "AccountRole" as AccountRole  {
-
-      CUSTOMER
-      BUSINESS_OWNER
-    
-}
-
-enum "OfferStatus" as OfferStatus  {
-
+package "offers" as offers_context {
+  package "domain.model" as offers_domain_model {
+    enum "OfferStatus" as OfferStatus {
       ACTIVE
       PAUSED
       EXPIRED
-    
+    }
+    interface "OfferData" as OfferData {
+      +id: number
+      +businessId: number
+      +category: string
+      +title: string
+      +description: string
+      +allergens: string
+      +originalPrice: number
+      +offerPrice: number
+      +initialUnits: number
+      +availableUnits: number
+      +pickupStartAt: string
+      +pickupEndAt: string
+      +expiresAt: string
+      +status: OfferStatus
+      +image: string
+    }
+    class "Offer" as Offer {
+      +{static} validate(data: OfferData): void
+      +status: OfferStatus
+      +discount: number
+      +isReservable(quantity): boolean
+      +allocate(quantity: number): OfferData
+      +release(quantity: number): OfferData
+    }
+  }
+  package "domain.repositories" as offers_domain_repositories {
+    abstract class "OfferRepository" as OfferRepository {
+      +all(): OfferData[]
+      +save(offer: OfferData): void
+    }
+  }
+  package "application" as offers_application {
+    class "OfferService" as OfferService <<Service>> {
+      +all
+      +active
+      +owned
+      +get(id: number): OfferData | undefined
+      +save(data: Omit<OfferData, 'id' | 'availableUnits' | 'status'>, id?: number): OfferData
+      +pause(id: number): void
+    }
+  }
+  package "infrastructure" as offers_infrastructure {
+    class "BrowserOfferRepository" as BrowserOfferRepository <<Adapter>> {
+      +all(): OfferData[]
+      +save(offer: OfferData): void
+    }
+  }
+  package "presentation" as offers_presentation {
+    class "Catalog" as Catalog <<Component>> {
+    }
+    class "OfferCard" as OfferCard <<Component>> {
+    }
+    class "ManageOffers" as ManageOffers <<Component>> {
+    }
+    class "OfferDetail" as OfferDetail <<Component>> {
+    }
+    class "OfferEditor" as OfferEditor <<Component>> {
+    }
+  }
 }
 
-enum "ReservationStatus" as ReservationStatus  {
-
+package "reservations" as reservations_context {
+  package "domain.model" as reservations_domain_model {
+    enum "ReservationStatus" as ReservationStatus {
       ACTIVE
       COLLECTED
       CANCELLED
       EXPIRED
-    
+    }
+    interface "ReservationData" as ReservationData {
+      +id: number
+      +offerId: number
+      +customerUserId: number
+      +quantity: number
+      +unitPrice: number
+      +originalUnitPrice: number
+      +pickupCode: string
+      +pickupStartAt: string
+      +pickupDeadlineAt: string
+      +status: ReservationStatus
+      +createdAt: string
+      +collectedAt?: string
+    }
+    class "Reservation" as Reservation {
+      +status: ReservationStatus
+      +cancel(): ReservationData
+      +collect(): ReservationData
+    }
+  }
+  package "domain.repositories" as reservations_domain_repositories {
+    abstract class "ReservationRepository" as ReservationRepository {
+      +all(): ReservationData[]
+      +save(reservation: ReservationData): void
+    }
+  }
+  package "application" as reservations_application {
+    class "ReservationService" as ReservationService <<Service>> {
+      +all
+      +mine
+      +businessReservations
+      +create(offerId: number, quantity: number): ReservationData
+      +cancel(id: number): void
+      +confirmPickup(code: string): ReservationData
+    }
+  }
+  package "infrastructure" as reservations_infrastructure {
+    class "BrowserReservationRepository" as BrowserReservationRepository <<Adapter>> {
+      +all(): ReservationData[]
+      +save(reservation: ReservationData): void
+    }
+  }
+  package "presentation" as reservations_presentation {
+    class "Reservations" as Reservations <<Component>> {
+    }
+  }
 }
 
-Account "1" -- "0..*" Business : propietario
-Business "1" -- "0..*" OfferData : negocio
-OfferData "1" -- "0..*" ReservationData : oferta
-Account "1" -- "0..*" ReservationData : cliente
-ReservationData "0..1" -- "0..*" Notification : avisos
-ReservationData "0..1" -- "0..*" SupportRequest : solicitudes
-ReservationData "1" -- "0..1" Review : opinión
-Account "1" -- "0..1" NotificationPreferences : preferencias
-Offer ..> OfferData
-Reservation ..> ReservationData
-Account --> AccountRole
-OfferData --> OfferStatus
-ReservationData --> ReservationStatus
+package "notifications" as notifications_context {
+  package "domain.model" as notifications_domain_model {
+    interface "Notification" as Notification {
+      +id: number
+      +recipientAccountId: number
+      +reservationId?: number
+      +type: | 'NEW_RESERVATION' | 'RESERVATION_CONFIRMED' | 'PICKUP_REMINDER' | 'OFFER_CHANGED' | 'RESERVATION_CANCELLED'
+      +titleKey: string
+      +body: string
+      +createdAt: string
+      +readAt?: string
+    }
+    interface "NotificationPreferences" as NotificationPreferences {
+      +emailEnabled: boolean
+      +pushEnabled: boolean
+      +remindersEnabled: boolean
+    }
+  }
+  package "domain.repositories" as notifications_domain_repositories {
+    abstract class "NotificationRepository" as NotificationRepository {
+      +all(): Notification[]
+      +save(notification: Notification): void
+    }
+  }
+  package "application" as notifications_application {
+    class "NotificationService" as NotificationService <<Service>> {
+      +mine
+      +unread
+      +preferences
+      +markRead(id: number): void
+      +savePreferences(preferences: NotificationPreferences): void
+    }
+  }
+  package "infrastructure" as notifications_infrastructure {
+    class "BrowserNotificationRepository" as BrowserNotificationRepository <<Adapter>> {
+      +all(): Notification[]
+      +save(notification: Notification): void
+    }
+  }
+  package "presentation" as notifications_presentation {
+    class "Notifications" as Notifications <<Component>> {
+    }
+  }
+}
+
+package "feedback" as feedback_context {
+  package "domain.model" as feedback_domain_model {
+    interface "Review" as Review {
+      +id: number
+      +reservationId: number
+      +rating: number
+      +comment: string
+      +createdAt: string
+    }
+    interface "SupportRequest" as SupportRequest {
+      +id: number
+      +requesterAccountId: number
+      +reservationId?: number
+      +subject: string
+      +description: string
+      +status: 'OPEN' | 'CLOSED'
+      +createdAt: string
+    }
+  }
+  package "domain.repositories" as feedback_domain_repositories {
+    abstract class "FeedbackRepository" as FeedbackRepository {
+      +reviews(): Review[]
+      +requests(): SupportRequest[]
+      +saveReview(review: Review): void
+      +saveRequest(request: SupportRequest): void
+    }
+  }
+  package "application" as feedback_application {
+    class "FeedbackService" as FeedbackService <<Service>> {
+      +reviews
+      +requests
+      +review(reservationId: number, rating: number, comment: string): void
+      +request(subject: string, description: string, reservationId?: number): void
+    }
+  }
+  package "infrastructure" as feedback_infrastructure {
+    class "BrowserFeedbackRepository" as BrowserFeedbackRepository <<Adapter>> {
+      +reviews(): Review[]
+      +requests(): SupportRequest[]
+      +saveReview(review: Review): void
+      +saveRequest(request: SupportRequest): void
+    }
+  }
+  package "presentation" as feedback_presentation {
+    class "Support" as Support <<Component>> {
+    }
+  }
+}
+
+package "shared" as shared_context {
+  package "domain.model" as shared_domain_model {
+    class "DomainError" as DomainError {
+    }
+  }
+  package "application" as shared_application {
+    class "ClockService" as ClockService <<Service>> {
+      +now
+    }
+    class "GeolocationService" as GeolocationService <<Service>> {
+      +position
+      +locating
+      +locate(): Promise<void>
+      +distance(latitude: number, longitude: number): number | null
+    }
+    enum "Language" as Language {
+      en
+      es
+    }
+    class "LanguageService" as LanguageService <<Service>> {
+      +current
+      +initialize(): Promise<void>
+      +change(language: Language): Promise<void>
+    }
+  }
+  package "infrastructure" as shared_infrastructure {
+    interface "LocalDatabase" as LocalDatabase {
+      +accounts: Account[]
+      +businesses: Business[]
+      +offers: OfferData[]
+      +reservations: ReservationData[]
+      +notifications: Notification[]
+      +reviews: Review[]
+      +requests: SupportRequest[]
+      +preferences: Record<string, NotificationPreferences>
+    }
+    class "BrowserDatabase" as BrowserDatabase <<Adapter>> {
+      +state
+      +storageError
+      +commit(change: (current: LocalDatabase) => LocalDatabase): void
+      +nextId(items: { id: number }[]): number
+    }
+    class "BrowserImageStorage" as BrowserImageStorage <<Adapter>> {
+      +save(file: File): Promise<string>
+      +resolve(reference?: string): Promise<string | null>
+      +remove(reference: string): Promise<void>
+    }
+  }
+  package "presentation" as shared_presentation {
+    class "Content" as Content <<Component>> {
+    }
+    class "Footer" as Footer <<Component>> {
+    }
+    class "Header" as Header <<Component>> {
+    }
+    class "LanguageSwitcher" as LanguageSwitcher <<Component>> {
+    }
+    class "Layout" as Layout <<Component>> {
+    }
+    class "Legal" as Legal <<Component>> {
+    }
+    class "NotFound" as NotFound <<Component>> {
+    }
+  }
+}
+
+package "app" as app_context {
+  class "App" as App <<Component>>
+}
+
+App ..> ReservationService : usa
+BusinessService ..> BusinessRepository : usa
+BusinessService ..> SessionService : usa
+BusinessService ..> BrowserDatabase : usa
+ReportingService ..> OfferService : usa
+ReportingService ..> ReservationService : usa
+BusinessRepository <|-- BrowserBusinessRepository
+BrowserBusinessRepository ..> BrowserDatabase : usa
+BusinessProfile ..> BusinessService : usa
+BusinessProfile ..> SessionService : usa
+BusinessProfile ..> OfferService : usa
+Dashboard ..> ReportingService : usa
+Dashboard ..> BusinessService : usa
+Dashboard ..> SessionService : usa
+FeedbackService ..> FeedbackRepository : usa
+FeedbackService ..> SessionService : usa
+FeedbackService ..> ReservationService : usa
+FeedbackService ..> BrowserDatabase : usa
+FeedbackRepository <|-- BrowserFeedbackRepository
+BrowserFeedbackRepository ..> BrowserDatabase : usa
+Support ..> FeedbackService : usa
+Support ..> SessionService : usa
+Support ..> ReservationService : usa
+SessionService ..> AccountRepository : usa
+SessionService ..> BrowserDatabase : usa
+AccountRepository <|-- BrowserAccountRepository
+BrowserAccountRepository ..> BrowserDatabase : usa
+Auth ..> SessionService : usa
+Profile ..> SessionService : usa
+NotificationService ..> NotificationRepository : usa
+NotificationService ..> BrowserDatabase : usa
+NotificationService ..> SessionService : usa
+NotificationService ..> ClockService : usa
+NotificationRepository <|-- BrowserNotificationRepository
+BrowserNotificationRepository ..> BrowserDatabase : usa
+Notifications ..> NotificationService : usa
+Notifications ..> ReservationService : usa
+Notifications ..> OfferService : usa
+Notifications ..> BusinessService : usa
+OfferService ..> OfferRepository : usa
+OfferService ..> BusinessService : usa
+OfferService ..> SessionService : usa
+OfferService ..> BrowserDatabase : usa
+OfferService ..> ClockService : usa
+OfferRepository <|-- BrowserOfferRepository
+BrowserOfferRepository ..> BrowserDatabase : usa
+Catalog ..> OfferService : usa
+Catalog ..> BusinessService : usa
+Catalog ..> GeolocationService : usa
+OfferCard ..> BrowserImageStorage : usa
+OfferCard ..> BusinessService : usa
+OfferCard ..> GeolocationService : usa
+ManageOffers ..> OfferService : usa
+OfferDetail ..> BrowserImageStorage : usa
+OfferDetail ..> OfferService : usa
+OfferDetail ..> BusinessService : usa
+OfferDetail ..> SessionService : usa
+OfferDetail ..> ReservationService : usa
+OfferEditor ..> OfferService : usa
+OfferEditor ..> BusinessService : usa
+OfferEditor ..> BrowserImageStorage : usa
+ReservationService ..> ReservationRepository : usa
+ReservationService ..> OfferService : usa
+ReservationService ..> BusinessService : usa
+ReservationService ..> SessionService : usa
+ReservationService ..> BrowserDatabase : usa
+ReservationService ..> ClockService : usa
+ReservationRepository <|-- BrowserReservationRepository
+BrowserReservationRepository ..> BrowserDatabase : usa
+Reservations ..> BrowserImageStorage : usa
+Reservations ..> ReservationService : usa
+Reservations ..> OfferService : usa
+Reservations ..> BusinessService : usa
+Reservations ..> FeedbackService : usa
+Header ..> SessionService : usa
+Header ..> NotificationService : usa
+LanguageSwitcher ..> LanguageService : usa
+Layout ..> SessionService : usa
+Layout ..> BrowserDatabase : usa
+
+App --> Layout : contiene
+App --> Content : contiene
+App --> Footer : contiene
+Layout --> Header : contiene
+Header --> LanguageSwitcher : contiene
+Catalog --> OfferCard : contiene
+Offer --> OfferData : encapsula reglas
+Reservation --> ReservationData : encapsula reglas
+Account "1" <-- "0..*" Business : ownerAccountId
+Business "1" <-- "0..*" OfferData : businessId
+OfferData "1" <-- "0..*" ReservationData : offerId
+Account "1" <-- "0..*" ReservationData : customerUserId
+Account "1" <-- "0..*" Notification : recipientAccountId
+ReservationData "0..1" <-- "0..*" Notification : reservationId opcional
+ReservationData "1" <-- "0..1" Review : reservationId
+Account "1" <-- "0..*" SupportRequest : requesterAccountId
+ReservationData "0..1" <-- "0..*" SupportRequest : reservationId opcional
+Account "1" -- "0..1" NotificationPreferences : preferencias por cuenta
+BrowserDatabase --> LocalDatabase : estado local
+OfferData --> OfferStatus : status
+ReservationData --> ReservationStatus : status
+Account --> AccountRole : role
+
 @enduml

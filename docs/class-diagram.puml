@@ -1,498 +1,633 @@
 @startuml
-title FoodSave - Diagrama de clases del frontend
-hide empty members
-skinparam packageStyle rectangle
-skinparam shadowing false
+title FoodSave - Frontend Class Diagram
 skinparam classAttributeIconSize 0
-skinparam defaultFontName SansSerif
+skinparam packageStyle folder
+hide empty members
 
-package "iam" as iam_context {
-  package "domain.model" as iam_domain_model {
-    enum "AccountRole" as AccountRole {
-      CUSTOMER
-      BUSINESS_OWNER
-    }
-    interface "Account" as Account {
-      +id: number
-      +fullName: string
-      +email: string
-      +phone: string
-      +role: AccountRole
-      +passwordHash: string
-      +salt: string
-    }
+package "Landing Page | codigo existente" as landing {
+  class "App" as landing_App <<component>> #E4EEE6 {
+    # title: WritableSignal<string>
   }
-  package "domain.repositories" as iam_domain_repositories {
-    abstract class "AccountRepository" as AccountRepository {
-      +findByEmail(email: string): Account | undefined
-      +get(id: number): Account | undefined
-      +save(account: Account): void
-    }
+  class "LandingPage" as landing_LandingPage <<component>> #E4EEE6 {
+    + facade: LandingFacade
+    + contactName: WritableSignal<string>
+    + email: WritableSignal<string>
+    + phone: WritableSignal<string>
+    + submitted: WritableSignal<boolean>
+    + formError: WritableSignal<string>
+    + teamMembers: readonly object[]
+    --
+    + openInterest(audience): void
+    + closeInterest(): void
+    + submitInterest(): void
   }
-  package "application" as iam_application {
-    class "SessionService" as SessionService <<Service>> {
-      +user
-      +isBusinessOwner
-      +signIn(email: string, password: string): Promise<void>
-      +signUp(data: { fullName: string; email: string; phone: string; password: string; role: AccountRole; }): Promise<void>
-      +updateProfile(fullName: string, phone: string): void
-      +require(role?: AccountRole): Session
-      +signOut(): void
-    }
+  class "LandingFacade" as landing_LandingFacade <<service>> #E4EEE6 {
+    - audienceSignal: WritableSignal<Audience>
+    - dialogSignal: WritableSignal<boolean>
+    - offerRepository: InMemoryOfferRepository
+    + audience: Signal<Audience>
+    + dialogOpen: Signal<boolean>
+    + featuredOffer: Offer
+    + formattedDistance: Signal<string>
+    --
+    + openInterestDialog(audience): void
+    + closeInterestDialog(): void
   }
-  package "infrastructure" as iam_infrastructure {
-    class "BrowserAccountRepository" as BrowserAccountRepository <<Adapter>> {
-      +findByEmail(email: string): Account | undefined
-      +get(id: number): Account | undefined
-      +save(account: Account): void
-    }
+  class "LandingLayout" as landing_LandingLayout <<component>> #E4EEE6 {
+    + interestRequested: EventEmitter<Audience>
+    --
+    + forwardInterestRequest(audience): void
   }
-  package "presentation" as iam_presentation {
-    class "Auth" as Auth <<Component>> {
-    }
-    class "Profile" as Profile <<Component>> {
-    }
+  class "SiteHeader" as landing_SiteHeader <<component>> #E4EEE6 {
+    + interestRequested: EventEmitter<Audience>
+    --
+    + requestInterest(audience): void
+  }
+  class "SiteFooter" as landing_SiteFooter <<component>> #E4EEE6 {
+  }
+  interface "Offer" as landing_Offer <<interface>> #E4EEE6 {
+    + restaurant: string
+    + title: string
+    + originalPrice: number
+    + discountedPrice: number
+    + currency: PEN
+    + pickupTime: string
+    + distanceKm: number
+    + discountPercent: number
+  }
+  abstract class "OfferRepository" as landing_OfferRepository <<abstract>> #E4EEE6 {
+    + featured(): Offer
+  }
+  class "InMemoryOfferRepository" as landing_InMemoryOfferRepository <<service>> #E4EEE6 {
+    + featured(): Offer
+  }
+  class "Language" as landing_Language <<service>> #E4EEE6 {
+  }
+  enum "Audience" as landing_Audience <<type>> #E4EEE6 {
+    customer
+    business
   }
 }
-
-package "businesses" as businesses_context {
-  package "domain.model" as businesses_domain_model {
-    interface "Business" as Business {
-      +id: number
-      +ownerAccountId: number
-      +name: string
-      +address: string
-      +district: string
-      +latitude: number
-      +longitude: number
-      +contactPhone: string
-      +pickupConditions: string
-      +isActive: boolean
-    }
+package "Account Module" as account {
+  class "Account" as account_Account <<model>> {
+    + id: number
+    + userId: number
+    + email: string
+    + role: UserRole
+    + active: boolean
   }
-  package "domain.repositories" as businesses_domain_repositories {
-    abstract class "BusinessRepository" as BusinessRepository {
-      +all(): Business[]
-      +save(business: Business): void
-    }
+  class "UserProfile" as account_UserProfile <<model>> {
+    + id: number
+    + fullName: string
+    + phoneNumber: string or null
   }
-  package "application" as businesses_application {
-    class "BusinessService" as BusinessService <<Service>> {
-      +all
-      +owned
-      +get(id: number): Business | undefined
-      +save(data: Omit<Business, 'id' | 'ownerAccountId' | 'isActive'>, id?: number): Business
-    }
-    class "ReportingService" as ReportingService <<Service>> {
-      +period
-      +rows
-      +summary
-    }
+  interface "AuthSession" as account_AuthSession <<interface>> {
+    + account: Account
+    + accessToken: string
+    + expiresAt: string
   }
-  package "infrastructure" as businesses_infrastructure {
-    class "BrowserBusinessRepository" as BrowserBusinessRepository <<Adapter>> {
-      +all(): Business[]
-      +save(business: Business): void
-    }
+  enum "UserRole" as account_UserRole <<enum>> {
+    CUSTOMER
+    BUSINESS_OWNER
   }
-  package "presentation" as businesses_presentation {
-    class "BusinessProfile" as BusinessProfile <<Component>> {
-    }
-    class "Dashboard" as Dashboard <<Component>> {
-    }
+  class "AuthService" as account_AuthService <<service>> {
+    - api: ApiClient
+    - session: SessionService
+    --
+    + signIn(credentials): Observable<AuthSession>
+    + signUp(request): Observable<Account>
+    + signOut(): void
   }
-}
-
-package "offers" as offers_context {
-  package "domain.model" as offers_domain_model {
-    enum "OfferStatus" as OfferStatus {
-      ACTIVE
-      PAUSED
-      EXPIRED
-    }
-    interface "OfferData" as OfferData {
-      +id: number
-      +businessId: number
-      +category: string
-      +title: string
-      +description: string
-      +allergens: string
-      +originalPrice: number
-      +offerPrice: number
-      +initialUnits: number
-      +availableUnits: number
-      +pickupStartAt: string
-      +pickupEndAt: string
-      +expiresAt: string
-      +status: OfferStatus
-      +image: string
-    }
-    class "Offer" as Offer {
-      +{static} validate(data: OfferData): void
-      +status: OfferStatus
-      +discount: number
-      +isReservable(quantity): boolean
-      +allocate(quantity: number): OfferData
-      +release(quantity: number): OfferData
-    }
+  class "ProfileService" as account_ProfileService <<service>> {
+    - api: ApiClient
+    --
+    + getProfile(): Observable<UserProfile>
+    + update(profile): Observable<UserProfile>
   }
-  package "domain.repositories" as offers_domain_repositories {
-    abstract class "OfferRepository" as OfferRepository {
-      +all(): OfferData[]
-      +save(offer: OfferData): void
-    }
+  class "SignInComponent" as account_SignInComponent <<component>> {
+    + form: FormGroup
+    + error: Signal<string or null>
+    --
+    + submit(): void
   }
-  package "application" as offers_application {
-    class "OfferService" as OfferService <<Service>> {
-      +all
-      +active
-      +owned
-      +get(id: number): OfferData | undefined
-      +save(data: Omit<OfferData, 'id' | 'availableUnits' | 'status'>, id?: number): OfferData
-      +pause(id: number): void
-    }
+  class "SignUpComponent" as account_SignUpComponent <<component>> {
+    + form: FormGroup
+    + error: Signal<string or null>
+    --
+    + submit(): void
   }
-  package "infrastructure" as offers_infrastructure {
-    class "BrowserOfferRepository" as BrowserOfferRepository <<Adapter>> {
-      +all(): OfferData[]
-      +save(offer: OfferData): void
-    }
+  class "ProfileComponent" as account_ProfileComponent <<component>> {
+    + profile: Signal<UserProfile or null>
+    + form: FormGroup
+    --
+    + load(): void
+    + save(): void
   }
-  package "presentation" as offers_presentation {
-    class "Catalog" as Catalog <<Component>> {
-    }
-    class "OfferCard" as OfferCard <<Component>> {
-    }
-    class "ManageOffers" as ManageOffers <<Component>> {
-    }
-    class "OfferDetail" as OfferDetail <<Component>> {
-    }
-    class "OfferEditor" as OfferEditor <<Component>> {
-    }
+  interface "Credentials" as account_Credentials <<interface>> {
+    + email: string
+    + password: string
   }
 }
-
-package "reservations" as reservations_context {
-  package "domain.model" as reservations_domain_model {
-    enum "ReservationStatus" as ReservationStatus {
-      ACTIVE
-      COLLECTED
-      CANCELLED
-      EXPIRED
-    }
-    interface "ReservationData" as ReservationData {
-      +id: number
-      +offerId: number
-      +customerUserId: number
-      +quantity: number
-      +unitPrice: number
-      +originalUnitPrice: number
-      +pickupCode: string
-      +pickupStartAt: string
-      +pickupDeadlineAt: string
-      +status: ReservationStatus
-      +createdAt: string
-      +collectedAt?: string
-    }
-    class "Reservation" as Reservation {
-      +status: ReservationStatus
-      +cancel(): ReservationData
-      +collect(): ReservationData
-    }
+package "Business Profile & Dashboard" as business {
+  class "Business" as business_Business <<model>> {
+    + id: number
+    + ownerAccountId: number
+    + name: string
+    + address: string
+    + district: string
+    + coordinates: Coordinates
+    + contactPhone: string
+    + pickupConditions: string
   }
-  package "domain.repositories" as reservations_domain_repositories {
-    abstract class "ReservationRepository" as ReservationRepository {
-      +all(): ReservationData[]
-      +save(reservation: ReservationData): void
-    }
+  interface "BusinessRegistrationRequest" as business_BusinessRegistrationRequest <<interface>> {
+    + name: string
+    + address: string
+    + district: string
+    + contactPhone: string
+    + pickupConditions: string
   }
-  package "application" as reservations_application {
-    class "ReservationService" as ReservationService <<Service>> {
-      +all
-      +mine
-      +businessReservations
-      +create(offerId: number, quantity: number): ReservationData
-      +cancel(id: number): void
-      +confirmPickup(code: string): ReservationData
-    }
+  interface "BusinessSummary" as business_BusinessSummary <<interface>> {
+    + from: string
+    + to: string
+    + publishedOffers: number
+    + activeReservations: number
+    + collectedUnits: number
+    + cancelledReservations: number
+    + expiredReservations: number
   }
-  package "infrastructure" as reservations_infrastructure {
-    class "BrowserReservationRepository" as BrowserReservationRepository <<Adapter>> {
-      +all(): ReservationData[]
-      +save(reservation: ReservationData): void
-    }
+  class "BusinessService" as business_BusinessService <<service>> {
+    - api: ApiClient
+    --
+    + register(request): Observable<Business>
+    + getMine(): Observable<Business[]>
+    + getPublic(id): Observable<Business>
+    + update(id, request): Observable<Business>
   }
-  package "presentation" as reservations_presentation {
-    class "Reservations" as Reservations <<Component>> {
-    }
+  class "ReportingService" as business_ReportingService <<service>> {
+    - api: ApiClient
+    --
+    + summary(id, period): Observable<BusinessSummary>
   }
-}
-
-package "notifications" as notifications_context {
-  package "domain.model" as notifications_domain_model {
-    interface "Notification" as Notification {
-      +id: number
-      +recipientAccountId: number
-      +reservationId?: number
-      +type: | 'NEW_RESERVATION' | 'RESERVATION_CONFIRMED' | 'PICKUP_REMINDER' | 'OFFER_CHANGED' | 'RESERVATION_CANCELLED'
-      +titleKey: string
-      +body: string
-      +createdAt: string
-      +readAt?: string
-    }
-    interface "NotificationPreferences" as NotificationPreferences {
-      +emailEnabled: boolean
-      +pushEnabled: boolean
-      +remindersEnabled: boolean
-    }
+  class "BusinessRegistrationComponent" as business_BusinessRegistrationComponent <<component>> {
+    + form: FormGroup
+    --
+    + submit(): void
   }
-  package "domain.repositories" as notifications_domain_repositories {
-    abstract class "NotificationRepository" as NotificationRepository {
-      +all(): Notification[]
-      +save(notification: Notification): void
-    }
+  class "BusinessProfileComponent" as business_BusinessProfileComponent <<component>> {
+    + business: Signal<Business or null>
+    + form: FormGroup
+    --
+    + load(id): void
+    + save(): void
   }
-  package "application" as notifications_application {
-    class "NotificationService" as NotificationService <<Service>> {
-      +mine
-      +unread
-      +preferences
-      +markRead(id: number): void
-      +savePreferences(preferences: NotificationPreferences): void
-    }
+  class "BusinessPublicProfileComponent" as business_BusinessPublicProfileComponent <<component>> {
+    + business: Signal<Business or null>
+    --
+    + load(id): void
   }
-  package "infrastructure" as notifications_infrastructure {
-    class "BrowserNotificationRepository" as BrowserNotificationRepository <<Adapter>> {
-      +all(): Notification[]
-      +save(notification: Notification): void
-    }
-  }
-  package "presentation" as notifications_presentation {
-    class "Notifications" as Notifications <<Component>> {
-    }
+  class "BusinessDashboardComponent" as business_BusinessDashboardComponent <<component>> {
+    + selectedPeriod: DateRange
+    + summary: Signal<BusinessSummary or null>
+    --
+    + load(id): void
+    + changePeriod(period): void
   }
 }
-
-package "feedback" as feedback_context {
-  package "domain.model" as feedback_domain_model {
-    interface "Review" as Review {
-      +id: number
-      +reservationId: number
-      +rating: number
-      +comment: string
-      +createdAt: string
-    }
-    interface "SupportRequest" as SupportRequest {
-      +id: number
-      +requesterAccountId: number
-      +reservationId?: number
-      +subject: string
-      +description: string
-      +status: 'OPEN' | 'CLOSED'
-      +createdAt: string
-    }
+package "Offer Catalog & Publishing" as offers {
+  class "OfferViewModel" as offers_OfferViewModel <<model>> {
+    + id: number
+    + businessId: number
+    + categoryId: number
+    + title: string
+    + description: string
+    + allergens: string or null
+    + pricing: OfferPricing
+    + availableUnits: number
+    + pickup: PickupWindow
+    + status: OfferStatus
+    + images: string[]
+    --
+    + isReservable(now): boolean
   }
-  package "domain.repositories" as feedback_domain_repositories {
-    abstract class "FeedbackRepository" as FeedbackRepository {
-      +reviews(): Review[]
-      +requests(): SupportRequest[]
-      +saveReview(review: Review): void
-      +saveRequest(request: SupportRequest): void
-    }
+  enum "OfferStatus" as offers_OfferStatus <<enum>> {
+    ACTIVE
+    PAUSED
+    EXPIRED
   }
-  package "application" as feedback_application {
-    class "FeedbackService" as FeedbackService <<Service>> {
-      +reviews
-      +requests
-      +review(reservationId: number, rating: number, comment: string): void
-      +request(subject: string, description: string, reservationId?: number): void
-    }
+  interface "OfferFilters" as offers_OfferFilters <<interface>> {
+    + distanceKm: number or null
+    + origin: Coordinates or null
+    + categoryId: number or null
+    + district: string or null
+    + pickupFrom: string or null
+    + pickupTo: string or null
   }
-  package "infrastructure" as feedback_infrastructure {
-    class "BrowserFeedbackRepository" as BrowserFeedbackRepository <<Adapter>> {
-      +reviews(): Review[]
-      +requests(): SupportRequest[]
-      +saveReview(review: Review): void
-      +saveRequest(request: SupportRequest): void
-    }
+  interface "OfferResource" as offers_OfferResource <<interface>> {
+    + id: number
+    + businessId: number
+    + categoryId: number
+    + title: string
+    + description: string
+    + allergens: string or null
+    + pricing: OfferPricing
+    + availableUnits: number
+    + pickup: PickupWindowResource
+    + status: string
+    + images: string[]
   }
-  package "presentation" as feedback_presentation {
-    class "Support" as Support <<Component>> {
-    }
+  class "OfferAssembler" as offers_OfferAssembler <<mapper>> {
+    + toModel(resource): OfferViewModel
+    + toResource(model): OfferResource
   }
-}
-
-package "shared" as shared_context {
-  package "domain.model" as shared_domain_model {
-    class "DomainError" as DomainError {
-    }
+  class "OfferApiService" as offers_OfferApiService <<service>> {
+    - api: ApiClient
+    - assembler: OfferAssembler
+    --
+    + search(filters): Observable<OfferViewModel[]>
+    + getById(id): Observable<OfferViewModel>
+    + publish(request): Observable<OfferViewModel>
+    + update(id, request): Observable<OfferViewModel>
+    + pause(id): Observable<OfferViewModel>
   }
-  package "application" as shared_application {
-    class "ClockService" as ClockService <<Service>> {
-      +now
-    }
-    class "GeolocationService" as GeolocationService <<Service>> {
-      +position
-      +locating
-      +locate(): Promise<void>
-      +distance(latitude: number, longitude: number): number | null
-    }
-    enum "Language" as Language {
-      en
-      es
-    }
-    class "LanguageService" as LanguageService <<Service>> {
-      +current
-      +initialize(): Promise<void>
-      +change(language: Language): Promise<void>
-    }
+  class "OfferCatalogComponent" as offers_OfferCatalogComponent <<component>> {
+    + offers: Signal<OfferViewModel[]>
+    + loading: Signal<boolean>
+    + filters: Signal<OfferFilters>
+    --
+    + search(): void
+    + clearFilters(): void
   }
-  package "infrastructure" as shared_infrastructure {
-    interface "LocalDatabase" as LocalDatabase {
-      +accounts: Account[]
-      +businesses: Business[]
-      +offers: OfferData[]
-      +reservations: ReservationData[]
-      +notifications: Notification[]
-      +reviews: Review[]
-      +requests: SupportRequest[]
-      +preferences: Record<string, NotificationPreferences>
-    }
-    class "BrowserDatabase" as BrowserDatabase <<Adapter>> {
-      +state
-      +storageError
-      +commit(change: (current: LocalDatabase) => LocalDatabase): void
-      +nextId(items: { id: number }[]): number
-    }
-    class "BrowserImageStorage" as BrowserImageStorage <<Adapter>> {
-      +save(file: File): Promise<string>
-      +resolve(reference?: string): Promise<string | null>
-      +remove(reference: string): Promise<void>
-    }
+  class "OfferFiltersComponent" as offers_OfferFiltersComponent <<component>> {
+    + form: FormGroup
+    + changed: EventEmitter<OfferFilters>
+    --
+    + apply(): void
+    + reset(): void
   }
-  package "presentation" as shared_presentation {
-    class "Content" as Content <<Component>> {
-    }
-    class "Footer" as Footer <<Component>> {
-    }
-    class "Header" as Header <<Component>> {
-    }
-    class "LanguageSwitcher" as LanguageSwitcher <<Component>> {
-    }
-    class "Layout" as Layout <<Component>> {
-    }
-    class "Legal" as Legal <<Component>> {
-    }
-    class "NotFound" as NotFound <<Component>> {
-    }
+  class "OfferCardComponent" as offers_OfferCardComponent <<component>> {
+    + offer: InputSignal<OfferViewModel>
+    + selected: EventEmitter<number>
+    --
+    + openDetail(): void
+  }
+  class "OfferDetailComponent" as offers_OfferDetailComponent <<component>> {
+    + offer: Signal<OfferViewModel or null>
+    --
+    + load(id): void
+    + reserve(): void
+  }
+  class "OfferEditorComponent" as offers_OfferEditorComponent <<component>> {
+    + form: FormGroup
+    + offerId: number or null
+    --
+    + load(id): void
+    + submit(): void
+    + pause(): void
+  }
+  interface "CreateOfferRequest" as offers_CreateOfferRequest <<interface>> {
+    + businessId: number
+    + categoryId: number
+    + title: string
+    + originalPrice: number
+    + offerPrice: number
+    + initialUnits: number
+    + expiresAt: string
+    + pickupStartAt: string
+    + pickupEndAt: string
+    + description: string
+    + allergens: string or null
   }
 }
-
-package "app" as app_context {
-  class "App" as App <<Component>>
+package "Shared & Core" as shared {
+  class "ApiClient" as shared_ApiClient <<service>> {
+    - http: HttpClient
+    - baseUrl: string
+    --
+    + get<T>(path, params): Observable<T>
+    + post<T>(path, body): Observable<T>
+    + put<T>(path, body): Observable<T>
+    + patch<T>(path, body): Observable<T>
+  }
+  class "SessionService" as shared_SessionService <<service>> {
+    + account: Signal<Account or null>
+    + accessToken: Signal<string or null>
+    --
+    + save(session: AuthSession): void
+    + clear(): void
+    + hasRole(role): boolean
+  }
+  class "AuthGuard" as shared_AuthGuard <<guard>> {
+    - session: SessionService
+    --
+    + canActivate(route): boolean
+  }
+  class "AuthInterceptor" as shared_AuthInterceptor <<interceptor>> {
+    - session: SessionService
+    --
+    + intercept(req, next): Observable<HttpEvent<unknown>>
+  }
+  class "LanguageService" as shared_LanguageService <<service>> {
+    + current: Signal<es-PE or en>
+    --
+    + setLanguage(language): void
+    + translate(key): string
+  }
+  class "GeolocationService" as shared_GeolocationService <<service>> {
+    + coordinates: Signal<Coordinates or null>
+    --
+    + locate(): Promise<Coordinates>
+    + distanceKm(origin, destination): number
+  }
+  class "AppShellComponent" as shared_AppShellComponent <<component>> {
+    + unreadCount: Signal<number>
+    --
+    + navigate(path): void
+    + logout(): void
+  }
+  interface "Coordinates" as shared_Coordinates <<interface>> {
+    + latitude: number
+    + longitude: number
+  }
+  interface "OfferPricing" as shared_OfferPricing <<interface>> {
+    + originalPrice: number
+    + offerPrice: number
+    + currency: PEN
+  }
+  interface "PickupWindow" as shared_PickupWindow <<interface>> {
+    + startAt: Date
+    + endAt: Date
+    + expiresAt: Date
+  }
+  interface "PickupWindowResource" as shared_PickupWindowResource <<interface>> {
+    + startAt: string
+    + endAt: string
+    + expiresAt: string
+  }
 }
-
-App ..> ReservationService : usa
-BusinessService ..> BusinessRepository : usa
-BusinessService ..> SessionService : usa
-BusinessService ..> BrowserDatabase : usa
-ReportingService ..> OfferService : usa
-ReportingService ..> ReservationService : usa
-BusinessRepository <|-- BrowserBusinessRepository
-BrowserBusinessRepository ..> BrowserDatabase : usa
-BusinessProfile ..> BusinessService : usa
-BusinessProfile ..> SessionService : usa
-BusinessProfile ..> OfferService : usa
-Dashboard ..> ReportingService : usa
-Dashboard ..> BusinessService : usa
-Dashboard ..> SessionService : usa
-FeedbackService ..> FeedbackRepository : usa
-FeedbackService ..> SessionService : usa
-FeedbackService ..> ReservationService : usa
-FeedbackService ..> BrowserDatabase : usa
-FeedbackRepository <|-- BrowserFeedbackRepository
-BrowserFeedbackRepository ..> BrowserDatabase : usa
-Support ..> FeedbackService : usa
-Support ..> SessionService : usa
-Support ..> ReservationService : usa
-SessionService ..> AccountRepository : usa
-SessionService ..> BrowserDatabase : usa
-AccountRepository <|-- BrowserAccountRepository
-BrowserAccountRepository ..> BrowserDatabase : usa
-Auth ..> SessionService : usa
-Profile ..> SessionService : usa
-NotificationService ..> NotificationRepository : usa
-NotificationService ..> BrowserDatabase : usa
-NotificationService ..> SessionService : usa
-NotificationService ..> ClockService : usa
-NotificationRepository <|-- BrowserNotificationRepository
-BrowserNotificationRepository ..> BrowserDatabase : usa
-Notifications ..> NotificationService : usa
-Notifications ..> ReservationService : usa
-Notifications ..> OfferService : usa
-Notifications ..> BusinessService : usa
-OfferService ..> OfferRepository : usa
-OfferService ..> BusinessService : usa
-OfferService ..> SessionService : usa
-OfferService ..> BrowserDatabase : usa
-OfferService ..> ClockService : usa
-OfferRepository <|-- BrowserOfferRepository
-BrowserOfferRepository ..> BrowserDatabase : usa
-Catalog ..> OfferService : usa
-Catalog ..> BusinessService : usa
-Catalog ..> GeolocationService : usa
-OfferCard ..> BrowserImageStorage : usa
-OfferCard ..> BusinessService : usa
-OfferCard ..> GeolocationService : usa
-ManageOffers ..> OfferService : usa
-OfferDetail ..> BrowserImageStorage : usa
-OfferDetail ..> OfferService : usa
-OfferDetail ..> BusinessService : usa
-OfferDetail ..> SessionService : usa
-OfferDetail ..> ReservationService : usa
-OfferEditor ..> OfferService : usa
-OfferEditor ..> BusinessService : usa
-OfferEditor ..> BrowserImageStorage : usa
-ReservationService ..> ReservationRepository : usa
-ReservationService ..> OfferService : usa
-ReservationService ..> BusinessService : usa
-ReservationService ..> SessionService : usa
-ReservationService ..> BrowserDatabase : usa
-ReservationService ..> ClockService : usa
-ReservationRepository <|-- BrowserReservationRepository
-BrowserReservationRepository ..> BrowserDatabase : usa
-Reservations ..> BrowserImageStorage : usa
-Reservations ..> ReservationService : usa
-Reservations ..> OfferService : usa
-Reservations ..> BusinessService : usa
-Reservations ..> FeedbackService : usa
-Header ..> SessionService : usa
-Header ..> NotificationService : usa
-LanguageSwitcher ..> LanguageService : usa
-Layout ..> SessionService : usa
-Layout ..> BrowserDatabase : usa
-
-App --> Layout : contiene
-App --> Content : contiene
-App --> Footer : contiene
-Layout --> Header : contiene
-Header --> LanguageSwitcher : contiene
-Catalog --> OfferCard : contiene
-Offer --> OfferData : encapsula reglas
-Reservation --> ReservationData : encapsula reglas
-Account "1" <-- "0..*" Business : ownerAccountId
-Business "1" <-- "0..*" OfferData : businessId
-OfferData "1" <-- "0..*" ReservationData : offerId
-Account "1" <-- "0..*" ReservationData : customerUserId
-Account "1" <-- "0..*" Notification : recipientAccountId
-ReservationData "0..1" <-- "0..*" Notification : reservationId opcional
-ReservationData "1" <-- "0..1" Review : reservationId
-Account "1" <-- "0..*" SupportRequest : requesterAccountId
-ReservationData "0..1" <-- "0..*" SupportRequest : reservationId opcional
-Account "1" -- "0..1" NotificationPreferences : preferencias por cuenta
-BrowserDatabase --> LocalDatabase : estado local
-OfferData --> OfferStatus : status
-ReservationData --> ReservationStatus : status
-Account --> AccountRole : role
-
+package "Notifications" as notifications {
+  class "Notification" as notifications_Notification <<model>> {
+    + id: number
+    + accountId: number
+    + reservationId: number or null
+    + type: NotificationType
+    + title: string
+    + body: string
+    + readAt: Date or null
+  }
+  enum "NotificationType" as notifications_NotificationType <<enum>> {
+    NEW_RESERVATION
+    RESERVATION_CONFIRMED
+    PICKUP_REMINDER
+    OFFER_CHANGED
+  }
+  class "NotificationPreferences" as notifications_NotificationPreferences <<model>> {
+    + emailEnabled: boolean
+    + pushEnabled: boolean
+    + remindersEnabled: boolean
+  }
+  class "NotificationService" as notifications_NotificationService <<service>> {
+    - api: ApiClient
+    + unreadCount: Signal<number>
+    --
+    + list(): Observable<Notification[]>
+    + markRead(id): Observable<Notification>
+    + getPreferences(): Observable<NotificationPreferences>
+    + savePreferences(prefs): Observable<NotificationPreferences>
+  }
+  class "NotificationListComponent" as notifications_NotificationListComponent <<component>> {
+    + notifications: Signal<Notification[]>
+    --
+    + load(): void
+    + open(notification): void
+    + markRead(id): void
+  }
+  class "NotificationPreferencesComponent" as notifications_NotificationPreferencesComponent <<component>> {
+    + form: FormGroup
+    --
+    + load(): void
+    + save(): void
+  }
+}
+package "Reservation & Pickup" as reservations {
+  class "Reservation" as reservations_Reservation <<model>> {
+    + id: number
+    + offerId: number
+    + customerId: number
+    + quantity: number
+    + unitPrice: number
+    + status: ReservationStatus
+    + pickupCode: string or null
+    + pickupStartAt: Date
+    + pickupDeadlineAt: Date
+    --
+    + canCancel(): boolean
+  }
+  enum "ReservationStatus" as reservations_ReservationStatus <<enum>> {
+    ACTIVE
+    COLLECTED
+    CANCELLED
+    EXPIRED
+  }
+  interface "CreateReservationRequest" as reservations_CreateReservationRequest <<interface>> {
+    + offerId: number
+    + quantity: number
+  }
+  interface "ReservationResource" as reservations_ReservationResource <<interface>> {
+    + id: number
+    + offerId: number
+    + customerId: number
+    + quantity: number
+    + unitPrice: number
+    + status: string
+    + pickupCode: string or null
+    + pickupStartAt: string
+    + pickupDeadlineAt: string
+  }
+  class "ReservationAssembler" as reservations_ReservationAssembler <<mapper>> {
+    + toModel(resource): Reservation
+  }
+  class "ReservationApiService" as reservations_ReservationApiService <<service>> {
+    - api: ApiClient
+    - assembler: ReservationAssembler
+    --
+    + create(request): Observable<Reservation>
+    + getMine(): Observable<Reservation[]>
+    + getBusiness(id): Observable<Reservation[]>
+    + cancel(id): Observable<Reservation>
+    + confirmPickup(code): Observable<Reservation>
+    + history(id, period): Observable<Reservation[]>
+  }
+  class "ReservationFormComponent" as reservations_ReservationFormComponent <<component>> {
+    + offerId: number
+    + quantity: WritableSignal<number>
+    + error: Signal<string or null>
+    --
+    + confirm(): void
+  }
+  class "MyReservationsComponent" as reservations_MyReservationsComponent <<component>> {
+    + reservations: Signal<Reservation[]>
+    --
+    + load(): void
+    + cancel(id): void
+  }
+  class "BusinessReservationsComponent" as reservations_BusinessReservationsComponent <<component>> {
+    + reservations: Signal<Reservation[]>
+    --
+    + load(businessId): void
+  }
+  class "PickupValidationComponent" as reservations_PickupValidationComponent <<component>> {
+    + code: WritableSignal<string>
+    + result: Signal<Reservation or null>
+    --
+    + validate(): void
+  }
+  class "PickupHistoryComponent" as reservations_PickupHistoryComponent <<component>> {
+    + history: Signal<Reservation[]>
+    + period: DateRange
+    --
+    + load(businessId): void
+    + changePeriod(period): void
+  }
+}
+package "Support & Feedback" as feedback {
+  class "Review" as feedback_Review <<model>> {
+    + id: number
+    + reservationId: number
+    + rating: number
+    + comment: string or null
+    + createdAt: Date
+  }
+  interface "ReviewRequest" as feedback_ReviewRequest <<interface>> {
+    + reservationId: number
+    + rating: number
+    + comment: string or null
+  }
+  class "SupportRequest" as feedback_SupportRequest <<model>> {
+    + id: number
+    + subject: string
+    + description: string
+    + reservationId: number or null
+    + status: string
+  }
+  class "FeedbackService" as feedback_FeedbackService <<service>> {
+    - api: ApiClient
+    --
+    + submit(request): Observable<Review>
+    + getByReservation(id): Observable<Review>
+  }
+  class "HelpService" as feedback_HelpService <<service>> {
+    - api: ApiClient
+    --
+    + getContactChannel(): Observable<string>
+    + requestHelp(request): Observable<SupportRequest>
+  }
+  class "ReviewFormComponent" as feedback_ReviewFormComponent <<component>> {
+    + reservationId: number
+    + form: FormGroup
+    --
+    + submit(): void
+  }
+  class "HelpComponent" as feedback_HelpComponent <<component>> {
+    + form: FormGroup
+    + contactChannel: Signal<string>
+    --
+    + loadContact(): void
+    + submit(): void
+  }
+}
+landing_App *--> landing_LandingPage
+landing_App *--> landing_SiteHeader
+landing_App *--> landing_SiteFooter
+landing_LandingPage *--> landing_LandingLayout
+landing_LandingPage ..> landing_LandingFacade
+landing_LandingLayout *--> landing_SiteHeader
+landing_LandingLayout *--> landing_SiteFooter
+landing_SiteHeader ..> landing_Audience
+landing_LandingFacade ..> landing_Audience
+landing_LandingFacade ..> landing_InMemoryOfferRepository
+landing_LandingFacade --> landing_Offer
+landing_InMemoryOfferRepository --|> landing_OfferRepository
+landing_OfferRepository ..> landing_Offer
+shared_AuthGuard ..> shared_SessionService
+shared_AuthInterceptor ..> shared_SessionService
+shared_ApiClient ..> shared_AuthInterceptor : HTTP pipeline
+shared_GeolocationService ..> shared_Coordinates
+shared_AppShellComponent ..> shared_SessionService
+shared_AppShellComponent ..> shared_LanguageService
+account_Account --> account_UserRole
+account_AuthSession --> account_Account
+account_AuthService ..> account_AuthSession
+account_AuthService ..> account_Credentials
+account_AuthService ..> shared_ApiClient
+account_AuthService ..> shared_SessionService
+shared_SessionService --> account_Account
+account_ProfileService ..> account_UserProfile
+account_ProfileService ..> shared_ApiClient
+account_SignInComponent ..> account_AuthService
+account_SignUpComponent ..> account_AuthService
+account_ProfileComponent ..> account_ProfileService
+business_BusinessRegistrationComponent ..> business_BusinessService
+business_BusinessProfileComponent ..> business_BusinessService
+business_BusinessPublicProfileComponent ..> business_BusinessService
+business_BusinessDashboardComponent ..> business_ReportingService
+business_BusinessService ..> business_Business
+business_BusinessService ..> business_BusinessRegistrationRequest
+business_ReportingService ..> business_BusinessSummary
+business_Business --> shared_Coordinates
+business_BusinessService ..> shared_ApiClient
+business_ReportingService ..> shared_ApiClient
+offers_OfferViewModel --> offers_OfferStatus
+offers_OfferViewModel --> shared_OfferPricing
+offers_OfferViewModel --> shared_PickupWindow
+offers_OfferResource --> shared_OfferPricing
+offers_OfferResource --> shared_PickupWindowResource
+offers_OfferFilters --> shared_Coordinates
+offers_OfferApiService ..> offers_OfferFilters
+offers_OfferApiService ..> offers_OfferAssembler
+offers_OfferApiService ..> offers_CreateOfferRequest
+offers_OfferAssembler ..> offers_OfferResource
+offers_OfferAssembler ..> offers_OfferViewModel
+offers_OfferCatalogComponent ..> offers_OfferApiService
+offers_OfferCatalogComponent *--> offers_OfferFiltersComponent
+offers_OfferCatalogComponent *--> offers_OfferCardComponent
+offers_OfferFiltersComponent ..> offers_OfferFilters
+offers_OfferCardComponent --> offers_OfferViewModel
+offers_OfferDetailComponent ..> offers_OfferApiService
+offers_OfferEditorComponent ..> offers_OfferApiService
+offers_OfferApiService ..> shared_ApiClient
+offers_OfferCatalogComponent ..> shared_GeolocationService
+offers_OfferDetailComponent *--> business_BusinessPublicProfileComponent
+reservations_Reservation --> reservations_ReservationStatus
+reservations_ReservationApiService ..> reservations_ReservationAssembler
+reservations_ReservationApiService ..> reservations_CreateReservationRequest
+reservations_ReservationAssembler ..> reservations_ReservationResource
+reservations_ReservationAssembler ..> reservations_Reservation
+reservations_ReservationFormComponent ..> reservations_ReservationApiService
+reservations_MyReservationsComponent ..> reservations_ReservationApiService
+reservations_BusinessReservationsComponent ..> reservations_ReservationApiService
+reservations_PickupValidationComponent ..> reservations_ReservationApiService
+reservations_PickupHistoryComponent ..> reservations_ReservationApiService
+reservations_ReservationApiService ..> shared_ApiClient
+offers_OfferDetailComponent *--> reservations_ReservationFormComponent
+business_BusinessDashboardComponent *--> reservations_BusinessReservationsComponent
+business_BusinessDashboardComponent *--> reservations_PickupHistoryComponent
+reservations_BusinessReservationsComponent *--> reservations_PickupValidationComponent
+notifications_Notification --> notifications_NotificationType
+notifications_NotificationService ..> notifications_Notification
+notifications_NotificationService ..> notifications_NotificationPreferences
+notifications_NotificationListComponent ..> notifications_NotificationService
+notifications_NotificationPreferencesComponent ..> notifications_NotificationService
+notifications_NotificationService ..> shared_ApiClient
+shared_AppShellComponent *--> notifications_NotificationListComponent
+shared_AppShellComponent ..> notifications_NotificationService
+feedback_FeedbackService ..> feedback_Review
+feedback_FeedbackService ..> feedback_ReviewRequest
+feedback_HelpService ..> feedback_SupportRequest
+feedback_ReviewFormComponent ..> feedback_FeedbackService
+feedback_HelpComponent ..> feedback_HelpService
+feedback_FeedbackService ..> shared_ApiClient
+feedback_HelpService ..> shared_ApiClient
+reservations_MyReservationsComponent *--> feedback_ReviewFormComponent
 @enduml
+
+1.2026.8

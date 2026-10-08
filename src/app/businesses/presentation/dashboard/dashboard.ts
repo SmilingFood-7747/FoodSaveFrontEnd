@@ -2,7 +2,6 @@ import { BillingService } from '../../../billing/application/billing.service';
 import {
   Component,
   computed,
-  signal,
   inject,
   ChangeDetectionStrategy,
   ViewEncapsulation,
@@ -30,26 +29,12 @@ export class Dashboard {
     ),
   );
   readonly businessRows = computed(() =>
-    this.businesses
-      .owned()
-      .map((b) => ({
-        business: b,
-        plan: this.billing.businessPlan(b.id),
-        report: this.billing.businessReport(b.id, this.reporting.period()),
-      })),
+    this.businesses.owned().map((b) => ({
+      business: b,
+      plan: this.billing.businessPlan(b.id),
+      report: this.billing.businessReport(b.id, this.reporting.period()),
+    })),
   );
-  readonly exportError = signal('');
-  export(): void {
-    try {
-      this.billing.exportReport(
-        this.reporting.period(),
-        this.businesses.owned().map((b) => b.id),
-      );
-      this.exportError.set('');
-    } catch (e) {
-      this.exportError.set(e instanceof Error ? e.message : 'errors.generic');
-    }
-  }
   readonly session = inject(SessionService);
   width(count: number): number {
     const total = this.reporting.summary().reservations;

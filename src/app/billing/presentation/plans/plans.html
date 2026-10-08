@@ -155,8 +155,11 @@
               }}
             </li>
             <li><mat-icon>check_circle</mat-icon>{{ 'plans.businessBase' | translate }}</li>
-            @if (plan.exportReports) {
-              <li><mat-icon>check_circle</mat-icon>{{ 'plans.csvBenefit' | translate }}</li>
+            @if (plan.id === 'PLUS') {
+              <li>
+                <mat-icon>check_circle</mat-icon
+                >{{ 'plans.reducedCommission' | translate: { rate: plan.commissionRate } }}
+              </li>
             }
             @if (plan.featuredOffers) {
               <li><mat-icon>check_circle</mat-icon>{{ 'plans.featuredBenefit' | translate }}</li>

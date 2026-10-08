@@ -7,7 +7,6 @@ export interface SubscriptionPlan {
   discountRate: number;
   monthlyDiscountLimit: number;
   activeOfferLimit: number | null;
-  exportReports: boolean;
   featuredOffers: boolean;
   exclusiveAccess: boolean;
 }
@@ -40,7 +39,6 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       discountRate: 0,
       monthlyDiscountLimit: 0,
       activeOfferLimit: null,
-      exportReports: false,
       featuredOffers: false,
       exclusiveAccess: false,
     },
@@ -51,7 +49,6 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       discountRate: 10,
       monthlyDiscountLimit: 30,
       activeOfferLimit: null,
-      exportReports: false,
       featuredOffers: false,
       exclusiveAccess: true,
     },
@@ -64,19 +61,17 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       discountRate: 0,
       monthlyDiscountLimit: 0,
       activeOfferLimit: 5,
-      exportReports: false,
       featuredOffers: false,
       exclusiveAccess: false,
     },
     {
       id: 'PLUS',
       monthlyPrice: 29,
-      commissionRate: 7,
+      commissionRate: 3,
       discountRate: 0,
       monthlyDiscountLimit: 0,
       activeOfferLimit: 20,
-      exportReports: true,
-      featuredOffers: false,
+      featuredOffers: true,
       exclusiveAccess: false,
     },
   ],

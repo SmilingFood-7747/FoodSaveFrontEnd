@@ -282,7 +282,7 @@
     "terms3Title": "3. Offers and food information",
     "terms3Body": "Read prices, allergens, ingredients, availability and pickup conditions before reserving. Businesses must keep food information accurate. Ask the business about allergies and cross-contact; a missing declaration does not mean the food is allergen-free.",
     "terms4Title": "4. Reservations, pickup and cancellation",
-    "terms4Body": "Reserve only an active offer with enough units. Cancellation is available before pickup starts. Show the one-use pickup code during the stated window. Reservations expire when that window ends. This demonstration does not process online payments, delivery or refunds. Business sales carry a plan-based commission: foodSaveFREE 5%, foodSavePlus 7%. Subscriptions have monthly prices and simulated payments. FoodSave covers customer subscription discounts.",
+    "terms4Body": "Reserve only an active offer with enough units. Cancellation is available before pickup starts. Show the one-use pickup code during the stated window. Reservations expire when that window ends. This demonstration does not process online payments, delivery or refunds. Business sales carry a plan-based commission: foodSaveFREE 5%, foodSavePlus 3%. Subscriptions have monthly prices and simulated payments. FoodSave covers customer subscription discounts.",
     "terms5Title": "5. Reviews and help",
     "terms5Body": "A customer may submit one rating after a confirmed pickup. Use respectful, relevant comments. The help page lets you record a local request; it does not send messages to a support team in this demonstration.",
     "privacy1Title": "1. Information entered",
@@ -324,7 +324,6 @@
     "imageStorage": "The photo could not be saved. Check available browser storage and try again.",
     "plan": "Select a valid plan.",
     "offerLimit": "You reached the active offer limit for your plan. Pause an offer or change plans.",
-    "reportPlan": "Report exports are available with foodSavePlus.",
     "plusRequired": "An active foodSavePlus subscription is required to reserve this exclusive offer.",
     "plusPartnerRequired": "This business is not in the Plus selection. Publish the offer for all customers."
   },
@@ -347,8 +346,6 @@
     "afterPlan": "Net after subscription fees:",
     "ownerPlan": "The business monthly fee is charged once per account, even when it manages multiple locations.",
     "discountFunding": "FoodSave covers customer subscription discounts; they do not reduce the business net amount.",
-    "export": "Export CSV report",
-    "exportUpgrade": "Available with foodSavePlus",
     "subtotal": "Subtotal"
   },
   "plans": {
@@ -370,7 +367,7 @@
       },
       "BUSINESS_OWNER": {
         "FREE": "Start selling surplus food and manage your pickups.",
-        "PLUS": "Publish more offers and keep track of your results."
+        "PLUS": "Highlight your offers, pay a lower commission and publish more options."
       }
     },
     "month": "month",
@@ -389,7 +386,6 @@
     "offerLimit": "Up to {{count}} active offers per location",
     "unlimitedOffers": "Unlimited active offers",
     "businessBase": "Manage reservations, pickups and earnings",
-    "csvBenefit": "Export results to CSV",
     "featuredBenefit": "Featured offers and catalog priority",
     "featured": "Featured",
     "choose": "Choose plan",
@@ -413,7 +409,8 @@
     "discountExplanation": "Discounts apply to the offer price and are capped per monthly cycle. Cancelled or expired reservations release their discount budget. Savings depend on your purchases.",
     "businessExplanation": "Commissions apply to confirmed pickups. View the rate and your net earnings in the business dashboard. Existing offers are retained after expiry; the plan limit applies to new publications.",
     "history": "Subscription history",
-    "simulated": "Simulated"
+    "simulated": "Simulated",
+    "reducedCommission": "Reduced commission: {{rate}}% per collected sale"
   },
   "admin": {
     "title": "FoodSave earnings",

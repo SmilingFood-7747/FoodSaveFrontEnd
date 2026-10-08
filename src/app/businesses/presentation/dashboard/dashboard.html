@@ -99,21 +99,6 @@
     <p class="caption">
       {{ 'finance.ownerPlan' | translate }} {{ 'finance.discountFunding' | translate }}
     </p>
-    <div class="button-row">
-      <button
-        mat-stroked-button
-        (click)="export()"
-        [disabled]="!billing.currentPlan().exportReports || !businesses.owned().length"
-      >
-        <mat-icon>download</mat-icon>{{ 'finance.export' | translate }}
-      </button>
-      @if (!billing.currentPlan().exportReports) {
-        <a routerLink="/plans">{{ 'finance.exportUpgrade' | translate }}</a>
-      }
-    </div>
-    @if (exportError()) {
-      <p class="message error" role="alert">{{ exportError() | translate }}</p>
-    }
   </section>
   <div class="detail-grid">
     <div class="panel">

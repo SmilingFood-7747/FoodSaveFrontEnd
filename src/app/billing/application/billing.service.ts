@@ -1,6 +1,4 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
 import { BrowserDatabase, upsert } from '../../shared/infrastructure/browser-database';
 import { SessionService } from '../../iam/application/session.service';
 import { ClockService } from '../../shared/application/clock.service';
@@ -20,8 +18,6 @@ export class BillingService {
   private readonly db = inject(BrowserDatabase);
   private readonly session = inject(SessionService);
   private readonly clock = inject(ClockService);
-  private readonly document = inject(DOCUMENT);
-  private readonly translate = inject(TranslateService);
   readonly current = computed(() => this.subscriptionFor(this.session.user()?.id ?? 0));
   readonly currentPlan = computed(() => this.planFor(this.session.user()?.id ?? 0));
   readonly charges = computed(() =>
@@ -248,59 +244,5 @@ export class BillingService {
       subscriptions: ownerBusinesses.length === 1 ? report.subscriptions : 0,
       subscriptionShared: ownerBusinesses.length > 1,
     };
-  }
-  exportReport(days: number, businessIds: number[]): void {
-    const account = this.session.require('BUSINESS_OWNER');
-    if (!this.planFor(account.id).exportReports) throw new DomainError('errors.reportPlan');
-    if (
-      businessIds.some(
-        (id) =>
-          !this.db.state().businesses.some((b) => b.id === id && b.ownerAccountId === account.id),
-      )
-    )
-      throw new DomainError('errors.forbidden');
-    const report = this.financials(days, businessIds);
-    const headers = [
-      'finance.date',
-      'finance.business',
-      'finance.code',
-      'finance.gross',
-      'finance.commission',
-      'finance.net',
-      'finance.discount',
-      'finance.customerPaid',
-    ];
-    const data = report.rows.map((r) => [
-      r.collectedAt ?? r.createdAt,
-      this.db
-        .state()
-        .businesses.find(
-          (b) =>
-            b.id ===
-            (r.businessId ?? this.db.state().offers.find((o) => o.id === r.offerId)?.businessId),
-        )?.name ?? '',
-      r.pickupCode,
-      money(cents(r.unitPrice * r.quantity)),
-      r.commissionAmount ?? 0,
-      money(cents(r.unitPrice * r.quantity) - cents(r.commissionAmount ?? 0)),
-      r.customerDiscountAmount ?? 0,
-      r.customerPaidAmount ?? money(cents(r.unitPrice * r.quantity)),
-    ]);
-    const escape = (value: unknown) => {
-      let text = String(value ?? '');
-      if (/^[\s]*[=+@-]/.test(text)) text = "'" + text;
-      return '"' + text.replace(/"/g, '""') + '"';
-    };
-    const csv = [headers.map((h) => this.translate.instant(h)), ...data]
-      .map((row) => row.map(escape).join(','))
-      .join('\r\n');
-    const url = URL.createObjectURL(new Blob(['\ufeff', csv], { type: 'text/csv;charset=utf-8' }));
-    const link = this.document.createElement('a');
-    link.href = url;
-    link.download = `foodsave-${new Date().toISOString().slice(0, 10)}.csv`;
-    this.document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 }

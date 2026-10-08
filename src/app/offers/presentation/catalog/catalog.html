@@ -13,6 +13,11 @@
   @if (locationError()) {
     <p class="message error" role="alert">{{ 'errors.location' | translate }}</p>
   }
+  @if (!geo.position()) {
+    <p class="caption location-hint">{{ 'nearby.enableHint' | translate }}</p>
+  } @else if (!nearby.nearby().length) {
+    <p class="caption location-hint">{{ 'nearby.none' | translate }}</p>
+  }
   <div class="rescue-banner">
     <div>
       <span class="banner-eyebrow"
@@ -25,6 +30,27 @@
       >
     </div>
   </div>
+  <section class="plus-selection-banner" aria-labelledby="plus-selection-title">
+    <div class="plus-selection-icon"><mat-icon>workspace_premium</mat-icon></div>
+    <div>
+      <span class="banner-eyebrow">foodSavePlus</span>
+      <h2 id="plus-selection-title">{{ 'premium.title' | translate }}</h2>
+      <p>{{ 'premium.catalogBody' | translate }}</p>
+      <small>{{ 'premium.available' | translate: { count: exclusiveCount() } }}</small>
+    </div>
+    <div class="button-row">
+      <button
+        mat-stroked-button
+        (click)="exclusiveOnly.set(!exclusiveOnly())"
+        [attr.aria-pressed]="exclusiveOnly()"
+      >
+        {{ (exclusiveOnly() ? 'premium.showAll' : 'premium.explore') | translate }}
+      </button>
+      @if (!billing.currentPlan().exclusiveAccess) {
+        <a mat-flat-button routerLink="/plans">{{ 'premium.unlock' | translate }}</a>
+      }
+    </div>
+  </section>
   <div class="catalog-toolbar">
     <div class="category-pills" [attr.aria-label]="'catalog.categories' | translate">
       @for (c of categories; track c) {
@@ -85,6 +111,12 @@
         (ngModelChange)="pickupBefore.set($event)"
     /></mat-form-field>
   </div>
+  <mat-checkbox
+    class="plus-filter"
+    [ngModel]="exclusiveOnly()"
+    (ngModelChange)="exclusiveOnly.set($event)"
+    >{{ 'premium.filter' | translate }}</mat-checkbox
+  >
   <div class="results-header">
     <p aria-live="polite">
       <strong>{{ results().length }}</strong> {{ 'catalog.results' | translate }}

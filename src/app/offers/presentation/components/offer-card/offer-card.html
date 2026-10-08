@@ -25,6 +25,11 @@
         ><mat-icon>star</mat-icon>{{ 'plans.featured' | translate }}</span
       >
     }
+    @if (billing.isExclusiveOffer(offer())) {
+      <span class="plus-offer-label"
+        ><mat-icon>workspace_premium</mat-icon>{{ 'premium.exclusive' | translate }}</span
+      >
+    }
     <h2>
       <a [routerLink]="['/offers', offer().id]">{{ offer().title }}</a>
     </h2>

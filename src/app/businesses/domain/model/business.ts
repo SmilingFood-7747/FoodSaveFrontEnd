@@ -9,4 +9,5 @@ export interface Business {
   contactPhone: string;
   pickupConditions: string;
   isActive: boolean;
+  plusPartner?: boolean;
 }

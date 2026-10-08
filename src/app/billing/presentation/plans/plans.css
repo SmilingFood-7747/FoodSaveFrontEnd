@@ -192,3 +192,29 @@ app-plans td {
     justify-content: flex-start;
   }
 }
+
+app-plans .plus-membership-intro {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 25px;
+  border: 1px solid #ead7a4;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #fff6dd, #fffdf7);
+  margin: 25px 0 35px;
+}
+app-plans .plus-membership-intro > mat-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+  flex-shrink: 0;
+  color: #977026;
+}
+app-plans .plus-membership-intro h2 {
+  margin: 0 0 8px;
+  color: #5c4320;
+}
+app-plans .plus-membership-intro p {
+  color: #756449;
+  font-size: 14px;
+}

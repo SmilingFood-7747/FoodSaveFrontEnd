@@ -16,7 +16,10 @@ export class BusinessService {
   get(id: number): Business | undefined {
     return this.all().find((b) => b.id === id);
   }
-  save(data: Omit<Business, 'id' | 'ownerAccountId' | 'isActive'>, id?: number): Business {
+  save(
+    data: Omit<Business, 'id' | 'ownerAccountId' | 'isActive' | 'plusPartner'>,
+    id?: number,
+  ): Business {
     const owner = this.session.require('BUSINESS_OWNER');
     if (
       ![data.name, data.address, data.district, data.contactPhone, data.pickupConditions].every(
@@ -34,6 +37,7 @@ export class BusinessService {
       id: id ?? this.db.nextId(this.all()),
       ownerAccountId: owner.id,
       isActive: true,
+      plusPartner: id ? (this.get(id)?.plusPartner ?? false) : false,
     };
     this.repository.save(business);
     return business;

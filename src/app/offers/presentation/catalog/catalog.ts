@@ -1,3 +1,4 @@
+import { NearbyOfferService } from '../../application/nearby-offer.service';
 import { BillingService } from '../../../billing/application/billing.service';
 import {
   Component,
@@ -24,6 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class Catalog {
   readonly billing = inject(BillingService);
+  readonly nearby = inject(NearbyOfferService);
   readonly offers = inject(OfferService);
   readonly businesses = inject(BusinessService);
   readonly geo = inject(GeolocationService);
@@ -33,6 +35,13 @@ export class Catalog {
   readonly radius = signal(0);
   readonly pickupBefore = signal('');
   readonly availableOnly = signal(true);
+  readonly exclusiveOnly = signal(false);
+  readonly exclusiveCount = computed(
+    () =>
+      this.offers
+        .active()
+        .filter((offer) => offer.availableUnits > 0 && this.billing.isExclusiveOffer(offer)).length,
+  );
   readonly locationError = signal(false);
   readonly categories = ['all', 'meals', 'bakery', 'vegetarian', 'desserts'];
   readonly districts = computed(() => [...new Set(this.businesses.all().map((b) => b.district))]);
@@ -57,6 +66,7 @@ export class Catalog {
         const matchesTime = !this.pickupBefore() || time <= this.pickupBefore();
 
         return (
+          (!this.exclusiveOnly() || this.billing.isExclusiveOffer(o)) &&
           matchesSearch &&
           matchesCategory &&
           matchesDistrict &&
@@ -67,8 +77,9 @@ export class Catalog {
       })
       .sort(
         (a, b) =>
+          Number(this.billing.isExclusiveOffer(b)) - Number(this.billing.isExclusiveOffer(a)) ||
           Number(this.billing.businessPlan(b.businessId).featuredOffers) -
-          Number(this.billing.businessPlan(a.businessId).featuredOffers),
+            Number(this.billing.businessPlan(a.businessId).featuredOffers),
       ),
   );
   constructor() {
@@ -83,6 +94,7 @@ export class Catalog {
     this.radius.set(0);
     this.pickupBefore.set('');
     this.availableOnly.set(true);
+    this.exclusiveOnly.set(false);
   }
   async locate(): Promise<void> {
     try {

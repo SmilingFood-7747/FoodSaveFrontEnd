@@ -4,6 +4,7 @@ export function createDemoBusinesses(): Business[] {
   const businesses: Business[] = [
     {
       id: 1,
+      plusPartner: true,
       ownerAccountId: 2,
       name: 'La Mesa Verde',
       district: 'Miraflores',
@@ -40,6 +41,7 @@ export function createDemoBusinesses(): Business[] {
     },
     {
       id: 4,
+      plusPartner: true,
       ownerAccountId: 102,
       name: 'Verde y Fresco',
       district: 'Barranco',

@@ -24,6 +24,23 @@
                 {{ r.pickupStartAt | localized: 'date' }} —
                 {{ r.pickupDeadlineAt | localized: 'time' }}
               </p>
+            } @else if (n.type === 'NEARBY_OFFER') {
+              <p>{{ n.body }}</p>
+              @if (n.distanceKm !== undefined) {
+                <p class="muted">
+                  {{
+                    'nearby.distance' | translate: { distance: (n.distanceKm | number: '1.1-1') }
+                  }}
+                </p>
+              }
+              @if (n.offerId; as offerId) {
+                <a
+                  mat-stroked-button
+                  [routerLink]="['/offers', offerId]"
+                  (click)="notifications.markRead(n.id)"
+                  >{{ 'nearby.view' | translate }}</a
+                >
+              }
             } @else {
               <p>{{ n.body }}</p>
             }
@@ -54,6 +71,12 @@
       <mat-slide-toggle [ngModel]="reminders()" (ngModelChange)="reminders.set($event)">{{
         'notice.reminders' | translate
       }}</mat-slide-toggle>
+      <div class="nearby-preference">
+        <mat-slide-toggle [ngModel]="nearbyEnabled()" (ngModelChange)="nearbyEnabled.set($event)">{{
+          'nearby.preference' | translate
+        }}</mat-slide-toggle>
+        <p class="caption">{{ 'nearby.preferenceBody' | translate }}</p>
+      </div>
       <p class="caption">{{ 'notice.channels' | translate }}</p>
       <button mat-flat-button (click)="save()">{{ 'common.save' | translate }}</button>
       @if (saved()) {

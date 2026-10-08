@@ -84,3 +84,21 @@ app-offer-detail .total-line strong {
     height: 245px;
   }
 }
+
+app-offer-detail .premium-detail {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  margin: 16px 0;
+  border: 1px solid #ead7a4;
+  border-radius: 10px;
+  color: #71501b;
+  background: #fff8e6;
+}
+app-offer-detail .premium-detail > mat-icon {
+  flex-shrink: 0;
+}
+app-offer-detail .premium-detail p {
+  font-size: 12px;
+  margin: 6px 0 0;
+}

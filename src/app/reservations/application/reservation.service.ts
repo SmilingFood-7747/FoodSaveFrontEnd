@@ -57,6 +57,8 @@ export class ReservationService {
     this.db.commit((s) => {
       const data = s.offers.find((o) => o.id === offerId);
       if (!data) throw new DomainError('errors.unavailable');
+      if (!this.billing.canReserveOffer(data, customer.id))
+        throw new DomainError('errors.plusRequired');
       const allocated = new Offer(data).allocate(quantity);
       let code = '';
       do {

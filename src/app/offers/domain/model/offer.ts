@@ -16,6 +16,7 @@ export interface OfferData {
   expiresAt: string;
   status: OfferStatus;
   image: string;
+  plusExclusive?: boolean;
 }
 export class Offer {
   constructor(readonly data: OfferData) {}

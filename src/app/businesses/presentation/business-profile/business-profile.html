@@ -18,6 +18,11 @@
       <div class="detail-grid">
         <div class="panel">
           <h2>{{ b.name }}</h2>
+          @if (b.plusPartner) {
+            <span class="status"
+              ><mat-icon>workspace_premium</mat-icon>{{ 'premium.partner' | translate }}</span
+            >
+          }
           <p>{{ b.address }} · {{ b.district }}</p>
           <h3>{{ 'business.conditions' | translate }}</h3>
           <p>{{ b.pickupConditions }}</p>

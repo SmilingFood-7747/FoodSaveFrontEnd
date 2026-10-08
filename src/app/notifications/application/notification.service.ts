@@ -17,12 +17,13 @@ export class NotificationService {
       .sort((a, b) => b.id - a.id),
   );
   readonly unread = computed(() => this.mine().filter((n) => !n.readAt).length);
-  readonly preferences = computed(
+  readonly preferences = computed<NotificationPreferences>(
     () =>
       this.db.state().preferences[this.session.user()?.id ?? ''] ?? {
         emailEnabled: false,
         pushEnabled: false,
         remindersEnabled: true,
+        nearbyOffersEnabled: true,
       },
   );
   constructor() {
@@ -57,6 +58,36 @@ export class NotificationService {
             })),
           ],
         }));
+    });
+  }
+  recordNearby(
+    items: { offerId: number; distanceKm: number; offerVersion: string; body: string }[],
+  ): void {
+    const user = this.session.user();
+    if (user?.role !== 'CUSTOMER' || this.preferences().nearbyOffersEnabled === false) return;
+    this.db.commit((state) => {
+      const next = [...state.notifications];
+      for (const item of items) {
+        if (
+          next.some(
+            (notice) =>
+              notice.recipientAccountId === user.id &&
+              notice.type === 'NEARBY_OFFER' &&
+              notice.offerId === item.offerId &&
+              notice.offerVersion === item.offerVersion,
+          )
+        )
+          continue;
+        next.push({
+          ...item,
+          id: this.db.nextId(next),
+          recipientAccountId: user.id,
+          type: 'NEARBY_OFFER',
+          titleKey: 'nearby.title',
+          createdAt: new Date().toISOString(),
+        });
+      }
+      return { ...state, notifications: next };
     });
   }
   markRead(id: number): void {

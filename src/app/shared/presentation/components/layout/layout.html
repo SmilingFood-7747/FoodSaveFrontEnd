@@ -71,3 +71,64 @@
     </div>
   </aside>
 </div>
+
+@if (nearby.pinned(); as item) {
+  <aside class="nearby-pinned" aria-labelledby="nearby-pinned-title">
+    <button
+      mat-icon-button
+      class="nearby-close"
+      (click)="nearby.dismissPinned()"
+      [attr.aria-label]="'nearby.dismiss' | translate"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+    <span class="nearby-eyebrow"
+      ><mat-icon>near_me</mat-icon>{{ 'nearby.eyebrow' | translate }}</span
+    >
+    <h2 id="nearby-pinned-title">{{ 'nearby.title' | translate }}</h2>
+    <strong>{{ item.offer.title }}</strong>
+    <p>
+      {{ item.businessName }} ·
+      {{ 'nearby.distance' | translate: { distance: (item.distanceKm | number: '1.1-1') } }}
+    </p>
+    @if (nearby.billing.isExclusiveOffer(item.offer)) {
+      <span class="nearby-plus">{{ 'premium.exclusive' | translate }}</span>
+    }
+    <div class="nearby-action">
+      <strong>{{ item.offer.offerPrice | localized }}</strong
+      ><a mat-flat-button [routerLink]="['/offers', item.offer.id]">{{
+        'nearby.view' | translate
+      }}</a>
+    </div>
+    @if (!session.user()) {
+      <small>{{ 'nearby.signInHint' | translate }}</small>
+    }
+  </aside>
+}
+<div class="nearby-toast-region" aria-live="polite" aria-atomic="true">
+  @if (nearby.toast(); as item) {
+    <section
+      class="nearby-toast"
+      (mouseenter)="nearby.pauseTimer()"
+      (mouseleave)="nearby.restartTimer()"
+      (focusin)="nearby.pauseTimer()"
+      (focusout)="nearby.restartTimer()"
+    >
+      <mat-icon>notifications_active</mat-icon>
+      <div>
+        <strong>{{ 'nearby.title' | translate }}</strong>
+        <p>{{ item.offer.title }} · {{ item.businessName }}</p>
+        <a [routerLink]="['/offers', item.offer.id]" (click)="nearby.dismissToast()">{{
+          'nearby.view' | translate
+        }}</a>
+      </div>
+      <button
+        mat-icon-button
+        (click)="nearby.dismissToast()"
+        [attr.aria-label]="'nearby.dismissToast' | translate"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </section>
+  }
+</div>

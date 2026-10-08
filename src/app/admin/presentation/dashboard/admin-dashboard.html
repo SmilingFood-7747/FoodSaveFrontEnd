@@ -58,6 +58,26 @@
       ><strong>{{ admin.summary().discounts | localized }}</strong>
     </div>
   </div>
+  <section class="panel plus-partners">
+    <h2>{{ 'premium.adminTitle' | translate }}</h2>
+    <p>{{ 'premium.adminBody' | translate }}</p>
+    <div class="plus-partner-grid">
+      @for (row of admin.businesses(); track row.business.id) {
+        <div class="plus-partner-row">
+          <div>
+            <strong>{{ row.business.name }}</strong>
+            <p class="caption">{{ row.business.district }}</p>
+          </div>
+          <mat-slide-toggle
+            [checked]="!!row.business.plusPartner"
+            (change)="admin.setPlusPartner(row.business.id, $event.checked)"
+            [attr.aria-label]="('premium.selectBusiness' | translate) + ': ' + row.business.name"
+            >{{ 'premium.selected' | translate }}</mat-slide-toggle
+          >
+        </div>
+      }
+    </div>
+  </section>
   <section class="panel">
     <h2>{{ 'admin.businessRevenue' | translate }}</h2>
     <div class="filter-row">

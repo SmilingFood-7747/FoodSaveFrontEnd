@@ -1,4 +1,11 @@
-import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { OfferService } from '../../application/offer.service';
@@ -27,6 +34,7 @@ export class OfferEditor {
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   }
   readonly businessId = signal(this.existing?.businessId ?? this.businesses.owned()[0]?.id ?? 0);
+  readonly plusExclusive = signal(this.existing?.plusExclusive ?? false);
   readonly title = signal(this.existing?.title ?? '');
   readonly description = signal(this.existing?.description ?? '');
   readonly allergens = signal(this.existing?.allergens ?? '');
@@ -113,6 +121,8 @@ export class OfferEditor {
     try {
       const data = {
         businessId: Number(this.businessId()),
+        plusExclusive:
+          !!this.businesses.get(Number(this.businessId()))?.plusPartner && this.plusExclusive(),
         title: this.title(),
         description: this.description(),
         allergens: this.allergens(),

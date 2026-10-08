@@ -16,6 +16,7 @@ import {
 } from '../../billing/domain/model/subscription';
 import { demoSeed } from './demo-seed';
 export interface LocalDatabase {
+  plusSelectionVersion?: number;
   subscriptions: Subscription[];
   subscriptionCharges: SubscriptionCharge[];
   accounts: Account[];
@@ -51,6 +52,7 @@ export class BrowserDatabase {
           database = this.upgradeDemoOffers(database);
           database = this.upgradeDemoAccounts(database);
           database = this.upgradeBilling(database);
+          database = this.upgradePlusSelection(database);
           return database;
         }
       }
@@ -227,6 +229,38 @@ export class BrowserDatabase {
       localStorage.setItem(this.key, JSON.stringify(next));
     } catch {}
     return next;
+  }
+  private upgradePlusSelection(value: LocalDatabase): LocalDatabase {
+    if (value.plusSelectionVersion === 1) return value;
+    const sample = demoSeed();
+    for (const business of value.businesses) {
+      const original = sample.businesses.find(
+        (item) =>
+          item.id === business.id &&
+          item.ownerAccountId === business.ownerAccountId &&
+          item.name === business.name,
+      );
+      if (original?.plusPartner && business.plusPartner === undefined) business.plusPartner = true;
+    }
+    for (const offer of sample.offers.filter((item) => item.plusExclusive)) {
+      const original = sample.businesses.find((item) => item.id === offer.businessId);
+      if (
+        !original ||
+        !value.businesses.some(
+          (item) =>
+            item.id === original.id &&
+            item.ownerAccountId === original.ownerAccountId &&
+            item.name === original.name,
+        )
+      )
+        continue;
+      value.offers.push({ ...offer, id: this.nextId(value.offers) });
+    }
+    value.plusSelectionVersion = 1;
+    try {
+      localStorage.setItem(this.key, JSON.stringify(value));
+    } catch {}
+    return value;
   }
   private upgradeBilling(value: LocalDatabase): LocalDatabase {
     value.subscriptions ??= [];

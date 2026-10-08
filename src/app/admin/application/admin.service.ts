@@ -1,25 +1,34 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { BrowserDatabase } from '../../shared/infrastructure/browser-database';
 import { BillingService } from '../../billing/application/billing.service';
+import { SessionService } from '../../iam/application/session.service';
 import { ClockService } from '../../shared/application/clock.service';
 @Injectable({ providedIn: 'root' })
 export class AdminService {
   private readonly db = inject(BrowserDatabase);
   private readonly billing = inject(BillingService);
   private readonly clock = inject(ClockService);
+  private readonly session = inject(SessionService);
+  setPlusPartner(businessId: number, selected: boolean): void {
+    this.session.require('ADMIN');
+    this.db.commit((state) => ({
+      ...state,
+      businesses: state.businesses.map((business) =>
+        business.id === businessId ? { ...business, plusPartner: selected } : business,
+      ),
+    }));
+  }
   readonly period = signal(30);
   readonly query = signal('');
   readonly planFilter = signal('ALL');
   readonly summary = computed(() => this.billing.financials(this.period()));
   readonly businesses = computed(() =>
-    this.db
-      .state()
-      .businesses.map((b) => ({
-        business: b,
-        owner: this.db.state().accounts.find((a) => a.id === b.ownerAccountId),
-        plan: this.billing.businessPlan(b.id),
-        report: this.billing.businessReport(b.id, this.period()),
-      })),
+    this.db.state().businesses.map((b) => ({
+      business: b,
+      owner: this.db.state().accounts.find((a) => a.id === b.ownerAccountId),
+      plan: this.billing.businessPlan(b.id),
+      report: this.billing.businessReport(b.id, this.period()),
+    })),
   );
   readonly results = computed(() =>
     this.businesses().filter(

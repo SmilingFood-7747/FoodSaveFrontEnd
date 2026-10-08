@@ -324,7 +324,9 @@
     "imageStorage": "No se pudo guardar la imagen. Revisa el espacio del navegador e inténtalo de nuevo.",
     "plan": "Selecciona un plan válido.",
     "offerLimit": "Llegaste al límite de ofertas activas de tu plan. Pausa una oferta o cambia de plan.",
-    "reportPlan": "La exportación de reportes está disponible en foodSavePlus."
+    "reportPlan": "La exportación de reportes está disponible en foodSavePlus.",
+    "plusRequired": "Necesitas foodSavePlus activo para reservar esta oferta exclusiva.",
+    "plusPartnerRequired": "Este negocio no pertenece a la selección Plus. Publica la oferta para todos los clientes."
   },
   "finance": {
     "date": "Fecha",
@@ -364,7 +366,7 @@
     "descriptions": {
       "CUSTOMER": {
         "FREE": "Descubre ofertas y reserva tus comidas sin pagar una mensualidad.",
-        "PLUS": "Un descuento adicional para tus compras habituales."
+        "PLUS": "Ofertas exclusivas de restaurantes seleccionados y un descuento adicional en tus reservas."
       },
       "BUSINESS_OWNER": {
         "FREE": "Empieza a vender tus excedentes y organiza tus recojos.",
@@ -437,5 +439,39 @@
     "chargeHistory": "Contrataciones del periodo",
     "noCharges": "No se registraron contrataciones de pago en este periodo.",
     "scope": "Estas cifras se calculan con los datos guardados en este navegador. Las comisiones son estimadas y las mensualidades son simuladas; no hay cobros ni liquidaciones reales."
+  },
+  "premium": {
+    "title": "Una selección especial para ti",
+    "catalogBody": "Descubre ofertas exclusivas de restaurantes seleccionados por FoodSave. Reserva con foodSavePlus y conserva tu descuento adicional.",
+    "available": "{{count}} ofertas exclusivas disponibles",
+    "exclusive": "Exclusivo foodSavePlus",
+    "partner": "Restaurante de la selección Plus",
+    "explore": "Explorar exclusivas",
+    "showAll": "Ver todas las ofertas",
+    "filter": "Solo ofertas exclusivas Plus",
+    "unlock": "Descubrir foodSavePlus",
+    "lockedBody": "Esta oferta es parte de la selección Plus. Activa tu suscripción para reservarla.",
+    "memberBody": "Tu suscripción te da acceso a esta oferta especial y al descuento adicional disponible.",
+    "planBenefit": "Acceso a ofertas exclusivas de restaurantes seleccionados",
+    "planBody": "Disfruta menús especiales y ofertas exclusivas de la selección FoodSave. Además, mantén el 10 % de descuento adicional, hasta S/ 30 por ciclo mensual. Las exclusivas dependen de la disponibilidad de cada negocio.",
+    "publishExclusive": "Reservas exclusivas para clientes foodSavePlus",
+    "publishHelp": "La oferta se verá en el catálogo, pero solo podrán reservarla los clientes con una suscripción Plus activa. Puedes seguir publicando ofertas para todos.",
+    "adminTitle": "Restaurantes de la selección Plus",
+    "adminBody": "Selecciona los negocios que pueden publicar ofertas exclusivas para clientes Plus. Esta selección es independiente del plan del negocio. Si retiras un negocio, sus ofertas dejan de ser exclusivas.",
+    "selectBusiness": "Seleccionar restaurante",
+    "selected": "Selección Plus"
+  },
+  "nearby": {
+    "title": "Hay una oferta cerca de tu ubicación",
+    "eyebrow": "Cerca de ti",
+    "distance": "A {{distance}} km de ti",
+    "view": "Ver oferta",
+    "dismiss": "Ocultar ofertas cercanas actuales",
+    "dismissToast": "Cerrar aviso",
+    "enableHint": "Activa “Usar mi ubicación” para recibir avisos de ofertas a menos de 2 km. Tu ubicación se usa solo mientras navegas.",
+    "none": "No hay ofertas disponibles a menos de 2 km, o tienes desactivados los avisos de cercanía. Puedes seguir explorando el catálogo.",
+    "preference": "Avisos de ofertas cercanas",
+    "preferenceBody": "Con permiso de ubicación, muestra ofertas a menos de 2 km en un cuadro fijo, un aviso temporal y tu historial de notificaciones. Puedes desactivarlos cuando quieras.",
+    "signInHint": "Inicia sesión para guardar estos avisos en tus notificaciones."
   }
 }

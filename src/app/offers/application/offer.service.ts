@@ -40,6 +40,8 @@ export class OfferService {
       this.db.state().reservations.some((r) => r.offerId === current.id && r.status === 'ACTIVE')
     )
       throw new DomainError('errors.offerReserved');
+    if (data.plusExclusive && !this.businesses.get(data.businessId)?.plusPartner)
+      throw new DomainError('errors.plusPartnerRequired');
     const next = {
       ...data,
       id: id ?? this.db.nextId(this.all()),

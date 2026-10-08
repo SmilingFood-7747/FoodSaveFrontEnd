@@ -184,3 +184,65 @@ app-catalog .trust-row mat-icon {
     flex-basis: 100%;
   }
 }
+
+app-catalog .plus-selection-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid #ead7a4;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #fff9e9, #fffdf8);
+}
+app-catalog .plus-selection-banner > div:nth-child(2) {
+  flex: 1;
+  min-width: 210px;
+}
+app-catalog .plus-selection-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 15px;
+  background: #f4e3b8;
+  color: #765514;
+}
+app-catalog .plus-selection-icon mat-icon {
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+}
+app-catalog .plus-selection-banner h2 {
+  font-size: 24px;
+  margin: 6px 0;
+  color: #4d3b21;
+}
+app-catalog .plus-selection-banner p {
+  margin: 0 0 7px;
+  font-size: 13px;
+  color: #6f634d;
+}
+app-catalog .plus-selection-banner small {
+  color: #786743;
+}
+app-catalog .plus-selection-banner .banner-eyebrow {
+  color: #876320;
+}
+app-catalog .plus-filter {
+  display: block;
+  margin-bottom: 12px;
+}
+app-catalog .location-hint {
+  margin: -8px 0 20px;
+}
+@media (max-width: 520px) {
+  app-catalog .plus-selection-banner {
+    padding: 20px;
+    gap: 14px;
+  }
+  app-catalog .plus-selection-banner h2 {
+    font-size: 21px;
+  }
+}

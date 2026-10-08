@@ -98,6 +98,18 @@
       </div>
     </div>
   }
+  @if (audience() === 'CUSTOMER') {
+    <section class="plus-membership-intro">
+      <mat-icon>workspace_premium</mat-icon>
+      <div>
+        <h2>{{ 'premium.title' | translate }}</h2>
+        <p>{{ 'premium.planBody' | translate }}</p>
+        <a routerLink="/offers"
+          >{{ 'premium.explore' | translate }} <span aria-hidden="true">→</span></a
+        >
+      </div>
+    </section>
+  }
   <div class="plans-grid">
     @for (plan of plans(); track plan.id) {
       <article class="panel plan-card" [class.recommended]="plan.id === 'PLUS'">
@@ -118,6 +130,9 @@
         <ul>
           @if (audience() === 'CUSTOMER') {
             <li><mat-icon>check_circle</mat-icon>{{ 'plans.customerBase' | translate }}</li>
+            @if (plan.exclusiveAccess) {
+              <li><mat-icon>workspace_premium</mat-icon>{{ 'premium.planBenefit' | translate }}</li>
+            }
             @if (plan.discountRate) {
               <li>
                 <mat-icon>check_circle</mat-icon

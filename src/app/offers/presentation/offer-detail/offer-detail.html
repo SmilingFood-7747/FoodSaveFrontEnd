@@ -31,6 +31,15 @@
           <span class="status" [class.status-inactive]="o.status !== 'ACTIVE'">{{
             'status.' + o.status | translate
           }}</span>
+          @if (exclusive()) {
+            <div class="premium-detail" [class.locked]="locked()">
+              <mat-icon>{{ locked() ? 'lock' : 'workspace_premium' }}</mat-icon>
+              <div>
+                <strong>{{ 'premium.exclusive' | translate }}</strong>
+                <p>{{ (locked() ? 'premium.lockedBody' : 'premium.memberBody') | translate }}</p>
+              </div>
+            </div>
+          }
           <h2>{{ business()?.name }}</h2>
           <a [routerLink]="['/businesses', o.businessId]" class="muted"
             >{{ business()?.district }} · {{ 'detail.viewBusiness' | translate }}</a
@@ -89,14 +98,20 @@
           @if (error()) {
             <p class="message error" role="alert">{{ error() | translate }}</p>
           }
-          <button
-            mat-flat-button
-            class="full-width"
-            [disabled]="!reservable() || !confirmed()"
-            (click)="reserve()"
-          >
-            <mat-icon>shopping_bag</mat-icon>{{ 'detail.reserve' | translate }}
-          </button>
+          @if (locked()) {
+            <a mat-flat-button class="full-width" routerLink="/plans"
+              ><mat-icon>lock</mat-icon>{{ 'premium.unlock' | translate }}</a
+            >
+          } @else {
+            <button
+              mat-flat-button
+              class="full-width"
+              [disabled]="!reservable() || !confirmed()"
+              (click)="reserve()"
+            >
+              <mat-icon>shopping_bag</mat-icon>{{ 'detail.reserve' | translate }}
+            </button>
+          }
           <p class="caption">{{ 'detail.cancelPolicy' | translate }}</p>
         </div>
       </div>

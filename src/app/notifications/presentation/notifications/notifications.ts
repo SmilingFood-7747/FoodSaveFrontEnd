@@ -1,4 +1,10 @@
-import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { NotificationService } from '../../application/notification.service';
 import { ReservationService } from '../../../reservations/application/reservation.service';
@@ -19,6 +25,7 @@ export class Notifications {
   readonly businesses = inject(BusinessService);
   readonly reminders = signal(this.notifications.preferences().remindersEnabled);
   readonly saved = signal(false);
+  readonly nearbyEnabled = signal(this.notifications.preferences().nearbyOffersEnabled !== false);
   reservation(id?: number) {
     return this.reservations.all().find((r) => r.id === id);
   }
@@ -26,6 +33,7 @@ export class Notifications {
     this.notifications.savePreferences({
       ...this.notifications.preferences(),
       remindersEnabled: this.reminders(),
+      nearbyOffersEnabled: this.nearbyEnabled(),
     });
     this.saved.set(true);
   }

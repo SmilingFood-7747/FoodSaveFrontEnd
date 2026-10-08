@@ -324,7 +324,9 @@
     "imageStorage": "The photo could not be saved. Check available browser storage and try again.",
     "plan": "Select a valid plan.",
     "offerLimit": "You reached the active offer limit for your plan. Pause an offer or change plans.",
-    "reportPlan": "Report exports are available with foodSavePlus."
+    "reportPlan": "Report exports are available with foodSavePlus.",
+    "plusRequired": "An active foodSavePlus subscription is required to reserve this exclusive offer.",
+    "plusPartnerRequired": "This business is not in the Plus selection. Publish the offer for all customers."
   },
   "finance": {
     "date": "Date",
@@ -364,7 +366,7 @@
     "descriptions": {
       "CUSTOMER": {
         "FREE": "Discover offers and reserve meals without a monthly fee.",
-        "PLUS": "An extra discount for your regular purchases."
+        "PLUS": "Exclusive offers from selected restaurants and an extra discount on your reservations."
       },
       "BUSINESS_OWNER": {
         "FREE": "Start selling surplus food and manage your pickups.",
@@ -437,5 +439,39 @@
     "chargeHistory": "Subscriptions purchased in this period",
     "noCharges": "No paid subscriptions were recorded in this period.",
     "scope": "Figures use data saved in this browser. Commissions are estimates and monthly payments are simulated; there are no real charges or payouts."
+  },
+  "premium": {
+    "title": "A special selection for you",
+    "catalogBody": "Discover exclusive offers from restaurants selected by FoodSave. Reserve with foodSavePlus and keep your extra discount.",
+    "available": "{{count}} exclusive offers available",
+    "exclusive": "Exclusive to foodSavePlus",
+    "partner": "Plus selection restaurant",
+    "explore": "Explore exclusive offers",
+    "showAll": "See all offers",
+    "filter": "Only Plus exclusive offers",
+    "unlock": "Discover foodSavePlus",
+    "lockedBody": "This offer belongs to the Plus selection. Activate your subscription to reserve it.",
+    "memberBody": "Your subscription unlocks this special offer and your available extra discount.",
+    "planBenefit": "Access to exclusive offers from selected restaurants",
+    "planBody": "Enjoy special menus and exclusive offers from the FoodSave selection. Keep your 10% extra discount, up to S/ 30 per monthly cycle. Exclusive offers depend on each business's availability.",
+    "publishExclusive": "Reservations exclusive to foodSavePlus customers",
+    "publishHelp": "The offer will appear in the catalog, but only customers with an active Plus subscription can reserve it. You can still publish offers for everyone.",
+    "adminTitle": "Plus selection restaurants",
+    "adminBody": "Select the businesses allowed to publish exclusive offers for Plus customers. Selection is independent of the business plan. Removing a business makes its offers available to everyone.",
+    "selectBusiness": "Select restaurant",
+    "selected": "Plus selection"
+  },
+  "nearby": {
+    "title": "There is an offer near your location",
+    "eyebrow": "Near you",
+    "distance": "{{distance}} km away",
+    "view": "View offer",
+    "dismiss": "Hide current nearby offers",
+    "dismissToast": "Dismiss notification",
+    "enableHint": "Enable “Use my location” to receive alerts for offers within 2 km. Your location is used only while you browse.",
+    "none": "No available offers within 2 km, or nearby alerts are disabled. You can keep exploring the catalog.",
+    "preference": "Nearby offer alerts",
+    "preferenceBody": "With location permission, show offers within 2 km in a pinned card, a temporary alert and your notification history. You can turn them off at any time.",
+    "signInHint": "Sign in to save these alerts in your notifications."
   }
 }

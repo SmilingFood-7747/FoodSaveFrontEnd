@@ -125,6 +125,18 @@
               required
           /></mat-form-field>
         </div>
+        @if (businesses.get(+businessId())?.plusPartner) {
+          <section class="panel plus-editor-option">
+            <mat-checkbox
+              name="plusExclusive"
+              [ngModel]="plusExclusive()"
+              (ngModelChange)="plusExclusive.set($event)"
+            >
+              {{ 'premium.publishExclusive' | translate }}
+            </mat-checkbox>
+            <p class="caption">{{ 'premium.publishHelp' | translate }}</p>
+          </section>
+        }
         <section class="image-upload" aria-labelledby="offer-photo-label">
           <h3 id="offer-photo-label">{{ 'editor.image' | translate }}</h3>
           <p id="offer-photo-hint" class="caption">{{ 'editor.imageHint' | translate }}</p>

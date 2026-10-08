@@ -9,6 +9,7 @@ export interface SubscriptionPlan {
   activeOfferLimit: number | null;
   exportReports: boolean;
   featuredOffers: boolean;
+  exclusiveAccess: boolean;
 }
 export interface Subscription {
   id: number;
@@ -41,6 +42,7 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       activeOfferLimit: null,
       exportReports: false,
       featuredOffers: false,
+      exclusiveAccess: false,
     },
     {
       id: 'PLUS',
@@ -51,6 +53,7 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       activeOfferLimit: null,
       exportReports: false,
       featuredOffers: false,
+      exclusiveAccess: true,
     },
   ],
   BUSINESS_OWNER: [
@@ -63,6 +66,7 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       activeOfferLimit: 5,
       exportReports: false,
       featuredOffers: false,
+      exclusiveAccess: false,
     },
     {
       id: 'PLUS',
@@ -73,6 +77,7 @@ export const PLANS: Record<PlanAudience, readonly SubscriptionPlan[]> = {
       activeOfferLimit: 20,
       exportReports: true,
       featuredOffers: false,
+      exclusiveAccess: false,
     },
   ],
 };

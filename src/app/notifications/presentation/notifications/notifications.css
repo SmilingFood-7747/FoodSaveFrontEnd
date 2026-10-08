@@ -36,3 +36,9 @@ app-notifications .notification-card small {
 app-notifications .notification-list + .panel {
   align-self: start;
 }
+
+app-notifications .nearby-preference {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}

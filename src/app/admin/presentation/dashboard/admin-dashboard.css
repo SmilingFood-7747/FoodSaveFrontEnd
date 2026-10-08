@@ -119,3 +119,32 @@ app-admin-dashboard td.net {
     padding: 17px;
   }
 }
+
+app-admin-dashboard .plus-partner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+app-admin-dashboard .plus-partner-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+app-admin-dashboard .plus-partner-row p {
+  margin: 5px 0 0;
+}
+@media (max-width: 850px) {
+  app-admin-dashboard .plus-partner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 420px) {
+  app-admin-dashboard .plus-partner-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

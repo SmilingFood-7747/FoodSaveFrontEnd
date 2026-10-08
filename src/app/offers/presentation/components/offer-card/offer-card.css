@@ -194,3 +194,21 @@ app-offer-card .featured-label mat-icon {
   height: 14px;
   font-size: 14px;
 }
+
+app-offer-card .plus-offer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 6px;
+  color: #785719;
+  background: #fff2d0;
+  padding: 5px 8px;
+  margin-bottom: 9px;
+  font-size: 11px;
+  font-weight: 800;
+}
+app-offer-card .plus-offer-label mat-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}

@@ -5,7 +5,7 @@ import { BrowserDatabase, upsert } from '../../shared/infrastructure/browser-dat
 import { SessionService } from '../../iam/application/session.service';
 import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
-import { Offer } from '../../offers/domain/model/offer';
+import { Offer, OfferData } from '../../offers/domain/model/offer';
 import {
   cents,
   money,
@@ -51,6 +51,23 @@ export class BillingService {
   businessPlan(businessId: number) {
     const owner = this.db.state().businesses.find((b) => b.id === businessId)?.ownerAccountId ?? 0;
     return this.planFor(owner);
+  }
+  isExclusiveOffer(offer: OfferData): boolean {
+    return (
+      !!offer.plusExclusive &&
+      !!this.db
+        .state()
+        .businesses.find((business) => business.id === offer.businessId && business.plusPartner)
+    );
+  }
+  canReserveOffer(offer: OfferData, accountId = this.session.user()?.id ?? 0): boolean {
+    if (!this.isExclusiveOffer(offer)) return true;
+    return (
+      this.db
+        .state()
+        .accounts.some((account) => account.id === accountId && account.role === 'CUSTOMER') &&
+      this.planFor(accountId).exclusiveAccess
+    );
   }
   choosePlan(id: PlanId): 'ACTIVE' | 'SCHEDULED' {
     const account = this.session.require();

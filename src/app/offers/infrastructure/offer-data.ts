@@ -3,7 +3,9 @@ import { OfferData } from '../domain/model/offer';
 export function createDemoOffers(now: number): OfferData[] {
   const pickupStartAt = new Date(now - 15 * 60 * 1000).toISOString();
   const laterPickupStartAt = new Date(now + 30 * 60 * 1000).toISOString();
-  const pickupEndAt = new Date(now + 24 * 60 * 60 * 1000).toISOString();
+  const expiry = new Date(now);
+  expiry.setFullYear(expiry.getFullYear() + 1);
+  const pickupEndAt = expiry.toISOString();
 
   return [
     {

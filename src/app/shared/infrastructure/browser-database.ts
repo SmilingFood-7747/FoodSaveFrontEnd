@@ -16,6 +16,7 @@ import {
 } from '../../billing/domain/model/subscription';
 import { demoSeed } from './demo-seed';
 export interface LocalDatabase {
+  demoOfferValidityVersion?: number;
   plusSelectionVersion?: number;
   subscriptions: Subscription[];
   subscriptionCharges: SubscriptionCharge[];
@@ -53,6 +54,7 @@ export class BrowserDatabase {
           database = this.upgradeDemoAccounts(database);
           database = this.upgradeBilling(database);
           database = this.upgradePlusSelection(database);
+          database = this.upgradeDemoOfferValidity(database);
           return database;
         }
       }
@@ -225,6 +227,40 @@ export class BrowserDatabase {
     });
     if (!changed) return value;
     const next = { ...value, offers };
+    try {
+      localStorage.setItem(this.key, JSON.stringify(next));
+    } catch {}
+    return next;
+  }
+  private upgradeDemoOfferValidity(value: LocalDatabase): LocalDatabase {
+    if (value.demoOfferValidityVersion === 1) return value;
+    const demo = demoSeed();
+    const offers = value.offers.map((offer) => {
+      const sample = demo.offers.find(
+        (item) =>
+          (item.id === offer.id || (item.plusExclusive && offer.plusExclusive)) &&
+          item.businessId === offer.businessId &&
+          item.title === offer.title &&
+          item.description === offer.description &&
+          item.category === offer.category &&
+          item.originalPrice === offer.originalPrice &&
+          item.offerPrice === offer.offerPrice &&
+          item.initialUnits === offer.initialUnits,
+      );
+      const business = value.businesses.find((item) => item.id === offer.businessId);
+      const originalBusiness = demo.businesses.find((item) => item.id === offer.businessId);
+      if (
+        !sample ||
+        offer.status !== 'ACTIVE' ||
+        !business ||
+        !originalBusiness ||
+        business.ownerAccountId !== originalBusiness.ownerAccountId ||
+        business.name !== originalBusiness.name
+      )
+        return offer;
+      return { ...offer, pickupEndAt: sample.pickupEndAt, expiresAt: sample.expiresAt };
+    });
+    const next = { ...value, offers, demoOfferValidityVersion: 1 };
     try {
       localStorage.setItem(this.key, JSON.stringify(next));
     } catch {}

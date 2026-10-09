@@ -62,7 +62,7 @@
           @if (message()) {
             <p class="message success" role="status">{{ message() | translate }}</p>
           }
-          <button mat-flat-button type="submit" [disabled]="form.invalid">
+          <button mat-flat-button type="submit" [disabled]="busy() || form.invalid">
             {{ 'support.submit' | translate }}
           </button>
         </form>

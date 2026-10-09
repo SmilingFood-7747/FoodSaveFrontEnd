@@ -23,6 +23,7 @@ import { districtOptions } from '../../../shared/domain/model/lima-districts';
   styleUrl: './business-profile.css',
 })
 export class BusinessProfile {
+  readonly busy = signal(false);
   readonly businesses = inject(BusinessService);
   readonly session = inject(SessionService);
   readonly offers = inject(OfferService);
@@ -60,9 +61,11 @@ export class BusinessProfile {
       `https://www.openstreetmap.org/export/embed.html?bbox=${lon - 0.006}%2C${lat - 0.004}%2C${lon + 0.006}%2C${lat + 0.004}&layer=mapnik&marker=${lat}%2C${lon}`,
     );
   });
-  save(): void {
+  async save(): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
     try {
-      this.businesses.save(
+      await this.businesses.save(
         {
           name: this.name(),
           address: this.address(),
@@ -78,6 +81,8 @@ export class BusinessProfile {
       this.error.set('');
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
 }

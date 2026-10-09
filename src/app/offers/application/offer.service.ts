@@ -4,7 +4,7 @@ import { Offer, OfferData } from '../domain/model/offer';
 import { OfferRepository } from '../domain/repositories/offer.repository';
 import { BusinessService } from '../../businesses/application/business.service';
 import { SessionService } from '../../iam/application/session.service';
-import { BrowserDatabase } from '../../shared/infrastructure/browser-database';
+import { ApiDatabase } from '../../shared/infrastructure/api-database';
 import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
 @Injectable({ providedIn: 'root' })
@@ -13,7 +13,7 @@ export class OfferService {
   private readonly repository = inject(OfferRepository);
   private readonly businesses = inject(BusinessService);
   private readonly session = inject(SessionService);
-  private readonly db = inject(BrowserDatabase);
+  private readonly db = inject(ApiDatabase);
   private readonly clock = inject(ClockService);
   readonly all = computed(() => {
     this.clock.now();
@@ -28,7 +28,10 @@ export class OfferService {
   get(id: number): OfferData | undefined {
     return this.all().find((o) => o.id === id);
   }
-  save(data: Omit<OfferData, 'id' | 'availableUnits' | 'status'>, id?: number): OfferData {
+  async save(
+    data: Omit<OfferData, 'id' | 'availableUnits' | 'status'>,
+    id?: number,
+  ): Promise<OfferData> {
     const owner = this.session.require('BUSINESS_OWNER');
     if (this.businesses.get(data.businessId)?.ownerAccountId !== owner.id)
       throw new DomainError('errors.forbidden');
@@ -50,15 +53,15 @@ export class OfferService {
     };
     Offer.validate(next);
     this.billing.assertCanPublish(data.businessId, id);
-    this.repository.save(next);
+    await this.repository.save(next);
     return next;
   }
-  pause(id: number): void {
+  async pause(id: number): Promise<void> {
     const owner = this.session.require('BUSINESS_OWNER');
     const current = this.get(id);
     if (!current || this.businesses.get(current.businessId)?.ownerAccountId !== owner.id)
       throw new DomainError('errors.forbidden');
-    this.db.commit((s) => {
+    await this.db.commit((s) => {
       const affected = s.reservations.filter((r) => r.offerId === id && r.status === 'ACTIVE');
       const messages = affected.map((r, index) => ({
         id: this.db.nextId(s.notifications) + index,

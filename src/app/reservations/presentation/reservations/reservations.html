@@ -29,7 +29,7 @@
           (ngModelChange)="code.set($event)"
           required
           autocomplete="off" /></mat-form-field
-      ><button mat-flat-button type="submit" [disabled]="!code().trim()">
+      ><button mat-flat-button type="submit" [disabled]="busy() || !code().trim()">
         <mat-icon>qr_code_scanner</mat-icon>{{ 'reservation.confirmPickup' | translate }}
       </button>
     </form>
@@ -106,7 +106,7 @@
           ><strong>{{ r.pickupCode }}</strong>
           <p class="caption">{{ 'reservation.codeNote' | translate }}</p>
           @if (!businessMode && r.status === 'ACTIVE') {
-            <button mat-stroked-button (click)="cancel(r.id)">
+            <button mat-stroked-button (click)="cancel(r.id)" [disabled]="busy()">
               {{ 'reservation.cancel' | translate }}
             </button>
           }
@@ -152,7 +152,8 @@
           ></textarea>
         </mat-form-field>
         <div class="button-row">
-          <button mat-flat-button type="submit">{{ 'review.submit' | translate }}</button
+          <button mat-flat-button type="submit" [disabled]="busy()">
+            {{ 'review.submit' | translate }}</button
           ><button mat-button type="button" (click)="reviewId.set(null)">
             {{ 'common.cancel' | translate }}
           </button>

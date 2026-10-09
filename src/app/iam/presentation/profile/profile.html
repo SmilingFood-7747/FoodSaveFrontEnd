@@ -42,7 +42,9 @@
       @if (message()) {
         <p class="message" role="status">{{ message() | translate }}</p>
       }
-      <button mat-flat-button type="submit">{{ 'common.save' | translate }}</button>
+      <button mat-flat-button type="submit" [disabled]="busy()">
+        {{ 'common.save' | translate }}
+      </button>
     </form>
   </div>
 </section>

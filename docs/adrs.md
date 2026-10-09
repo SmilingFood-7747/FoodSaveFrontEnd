@@ -30,7 +30,7 @@ Organizar el frontend en `iam`, `businesses`, `offers`, `reservations`, `notific
 **Costes y límites:**
 
 - Hay más archivos y deben mantenerse coherentes las dependencias entre contextos.
-- Algunas operaciones actuales coordinan varios contextos mediante `BrowserDatabase`; al moverlas a un backend habrá que definir límites transaccionales.
+- Algunas operaciones actuales coordinan varios contextos mediante `ApiDatabase`; al moverlas a un backend habrá que definir límites transaccionales.
 
 ### Evidencia en el proyecto
 
@@ -82,7 +82,7 @@ La disponibilidad, las reservas y los avisos deben reaccionar a cambios de estad
 
 ### Decisión
 
-Usar `signal`, `computed` y `effect` de Angular en servicios de aplicación y componentes. `BrowserDatabase.state` contiene el estado local y `commit` aplica cambios sobre una copia. `ClockService` proporciona una señal de tiempo para vencimientos y recordatorios.
+Usar `signal`, `computed` y `effect` de Angular en servicios de aplicación y componentes. `ApiDatabase.state` contiene la copia en memoria de los recursos HTTP. `commit` aplica cambios sobre una copia y espera la confirmación del servidor. `ClockService` proporciona una señal de tiempo para vencimientos y recordatorios.
 
 ### Consecuencias
 
@@ -98,11 +98,11 @@ Usar `signal`, `computed` y `effect` de Angular en servicios de aplicación y co
 
 ### Evidencia en el proyecto
 
-`BrowserDatabase`, `OfferService`, `ReservationService`, `NotificationService`, `ReportingService`, `ClockService`.
+`ApiDatabase`, `OfferService`, `ReservationService`, `NotificationService`, `ReportingService`, `ClockService`.
 
 ---
 
-## ADR 004: Contratos de repositorio y persistencia local del prototipo
+## ADR 004: Contratos de repositorio y persistencia HTTP del prototipo
 
 ### Estado
 
@@ -110,28 +110,28 @@ Aceptada para el prototipo
 
 ### Contexto
 
-La primera versión debe demostrar los recorridos del negocio sin un servicio remoto conectado.
+Los recorridos del prototipo deben compartir las cuentas, negocios, ofertas y reservas de la fake API desplegada.
 
 ### Decisión
 
-Definir contratos abstractos `AccountRepository`, `BusinessRepository`, `OfferRepository`, `ReservationRepository`, `NotificationRepository` y `FeedbackRepository`. `app.config.ts` los resuelve con adaptadores `Browser*Repository`. Los datos se guardan en localStorage con la clave `foodsave-demo-v1`; la sesión se guarda en sessionStorage.
+Definir contratos abstractos `AccountRepository`, `BusinessRepository`, `OfferRepository`, `ReservationRepository`, `NotificationRepository` y `FeedbackRepository`. `app.config.ts` los resuelve con adaptadores `Api*Repository` y espera la carga de las diez colecciones mediante un inicializador. `ApiDatabase` usa HttpClient y la URL configurada en el entorno. Las escrituras son asíncronas, usan POST/PATCH y muestran éxito después de la confirmación. La sesión utiliza sessionStorage con la clave `foodsave-api-session`. La base anterior del navegador se conserva sin importarla automáticamente.
 
 ### Consecuencias
 
 **Positivas:**
 
-- Se pueden demostrar registro, ofertas, reservas y recojos sin depender de una API disponible.
+- Registro, negocios, ofertas y reservas consultan y modifican los recursos HTTP compartidos.
 - Los adaptadores concretos se separan de los contratos de dominio.
 
 **Costes y límites:**
 
-- Los datos no se comparten entre navegadores o dispositivos y pueden perderse al limpiar el almacenamiento.
-- Los contratos actuales son síncronos; conectar HTTP requiere adaptar la coordinación asíncrona, la carga inicial y el manejo de errores.
-- Los cambios locales en reservas y stock no garantizan consistencia entre clientes concurrentes.
+- La aplicación requiere una API disponible y ofrece reintentar la carga y actualizar los datos.
+- Las escrituras se serializan en cada instancia y detectan cambios previos de otros clientes. Un lote fallido intenta compensar pasos confirmados y recarga el servidor; JSON Server no garantiza transacciones ni evita todas las carreras concurrentes.
+- Render conserva cambios solo mientras su almacenamiento efímero continúe disponible; el reinicio o redespliegue restaura la semilla versionada.
 
 ### Evidencia en el proyecto
 
-`src/app/app.config.ts`, `src/app/shared/infrastructure/browser-database.ts`, los contratos y adaptadores de cada contexto.
+`src/app/app.config.ts`, `src/app/shared/infrastructure/api-database.ts`, los contratos y adaptadores de cada contexto.
 
 ---
 
@@ -147,7 +147,7 @@ El desarrollo necesita datos de muestra y una configuración de acceso a recurso
 
 ### Decisión
 
-Separar la fake API en `D:\FoodSaveFakeApi`, con JSON Server 0.17.4, su propio `db.json`, `package.json`, `package-lock.json` y `.gitignore`. Ejecutar `npm run server` desde esa carpeta para exponer CRUD en el puerto 3000. Definir `environment.ts` y `environment.development.ts` con URL base y rutas de las diez colecciones. Configurar `fileReplacements` para desarrollo. Ambos entornos apuntan por ahora a `http://localhost:3000`. El frontend conserva sus adaptadores locales hasta implementar la conexión HTTP.
+Separar la fake API en `D:\FoodSaveFakeApi`, con JSON Server 0.17.4, su propio `db.json`, `package.json`, `package-lock.json` y `.gitignore`. Ejecutar `npm run server` desde esa carpeta para exponer CRUD en el puerto 3000. Definir `environment.ts` y `environment.development.ts` con URL base y rutas de las diez colecciones. Configurar `fileReplacements` para desarrollo. Ambos entornos apuntan a `https://foodsavefakeapi.onrender.com`. La aplicación consume esas rutas mediante `ApiDatabase`; para utilizar la instancia local se modifica la URL del entorno de desarrollo.
 
 ### Consecuencias
 
@@ -160,7 +160,7 @@ Separar la fake API en `D:\FoodSaveFakeApi`, con JSON Server 0.17.4, su propio `
 
 - JSON Server ofrece CRUD de muestras; no implementa autenticación, autorización, cálculo de vencimiento ni reserva transaccional.
 - Las fechas de las muestras son fijas y deben mantenerse para escenarios dependientes del tiempo.
-- La URL de producción debe cambiar a un backend alojado antes de conectar la aplicación publicada.
+- La API alojada en Render puede tardar en iniciar y sus datos de ejecución no son persistentes entre reinicios.
 - Las rutas actuales de la fake API no usan el prefijo `/api/v1`.
 
 ### Evidencia en el proyecto
@@ -181,7 +181,7 @@ Una oferta no debe aceptar unidades inexistentes y una reserva debe conservar la
 
 ### Decisión
 
-Encapsular validación de precios, unidades y ventana en `Offer`; cancelación y recojo en `Reservation`. Los servicios comprueban rol, propiedad y asociaciones. La creación local de reservas actualiza oferta, reserva y avisos en un cambio de estado. Las contraseñas de cuentas registradas se derivan con PBKDF2 SHA-256, salt y 120000 iteraciones; las cuentas de muestra inicializan su hash al primer acceso válido.
+Encapsular validación de precios, unidades y ventana en `Offer`; cancelación y recojo en `Reservation`. Los servicios comprueban rol, propiedad y asociaciones. La creación de reservas coordina escrituras HTTP de oferta, reserva y avisos, con compensación de pasos confirmados si el lote falla. Las contraseñas de cuentas registradas se derivan con PBKDF2 SHA-256, salt y 120000 iteraciones; las cuentas de muestra inicializan su hash al primer acceso válido.
 
 ### Consecuencias
 
@@ -265,7 +265,7 @@ Usar Angular Material 22 con Material 3, tipografía Lato, paletas verde y naran
 
 ---
 
-## ADR 009: Imágenes de muestra y archivos locales
+## ADR 009: Imágenes de muestra y fotos compartidas en el prototipo
 
 ### Estado
 
@@ -277,19 +277,19 @@ Las ofertas necesitan imágenes de muestra y una forma de previsualizar archivos
 
 ### Decisión
 
-Mantener las imágenes de muestra en `public/assets` y su ruta en el campo `image` de las ofertas. `BrowserImageStorage` guarda archivos seleccionados en IndexedDB (`foodsave-images`) y devuelve referencias `local-image:<id>`; al resolverlas crea una URL `blob:` temporal. Las URLs temporales no se guardan como direcciones públicas de imagen. JSON Server no implementa una carga de archivos propia.
+Mantener las imágenes de muestra en `public/assets` y su ruta en el campo `image` de las ofertas. `BrowserImageStorage` convierte las fotos nuevas a JPEG de hasta 640 píxeles y 80000 caracteres en formato data URL, para guardarlas en el campo `image` mediante la API dentro del límite de petición de JSON Server. La resolución de referencias antiguas `local-image:<id>` se mantiene para las imágenes que aún existan en IndexedDB. Las URLs blob solo se usan para previsualizar.
 
 ### Consecuencias
 
 **Positivas:**
 
 - Las imágenes incluidas con el frontend se publican junto con sus assets.
-- Una referencia local puede resolver de nuevo el archivo guardado al volver a abrir el mismo navegador.
+- Las fotos nuevas viajan con la oferta y se pueden mostrar en otros navegadores.
 
 **Costes y límites:**
 
-- Los archivos locales no son compartibles entre dispositivos y dependen del almacenamiento del navegador.
-- Conectar fotos a un backend requiere un servicio de almacenamiento y una URL o referencia accesible a los clientes autorizados.
+- La compresión reduce la resolución y las imágenes demasiado grandes tras comprimir se rechazan.
+- Las referencias locales antiguas siguen dependiendo del navegador original. Un servicio de producción requerirá almacenamiento de objetos y autorización de servidor.
 
 ### Evidencia en el proyecto
 

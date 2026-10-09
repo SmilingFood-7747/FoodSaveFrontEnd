@@ -148,7 +148,7 @@ export class OfferEditor {
         uploaded = await this.images.save(file);
         data.image = uploaded;
       }
-      this.offers.save(data, this.id);
+      await this.offers.save(data, this.id);
       uploaded = undefined;
       this.router.navigate(['/business/offers']);
     } catch (e) {

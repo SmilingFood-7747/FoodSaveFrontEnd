@@ -1,4 +1,10 @@
-import { Component, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
 @Component({
@@ -10,16 +16,21 @@ import { SessionService } from '../../application/session.service';
   styleUrl: './profile.css',
 })
 export class Profile {
+  readonly busy = signal(false);
   readonly session = inject(SessionService);
   readonly name = signal(this.session.user()?.fullName ?? '');
   readonly phone = signal(this.session.user()?.phone ?? '');
   readonly message = signal('');
-  save(): void {
+  async save(): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
     try {
-      this.session.updateProfile(this.name(), this.phone());
+      await this.session.updateProfile(this.name(), this.phone());
       this.message.set('profile.saved');
     } catch (e) {
       this.message.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
 }

@@ -8,17 +8,18 @@ import { Offer } from '../../offers/domain/model/offer';
 import { OfferService } from '../../offers/application/offer.service';
 import { BusinessService } from '../../businesses/application/business.service';
 import { SessionService } from '../../iam/application/session.service';
-import { BrowserDatabase, upsert } from '../../shared/infrastructure/browser-database';
+import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
 import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
+  private expiring = false;
   private readonly billing = inject(BillingService);
   private readonly repository = inject(ReservationRepository);
   private readonly offers = inject(OfferService);
   private readonly businesses = inject(BusinessService);
   private readonly session = inject(SessionService);
-  private readonly db = inject(BrowserDatabase);
+  private readonly db = inject(ApiDatabase);
   private readonly clock = inject(ClockService);
   readonly all = computed(() => {
     this.clock.now();
@@ -38,23 +39,29 @@ export class ReservationService {
       const expired = this.db
         .state()
         .reservations.filter((r) => r.status === 'ACTIVE' && Date.parse(r.pickupDeadlineAt) <= now);
-      if (!expired.length) return;
-      this.db.commit((s) => {
-        for (const reservation of expired) {
-          const current = s.reservations.find((r) => r.id === reservation.id);
-          if (!current || current.status !== 'ACTIVE') continue;
-          current.status = 'EXPIRED';
-          const offer = s.offers.find((o) => o.id === current.offerId);
-          if (offer) s.offers = upsert(s.offers, new Offer(offer).release(current.quantity));
-        }
-        return s;
-      });
+      if (!expired.length || this.expiring) return;
+      this.expiring = true;
+      void this.db
+        .commit((s) => {
+          for (const reservation of expired) {
+            const current = s.reservations.find((r) => r.id === reservation.id);
+            if (!current || current.status !== 'ACTIVE') continue;
+            current.status = 'EXPIRED';
+            const offer = s.offers.find((o) => o.id === current.offerId);
+            if (offer) s.offers = upsert(s.offers, new Offer(offer).release(current.quantity));
+          }
+          return s;
+        })
+        .catch(() => undefined)
+        .finally(() => {
+          this.expiring = false;
+        });
     });
   }
-  create(offerId: number, quantity: number): ReservationData {
+  async create(offerId: number, quantity: number): Promise<ReservationData> {
     const customer = this.session.require('CUSTOMER');
     let created!: ReservationData;
-    this.db.commit((s) => {
+    await this.db.commit((s) => {
       const data = s.offers.find((o) => o.id === offerId);
       if (!data) throw new DomainError('errors.unavailable');
       if (!this.billing.canReserveOffer(data, customer.id))
@@ -118,9 +125,9 @@ export class ReservationService {
     });
     return created;
   }
-  cancel(id: number): void {
+  async cancel(id: number): Promise<void> {
     const customer = this.session.require('CUSTOMER');
-    this.db.commit((s) => {
+    await this.db.commit((s) => {
       const data = s.reservations.find((r) => r.id === id && r.customerUserId === customer.id);
       if (!data) throw new DomainError('errors.forbidden');
       const next = new Reservation(data).cancel();
@@ -147,13 +154,13 @@ export class ReservationService {
       };
     });
   }
-  confirmPickup(code: string): ReservationData {
+  async confirmPickup(code: string): Promise<ReservationData> {
     this.session.require('BUSINESS_OWNER');
     const normalized = code.trim().toUpperCase();
     const data = this.businessReservations().find((r) => r.pickupCode === normalized);
     if (!data) throw new DomainError('errors.invalidCode');
     const collected = new Reservation(data).collect();
-    this.repository.save(collected);
+    await this.repository.save(collected);
     return collected;
   }
 }

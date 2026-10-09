@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { UI } from '../../../shared/presentation/ui';
 import { SessionService } from '../../application/session.service';
-import { BrowserDatabase } from '../../../shared/infrastructure/browser-database';
+import { ApiDatabase } from '../../../shared/infrastructure/api-database';
 import { AccountRole } from '../../domain/model/account';
 @Component({
   selector: 'app-auth',
@@ -22,7 +22,7 @@ export class Auth {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly session = inject(SessionService);
-  private readonly db = inject(BrowserDatabase);
+  private readonly db = inject(ApiDatabase);
   readonly registering = this.route.snapshot.data['register'] === true;
   readonly fullName = signal('');
   readonly email = signal('');

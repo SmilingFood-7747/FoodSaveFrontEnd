@@ -328,7 +328,10 @@
     "plan": "Selecciona un plan válido.",
     "offerLimit": "Llegaste al límite de ofertas activas de tu plan. Pausa una oferta o cambia de plan.",
     "plusRequired": "Necesitas foodSavePlus activo para reservar esta oferta exclusiva.",
-    "plusPartnerRequired": "Este negocio no pertenece a la selección Plus. Publica la oferta para todos los clientes."
+    "plusPartnerRequired": "Este negocio no pertenece a la selección Plus. Publica la oferta para todos los clientes.",
+    "apiLoad": "No pudimos cargar los datos. El servidor puede tardar en iniciar. Reintenta en unos segundos.",
+    "apiSave": "No pudimos confirmar el guardado. Actualiza los datos y revisa el resultado antes de reintentar.",
+    "apiConflict": "Estos datos cambiaron en otra sesión. Se actualizaron; revisa la información y vuelve a intentarlo."
   },
   "finance": {
     "date": "Fecha",
@@ -473,5 +476,11 @@
     "preference": "Avisos de ofertas cercanas",
     "preferenceBody": "Con permiso de ubicación, muestra ofertas a menos de 2 km en un cuadro fijo, un aviso temporal y tu historial de notificaciones. Puedes desactivarlos cuando quieras.",
     "signInHint": "Inicia sesión para guardar estos avisos en tus notificaciones."
+  },
+  "sync": {
+    "refresh": "Actualizar datos",
+    "retry": "Reintentar",
+    "loading": "Cargando datos…",
+    "unavailable": "No se pudieron cargar los datos"
   }
 }

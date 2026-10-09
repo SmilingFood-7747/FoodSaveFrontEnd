@@ -328,7 +328,10 @@
     "plan": "Select a valid plan.",
     "offerLimit": "You reached the active offer limit for your plan. Pause an offer or change plans.",
     "plusRequired": "An active foodSavePlus subscription is required to reserve this exclusive offer.",
-    "plusPartnerRequired": "This business is not in the Plus selection. Publish the offer for all customers."
+    "plusPartnerRequired": "This business is not in the Plus selection. Publish the offer for all customers.",
+    "apiLoad": "We could not load the data. The server may take a while to start. Try again in a few seconds.",
+    "apiSave": "We could not confirm the save. Refresh the data and check the result before trying again.",
+    "apiConflict": "This data changed in another session. It was refreshed; review it and try again."
   },
   "finance": {
     "date": "Date",
@@ -473,5 +476,11 @@
     "preference": "Nearby offer alerts",
     "preferenceBody": "With location permission, show offers within 2 km in a pinned card, a temporary alert and your notification history. You can turn them off at any time.",
     "signInHint": "Sign in to save these alerts in your notifications."
+  },
+  "sync": {
+    "refresh": "Refresh data",
+    "retry": "Try again",
+    "loading": "Loading data…",
+    "unavailable": "Data is unavailable"
   }
 }

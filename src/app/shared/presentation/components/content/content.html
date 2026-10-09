@@ -1,1 +1,14 @@
-<main id="main-content" tabindex="-1"><router-outlet /></main>
+<main id="main-content" tabindex="-1">
+  @if (database.ready()) {
+    <router-outlet />
+  } @else {
+    <section class="page empty-state">
+      <mat-icon>cloud_off</mat-icon>
+      <h1>{{ 'sync.unavailable' | translate }}</h1>
+      <p role="alert">{{ database.error() | translate }}</p>
+      <button mat-flat-button (click)="database.refresh()" [disabled]="database.loading()">
+        {{ (database.loading() ? 'sync.loading' : 'sync.retry') | translate }}
+      </button>
+    </section>
+  }
+</main>

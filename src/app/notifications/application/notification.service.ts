@@ -1,13 +1,14 @@
 import { computed, effect, inject, Injectable } from '@angular/core';
 import { NotificationRepository } from '../domain/repositories/notification.repository';
 import { NotificationPreferences } from '../domain/model/notification';
-import { BrowserDatabase } from '../../shared/infrastructure/browser-database';
+import { ApiDatabase } from '../../shared/infrastructure/api-database';
 import { ClockService } from '../../shared/application/clock.service';
 import { SessionService } from '../../iam/application/session.service';
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private reminding = false;
   private readonly repository = inject(NotificationRepository);
-  private readonly db = inject(BrowserDatabase);
+  private readonly db = inject(ApiDatabase);
   private readonly session = inject(SessionService);
   private readonly clock = inject(ClockService);
   readonly mine = computed(() =>
@@ -42,30 +43,44 @@ export class NotificationService {
             (n) => n.type === 'PICKUP_REMINDER' && n.reservationId === r.id,
           ),
       );
-      if (pending.length)
-        this.db.commit((s) => ({
-          ...s,
-          notifications: [
-            ...s.notifications,
-            ...pending.map((r, index) => ({
-              id: this.db.nextId(s.notifications) + index,
-              recipientAccountId: user.id,
-              reservationId: r.id,
-              type: 'PICKUP_REMINDER' as const,
-              titleKey: 'notice.reminder',
-              body: r.pickupCode,
-              createdAt: new Date(now).toISOString(),
-            })),
-          ],
-        }));
+      if (pending.length && !this.reminding) {
+        this.reminding = true;
+        void this.db
+          .commit((s) => ({
+            ...s,
+            notifications: [
+              ...s.notifications,
+              ...pending
+                .filter(
+                  (r) =>
+                    !s.notifications.some(
+                      (n) => n.type === 'PICKUP_REMINDER' && n.reservationId === r.id,
+                    ),
+                )
+                .map((r, index) => ({
+                  id: this.db.nextId(s.notifications) + index,
+                  recipientAccountId: user.id,
+                  reservationId: r.id,
+                  type: 'PICKUP_REMINDER' as const,
+                  titleKey: 'notice.reminder',
+                  body: r.pickupCode,
+                  createdAt: new Date(now).toISOString(),
+                })),
+            ],
+          }))
+          .catch(() => undefined)
+          .finally(() => {
+            this.reminding = false;
+          });
+      }
     });
   }
-  recordNearby(
+  async recordNearby(
     items: { offerId: number; distanceKm: number; offerVersion: string; body: string }[],
-  ): void {
+  ): Promise<void> {
     const user = this.session.user();
     if (user?.role !== 'CUSTOMER' || this.preferences().nearbyOffersEnabled === false) return;
-    this.db.commit((state) => {
+    await this.db.commit((state) => {
       const next = [...state.notifications];
       for (const item of items) {
         if (
@@ -90,12 +105,15 @@ export class NotificationService {
       return { ...state, notifications: next };
     });
   }
-  markRead(id: number): void {
+  async markRead(id: number): Promise<void> {
     const n = this.mine().find((n) => n.id === id);
-    if (n) this.repository.save({ ...n, readAt: new Date().toISOString() });
+    if (n) await this.repository.save({ ...n, readAt: new Date().toISOString() });
   }
-  savePreferences(preferences: NotificationPreferences): void {
+  async savePreferences(preferences: NotificationPreferences): Promise<void> {
     const user = this.session.require();
-    this.db.commit((s) => ({ ...s, preferences: { ...s.preferences, [user.id]: preferences } }));
+    await this.db.commit((s) => ({
+      ...s,
+      preferences: { ...s.preferences, [user.id]: preferences },
+    }));
   }
 }

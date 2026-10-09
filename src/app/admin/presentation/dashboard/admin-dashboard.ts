@@ -1,4 +1,10 @@
-import { Component, inject, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { UI } from '../../../shared/presentation/ui';
 import { AdminService } from '../../application/admin.service';
 @Component({
@@ -11,4 +17,16 @@ import { AdminService } from '../../application/admin.service';
 })
 export class AdminDashboard {
   readonly admin = inject(AdminService);
+  readonly busy = signal(false);
+  async setPlusPartner(id: number, selected: boolean): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
+    try {
+      await this.admin.setPlusPartner(id, selected);
+    } catch {
+      /* The shared API banner displays the save error. */
+    } finally {
+      this.busy.set(false);
+    }
+  }
 }

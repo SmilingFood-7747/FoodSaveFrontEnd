@@ -70,7 +70,8 @@
           </div>
           <mat-slide-toggle
             [checked]="!!row.business.plusPartner"
-            (change)="admin.setPlusPartner(row.business.id, $event.checked)"
+            [disabled]="busy()"
+            (change)="setPlusPartner(row.business.id, $event.checked)"
             [attr.aria-label]="('premium.selectBusiness' | translate) + ': ' + row.business.name"
             >{{ 'premium.selected' | translate }}</mat-slide-toggle
           >

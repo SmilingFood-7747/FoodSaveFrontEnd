@@ -1,17 +1,17 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { BrowserDatabase } from '../../shared/infrastructure/browser-database';
+import { ApiDatabase } from '../../shared/infrastructure/api-database';
 import { BillingService } from '../../billing/application/billing.service';
 import { SessionService } from '../../iam/application/session.service';
 import { ClockService } from '../../shared/application/clock.service';
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private readonly db = inject(BrowserDatabase);
+  private readonly db = inject(ApiDatabase);
   private readonly billing = inject(BillingService);
   private readonly clock = inject(ClockService);
   private readonly session = inject(SessionService);
-  setPlusPartner(businessId: number, selected: boolean): void {
+  async setPlusPartner(businessId: number, selected: boolean): Promise<void> {
     this.session.require('ADMIN');
-    this.db.commit((state) => ({
+    await this.db.commit((state) => ({
       ...state,
       businesses: state.businesses.map((business) =>
         business.id === businessId ? { ...business, plusPartner: selected } : business,

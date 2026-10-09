@@ -1,5 +1,5 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { BrowserDatabase, upsert } from '../../shared/infrastructure/browser-database';
+import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
 import { SessionService } from '../../iam/application/session.service';
 import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
@@ -15,7 +15,7 @@ import {
 } from '../domain/model/subscription';
 @Injectable({ providedIn: 'root' })
 export class BillingService {
-  private readonly db = inject(BrowserDatabase);
+  private readonly db = inject(ApiDatabase);
   private readonly session = inject(SessionService);
   private readonly clock = inject(ClockService);
   readonly current = computed(() => this.subscriptionFor(this.session.user()?.id ?? 0));
@@ -65,7 +65,7 @@ export class BillingService {
       this.planFor(accountId).exclusiveAccess
     );
   }
-  choosePlan(id: PlanId): 'ACTIVE' | 'SCHEDULED' {
+  async choosePlan(id: PlanId): Promise<'ACTIVE' | 'SCHEDULED'> {
     const account = this.session.require();
     if (account.role !== 'CUSTOMER' && account.role !== 'BUSINESS_OWNER')
       throw new DomainError('errors.forbidden');
@@ -73,7 +73,7 @@ export class BillingService {
     if (!plan) throw new DomainError('errors.plan');
     const current = this.subscriptionFor(account.id);
     if (current?.expiresAt) {
-      this.db.commit((s) => ({
+      await this.db.commit((s) => ({
         ...s,
         subscriptions: s.subscriptions.map((item) =>
           item.accountId === account.id ? { ...item, nextPlanId: id } : item,
@@ -82,16 +82,21 @@ export class BillingService {
       return 'SCHEDULED';
     }
     if (id === 'FREE') return 'ACTIVE';
-    this.activate(account.id, account.role, id, new Date());
+    await this.activate(account.id, account.role, id, new Date());
     return 'ACTIVE';
   }
-  cancelRenewal(): void {
-    this.choosePlan('FREE');
+  async cancelRenewal(): Promise<void> {
+    await this.choosePlan('FREE');
   }
-  private activate(accountId: number, audience: PlanAudience, planId: PlanId, start: Date): void {
+  private async activate(
+    accountId: number,
+    audience: PlanAudience,
+    planId: PlanId,
+    start: Date,
+  ): Promise<void> {
     const plan = PLANS[audience].find((p) => p.id === planId)!;
     const expiresAt = plan.monthlyPrice ? monthlyEnd(start).toISOString() : null;
-    this.db.commit((s) => {
+    await this.db.commit((s) => {
       const previous = s.subscriptions.find((item) => item.accountId === accountId);
       const subscription: Subscription = {
         id: previous?.id ?? this.db.nextId(s.subscriptions),

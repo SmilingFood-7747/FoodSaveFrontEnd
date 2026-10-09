@@ -26,6 +26,7 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrl: './offer-detail.css',
 })
 export class OfferDetail {
+  readonly busy = signal(false);
   private readonly images = inject(BrowserImageStorage);
   readonly offers = inject(OfferService);
   readonly businesses = inject(BusinessService);
@@ -75,17 +76,21 @@ export class OfferDetail {
     const o = this.offer();
     return !!o && new Offer(o).isReservable(this.quantity());
   }
-  reserve(): void {
+  async reserve(): Promise<void> {
+    if (this.busy()) return;
     if (!this.session.user()) {
       this.router.navigate(['/sign-in'], { queryParams: { redirect: `/offers/${this.id()}` } });
       return;
     }
+    this.busy.set(true);
     try {
       this.error.set('');
-      const r = this.reservations.create(this.id(), Number(this.quantity()));
+      const r = await this.reservations.create(this.id(), Number(this.quantity()));
       this.router.navigate(['/reservations'], { queryParams: { created: r.id } });
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
 }

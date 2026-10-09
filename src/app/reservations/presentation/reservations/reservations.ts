@@ -1,5 +1,12 @@
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
-import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { UI } from '../../../shared/presentation/ui';
@@ -16,6 +23,7 @@ import { FeedbackService } from '../../../feedback/application/feedback.service'
   styleUrl: './reservations.css',
 })
 export class Reservations {
+  readonly busy = signal(false);
   private readonly images = inject(BrowserImageStorage);
   readonly reservations = inject(ReservationService);
   readonly offers = inject(OfferService);
@@ -61,40 +69,52 @@ export class Reservations {
   imageFailed(url: string): void {
     this.failedImages.update((urls) => (urls.includes(url) ? urls : [...urls, url]));
   }
-  cancel(id: number): void {
+  async cancel(id: number): Promise<void> {
+    if (this.busy()) return;
     if (!confirm(this.translate.instant('reservation.cancelConfirm'))) return;
+    this.busy.set(true);
     try {
-      this.reservations.cancel(id);
+      await this.reservations.cancel(id);
       this.message.set('reservation.cancelled');
       this.error.set('');
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
-  collect(): void {
+  async collect(): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
     try {
-      this.reservations.confirmPickup(this.code());
+      await this.reservations.confirmPickup(this.code());
       this.code.set('');
       this.message.set('reservation.collected');
       this.error.set('');
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
   reviewed(id: number): boolean {
     return this.feedback.reviews().some((r) => r.reservationId === id);
   }
-  review(): void {
+  async review(): Promise<void> {
+    if (this.busy()) return;
     const reservationId = this.reviewId();
     if (reservationId === null) return;
+    this.busy.set(true);
     try {
-      this.feedback.review(reservationId, Number(this.rating()), this.comment());
+      await this.feedback.review(reservationId, Number(this.rating()), this.comment());
       this.reviewId.set(null);
       this.comment.set('');
       this.message.set('review.saved');
       this.error.set('');
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
 }

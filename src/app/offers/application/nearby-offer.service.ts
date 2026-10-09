@@ -21,6 +21,7 @@ export class NearbyOfferService {
   readonly billing = inject(BillingService);
   readonly radiusKm = 2;
   private readonly seen = new Set<string>(this.restoreSeen());
+  private readonly pending = new Set<string>();
   private readonly dismissed = signal<string[]>([]);
   private readonly toastKey = signal<string | null>(null);
   private timer: ReturnType<typeof setTimeout> | undefined;
@@ -67,6 +68,7 @@ export class NearbyOfferService {
       const fresh = nearby.filter(
         (item) =>
           !this.seen.has(this.key(item)) &&
+          !this.pending.has(this.key(item)) &&
           !notices.some(
             (notice) =>
               notice.type === 'NEARBY_OFFER' &&
@@ -76,16 +78,25 @@ export class NearbyOfferService {
       );
       if (!fresh.length) return;
       untracked(() => {
-        for (const item of fresh) this.seen.add(this.key(item));
-        this.saveSeen();
-        this.notifications.recordNearby(
-          fresh.map((item) => ({
-            offerId: item.offer.id,
-            distanceKm: Math.round(item.distanceKm * 10) / 10,
-            offerVersion: item.offer.pickupEndAt,
-            body: `${item.offer.title} · ${item.businessName}`,
-          })),
-        );
+        const keys = fresh.map((item) => this.key(item));
+        keys.forEach((key) => this.pending.add(key));
+        void this.notifications
+          .recordNearby(
+            fresh.map((item) => ({
+              offerId: item.offer.id,
+              distanceKm: Math.round(item.distanceKm * 10) / 10,
+              offerVersion: item.offer.pickupEndAt,
+              body: `${item.offer.title} · ${item.businessName}`,
+            })),
+          )
+          .then(() => {
+            keys.forEach((key) => this.seen.add(key));
+            this.saveSeen();
+          })
+          .catch(() => undefined)
+          .finally(() => {
+            keys.forEach((key) => this.pending.delete(key));
+          });
         this.toastKey.set(this.key(fresh[0]));
         this.restartTimer();
       });

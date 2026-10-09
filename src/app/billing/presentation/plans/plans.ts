@@ -25,6 +25,7 @@ import {
   changeDetection: ChangeDetectionStrategy.Eager,
 })
 export class Plans {
+  readonly busy = signal(false);
   readonly session = inject(SessionService);
   readonly billing = inject(BillingService);
   readonly audience = signal<PlanAudience>(
@@ -49,16 +50,20 @@ export class Plans {
     this.error.set('');
     this.message.set('');
   }
-  confirm(): void {
+  async confirm(): Promise<void> {
+    if (this.busy()) return;
     const plan = this.pending();
     if (!plan || !this.accepted()) return;
+    this.busy.set(true);
     try {
-      const result = this.billing.choosePlan(plan.id);
+      const result = await this.billing.choosePlan(plan.id);
       this.message.set(result === 'SCHEDULED' ? 'plans.scheduled' : 'plans.activated');
       this.pending.set(null);
       this.error.set('');
     } catch (e) {
       this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
     }
   }
   savings(plan: SubscriptionPlan): number {

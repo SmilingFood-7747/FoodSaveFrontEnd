@@ -9,7 +9,7 @@ import { NearbyOfferService } from '../../../../offers/application/nearby-offer.
 import { Header } from '../header/header';
 import { UI } from '../../ui';
 import { SessionService } from '../../../../iam/application/session.service';
-import { BrowserDatabase } from '../../../infrastructure/browser-database';
+import { ApiDatabase } from '../../../infrastructure/api-database';
 @Component({
   selector: 'app-layout',
   encapsulation: ViewEncapsulation.None,
@@ -21,6 +21,6 @@ import { BrowserDatabase } from '../../../infrastructure/browser-database';
 export class Layout {
   readonly session = inject(SessionService);
   readonly nearby = inject(NearbyOfferService);
-  readonly storage = inject(BrowserDatabase);
+  readonly database = inject(ApiDatabase);
   readonly menuOpen = signal(false);
 }

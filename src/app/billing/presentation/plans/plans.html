@@ -90,7 +90,7 @@
         'plans.accept' | translate
       }}</mat-checkbox>
       <div class="button-row">
-        <button mat-flat-button [disabled]="!accepted()" (click)="confirm()">
+        <button mat-flat-button [disabled]="busy() || !accepted()" (click)="confirm()">
           {{ 'plans.confirm' | translate }}</button
         ><button mat-stroked-button (click)="pending.set(null)">
           {{ 'common.cancel' | translate }}

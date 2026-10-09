@@ -53,7 +53,7 @@
                 ><button
                   mat-icon-button
                   (click)="pause(o.id)"
-                  [disabled]="o.status !== 'ACTIVE'"
+                  [disabled]="busy() || o.status !== 'ACTIVE'"
                   [attr.aria-label]="'editor.pause' | translate"
                 >
                   <mat-icon>pause_circle_outline</mat-icon>

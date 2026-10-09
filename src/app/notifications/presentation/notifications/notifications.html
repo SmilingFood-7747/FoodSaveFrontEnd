@@ -7,6 +7,9 @@
     </div>
     <span class="status">{{ 'notice.unread' | translate: { count: notifications.unread() } }}</span>
   </div>
+  @if (error()) {
+    <p class="alert error" role="alert">{{ error() | translate }}</p>
+  }
   <div class="detail-grid">
     <div class="notification-list">
       @for (n of notifications.mine(); track n.id) {
@@ -37,7 +40,7 @@
                 <a
                   mat-stroked-button
                   [routerLink]="['/offers', offerId]"
-                  (click)="notifications.markRead(n.id)"
+                  (click)="markRead(n.id)"
                   >{{ 'nearby.view' | translate }}</a
                 >
               }
@@ -49,7 +52,7 @@
           @if (!n.readAt) {
             <button
               mat-icon-button
-              (click)="notifications.markRead(n.id)"
+              (click)="markRead(n.id)"
               [attr.aria-label]="'notice.markRead' | translate"
             >
               <mat-icon>done</mat-icon>
@@ -78,7 +81,9 @@
         <p class="caption">{{ 'nearby.preferenceBody' | translate }}</p>
       </div>
       <p class="caption">{{ 'notice.channels' | translate }}</p>
-      <button mat-flat-button (click)="save()">{{ 'common.save' | translate }}</button>
+      <button mat-flat-button (click)="save()" [disabled]="busy()">
+        {{ 'common.save' | translate }}
+      </button>
       @if (saved()) {
         <p class="message success" role="status">{{ 'notice.saved' | translate }}</p>
       }

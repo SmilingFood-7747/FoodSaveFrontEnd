@@ -106,7 +106,7 @@
             <button
               mat-flat-button
               class="full-width"
-              [disabled]="!reservable() || !confirmed()"
+              [disabled]="busy() || !reservable() || !confirmed()"
               (click)="reserve()"
             >
               <mat-icon>shopping_bag</mat-icon>{{ 'detail.reserve' | translate }}

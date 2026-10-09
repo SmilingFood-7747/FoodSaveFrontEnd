@@ -21,7 +21,7 @@ EP01 incluye los requisitos de acceso público, consulta y búsqueda de ofertas,
 
 ## Matriz de trazabilidad de requisitos (RTM)
 
-La evidencia indica dónde se expresa el requisito en el código; no representa una certificación de cumplimiento ni resultados de pruebas. **Local**: lógica del prototipo en el navegador. **Parcial**: cobertura limitada al prototipo, sin envío externo de notificaciones ni servicios permanentes. JSON Server y los entornos están configurados; el frontend aún no consume la fake API.
+La evidencia indica dónde se expresa el requisito en el código; no representa una certificación de cumplimiento ni resultados de pruebas. **Local**: lógica del prototipo en el navegador. **Parcial**: cobertura limitada al prototipo, sin envío externo de notificaciones ni servicios permanentes. Los adaptadores `Api*Repository` cargan y guardan los datos mediante la fake API de Render; las reglas de dominio se ejecutan en el navegador. La carga muestra errores y permite reintentar. La etiqueta Local describe la lógica del cliente, no el lugar de persistencia.
 
 | ID | Requisito | Épica | Contexto | Elementos relacionados | Alcance actual |
 |---|---|---|---|---|---|
@@ -65,7 +65,7 @@ La evidencia indica dónde se expresa el requisito en el código; no representa 
 - Los avisos actuales son internos. Las preferencias de correo y push no constituyen un servicio de envío implementado.
 - El conteo de ofertas del resumen actual es total; el período filtra las reservas. Una métrica de ofertas publicadas durante un período requeriría registrar su fecha de publicación.
 
-La fake API local aporta datos de muestra para el desarrollo. Los contratos del backend y sus garantías de autenticación y consistencia quedan fuera de estas historias del frontend.
+La fake API de Render aporta datos compartidos para el prototipo; sus cambios de ejecución pueden perderse al reiniciar o redesplegar el servicio. Los contratos del backend y sus garantías de autenticación y consistencia quedan fuera de estas historias del frontend.
 
 ## Historias de usuario
 

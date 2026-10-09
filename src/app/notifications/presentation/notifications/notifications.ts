@@ -25,16 +25,36 @@ export class Notifications {
   readonly businesses = inject(BusinessService);
   readonly reminders = signal(this.notifications.preferences().remindersEnabled);
   readonly saved = signal(false);
+  readonly busy = signal(false);
+  readonly error = signal('');
   readonly nearbyEnabled = signal(this.notifications.preferences().nearbyOffersEnabled !== false);
   reservation(id?: number) {
     return this.reservations.all().find((r) => r.id === id);
   }
-  save(): void {
-    this.notifications.savePreferences({
-      ...this.notifications.preferences(),
-      remindersEnabled: this.reminders(),
-      nearbyOffersEnabled: this.nearbyEnabled(),
-    });
-    this.saved.set(true);
+  async save(): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
+    this.saved.set(false);
+    this.error.set('');
+    try {
+      await this.notifications.savePreferences({
+        ...this.notifications.preferences(),
+        remindersEnabled: this.reminders(),
+        nearbyOffersEnabled: this.nearbyEnabled(),
+      });
+      this.saved.set(true);
+    } catch (e) {
+      this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    } finally {
+      this.busy.set(false);
+    }
+  }
+  async markRead(id: number): Promise<void> {
+    try {
+      await this.notifications.markRead(id);
+      this.error.set('');
+    } catch (e) {
+      this.error.set(e instanceof Error ? e.message : 'errors.generic');
+    }
   }
 }

@@ -20,8 +20,8 @@ export class NearbyOfferService {
   private readonly notifications = inject(NotificationService);
   readonly billing = inject(BillingService);
   readonly radiusKm = 2;
-  private readonly seen = new Set<string>(this.restoreSeen());
-  private readonly pending = new Set<string>();
+  // Show nearby offers once per page visit, independently of notification history.
+  private readonly announced = new Set<string>();
   private readonly dismissed = signal<string[]>([]);
   private readonly toastKey = signal<string | null>(null);
   private timer: ReturnType<typeof setTimeout> | undefined;
@@ -57,7 +57,6 @@ export class NearbyOfferService {
       const user = this.session.user();
       const accountKey = String(user?.id ?? 'guest');
       const nearby = this.nearby();
-      const notices = this.notifications.mine();
       if (this.accountKey !== accountKey) {
         this.accountKey = accountKey;
         untracked(() => {
@@ -65,21 +64,10 @@ export class NearbyOfferService {
           this.dismissToast();
         });
       }
-      const fresh = nearby.filter(
-        (item) =>
-          !this.seen.has(this.key(item)) &&
-          !this.pending.has(this.key(item)) &&
-          !notices.some(
-            (notice) =>
-              notice.type === 'NEARBY_OFFER' &&
-              notice.offerId === item.offer.id &&
-              notice.offerVersion === item.offer.pickupEndAt,
-          ),
-      );
+      const fresh = nearby.filter((item) => !this.announced.has(this.key(item)));
       if (!fresh.length) return;
       untracked(() => {
-        const keys = fresh.map((item) => this.key(item));
-        keys.forEach((key) => this.pending.add(key));
+        fresh.forEach((item) => this.announced.add(this.key(item)));
         void this.notifications
           .recordNearby(
             fresh.map((item) => ({
@@ -89,14 +77,7 @@ export class NearbyOfferService {
               body: `${item.offer.title} · ${item.businessName}`,
             })),
           )
-          .then(() => {
-            keys.forEach((key) => this.seen.add(key));
-            this.saveSeen();
-          })
-          .catch(() => undefined)
-          .finally(() => {
-            keys.forEach((key) => this.pending.delete(key));
-          });
+          .catch(() => undefined);
         this.toastKey.set(this.key(fresh[0]));
         this.restartTimer();
       });
@@ -120,20 +101,5 @@ export class NearbyOfferService {
   restartTimer(): void {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => this.toastKey.set(null), 6000);
-  }
-  private restoreSeen(): string[] {
-    try {
-      const value: unknown = JSON.parse(sessionStorage.getItem('foodsave-nearby-seen') ?? '[]');
-      return Array.isArray(value)
-        ? value.filter((item): item is string => typeof item === 'string').slice(-200)
-        : [];
-    } catch {
-      return [];
-    }
-  }
-  private saveSeen(): void {
-    try {
-      sessionStorage.setItem('foodsave-nearby-seen', JSON.stringify([...this.seen].slice(-200)));
-    } catch {}
   }
 }

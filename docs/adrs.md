@@ -309,7 +309,7 @@ La aplicación debe estar disponible mediante una URL pública y conservar el hi
 
 ### Decisión
 
-Publicar `dist/frontend-foodsave/browser` en Firebase Hosting, proyecto `foodsave2502`, sitio `frontfoodsave`, con reescritura de rutas a `index.html`. La publicación actual es manual con Firebase CLI. El repositorio principal es `SmilingFood-7747/FoodSaveFrontEnd` y conserva el historial anterior. Existe un workflow de Azure heredado cuyo uso en el repositorio nuevo requiere configurar sus secretos.
+Publicar `dist/frontend-foodsave/browser` en Firebase Hosting, proyecto `foodsave2502`, sitio `frontfoodsave`, con reescritura de rutas a `index.html`. La publicación actual es manual con Firebase CLI. El repositorio principal es `SmilingFood-7747/FoodSaveFrontEnd` y conserva el historial anterior. Se retiró el workflow heredado de Azure para detener los intentos de despliegue con cada push.
 
 ### Consecuencias
 
@@ -326,4 +326,4 @@ Publicar `dist/frontend-foodsave/browser` en Firebase Hosting, proyecto `foodsav
 
 ### Evidencia en el proyecto
 
-`firebase.json`, `.firebaserc`, `.github/workflows/main_foodsavefronttest.yml`, configuración de remotos de Git.
+`firebase.json`, `.firebaserc`, configuración de remotos de Git.

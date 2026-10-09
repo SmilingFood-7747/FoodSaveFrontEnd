@@ -2,6 +2,18 @@ app-offer-editor {
   display: block;
 }
 
+app-offer-editor .pickup-location {
+  margin-bottom: 24px;
+  padding: 20px;
+  border: 1px solid #dce5dc;
+  border-radius: 16px;
+  background: #f8faf6;
+}
+
+app-offer-editor .pickup-location h3 {
+  margin-top: 0;
+}
+
 app-offer-editor .image-upload {
   margin: 0 0 24px;
   padding: 20px;

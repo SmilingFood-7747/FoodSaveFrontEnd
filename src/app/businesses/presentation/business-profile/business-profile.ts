@@ -1,4 +1,11 @@
-import { Component, computed, inject, signal, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
 import { UI } from '../../../shared/presentation/ui';
@@ -6,6 +13,7 @@ import { BusinessService } from '../../application/business.service';
 import { OfferService } from '../../../offers/application/offer.service';
 import { OfferCard } from '../../../offers/presentation/components/offer-card/offer-card';
 import { SessionService } from '../../../iam/application/session.service';
+import { districtOptions } from '../../../shared/domain/model/lima-districts';
 @Component({
   selector: 'app-business-profile',
   encapsulation: ViewEncapsulation.None,
@@ -23,22 +31,17 @@ export class BusinessProfile {
   private readonly route = inject(ActivatedRoute);
   readonly publicMode = this.route.snapshot.data['public'] === true;
   readonly id = Number(this.route.snapshot.paramMap.get('id'));
+  private readonly selectedBusinessId = Number(this.route.snapshot.queryParamMap.get('businessId'));
   readonly current = computed(() =>
-    this.publicMode ? this.businesses.get(this.id) : this.businesses.owned()[0],
+    this.publicMode
+      ? this.businesses.get(this.id)
+      : (this.businesses.owned().find((business) => business.id === this.selectedBusinessId) ??
+        this.businesses.owned()[0]),
   );
   readonly publicOffers = computed(() =>
     this.offers.active().filter((o) => o.businessId === this.current()?.id),
   );
-  readonly districts = [
-    'Miraflores',
-    'San Isidro',
-    'San Miguel',
-    'Barranco',
-    'Surco',
-    'Chorrillos',
-    'Lima',
-    'Villa El Salvador',
-  ];
+  readonly districts = computed(() => districtOptions([this.current()?.district ?? '']));
   readonly name = signal(this.current()?.name ?? '');
   readonly address = signal(this.current()?.address ?? '');
   readonly district = signal(this.current()?.district ?? 'Miraflores');

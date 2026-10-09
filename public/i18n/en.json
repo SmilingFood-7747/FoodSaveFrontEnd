@@ -182,7 +182,12 @@
     "removeSelection": "Remove selection",
     "preview": "Selected offer photo preview",
     "checkingImage": "Loading photo…",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "businessDistrict": "Business district",
+    "pickupLocation": "Pickup location",
+    "pickupLocationHelp": "This offer uses the selected business address and district. You can change them in its profile before filling in this form; changes apply to all its offers.",
+    "editPickupLocation": "Edit business address",
+    "noBusinessInDistrict": "You have no registered business in this district. Choose another district or All districts."
   },
   "reservation": {
     "title": "Your food rescues",

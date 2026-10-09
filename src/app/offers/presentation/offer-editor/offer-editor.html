@@ -18,6 +18,19 @@
   } @else {
     <div class="panel form-panel">
       <form (ngSubmit)="save()" #form="ngForm">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>{{ 'editor.businessDistrict' | translate }}</mat-label>
+          <mat-select
+            name="districtFilter"
+            [ngModel]="districtFilter()"
+            (ngModelChange)="selectDistrict($event)"
+          >
+            <mat-option value="all">{{ 'catalog.allDistricts' | translate }}</mat-option>
+            @for (district of districts(); track district) {
+              <mat-option [value]="district">{{ district }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
         <div class="form-grid">
           <mat-form-field appearance="outline"
             ><mat-label>{{ 'business.name' | translate }}</mat-label
@@ -27,7 +40,7 @@
               (ngModelChange)="businessId.set($event)"
               required
             >
-              @for (b of businesses.owned(); track b.id) {
+              @for (b of filteredBusinesses(); track b.id) {
                 <mat-option [value]="b.id">{{ b.name }}</mat-option>
               }
             </mat-select></mat-form-field
@@ -44,6 +57,31 @@
             </mat-select></mat-form-field
           >
         </div>
+        @if (pickupBusiness(); as business) {
+          <section class="pickup-location" aria-labelledby="pickup-location-title">
+            <h3 id="pickup-location-title">{{ 'editor.pickupLocation' | translate }}</h3>
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'business.address' | translate }}</mat-label>
+                <input matInput [value]="business.address" readonly />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>{{ 'business.district' | translate }}</mat-label>
+                <input matInput [value]="business.district" readonly />
+              </mat-form-field>
+            </div>
+            <p class="caption">{{ 'editor.pickupLocationHelp' | translate }}</p>
+            <a
+              mat-stroked-button
+              routerLink="/business/profile"
+              [queryParams]="{ businessId: business.id }"
+            >
+              <mat-icon>edit_location_alt</mat-icon>{{ 'editor.editPickupLocation' | translate }}
+            </a>
+          </section>
+        } @else {
+          <p class="message" role="status">{{ 'editor.noBusinessInDistrict' | translate }}</p>
+        }
         <mat-form-field appearance="outline" class="full-width"
           ><mat-label>{{ 'editor.title' | translate }}</mat-label
           ><input
@@ -193,7 +231,9 @@
           <button
             mat-flat-button
             type="submit"
-            [disabled]="form.invalid || saving() || checkingImage() || !!imageError()"
+            [disabled]="
+              form.invalid || !pickupBusiness() || saving() || checkingImage() || !!imageError()
+            "
           >
             {{ submitLabel() | translate }}</button
           ><a mat-button routerLink="/business/offers">{{ 'common.cancel' | translate }}</a>

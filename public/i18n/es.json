@@ -182,7 +182,12 @@
     "removeSelection": "Quitar selección",
     "preview": "Vista previa de la foto de la oferta",
     "checkingImage": "Cargando imagen…",
-    "saving": "Guardando…"
+    "saving": "Guardando…",
+    "businessDistrict": "Distrito del negocio",
+    "pickupLocation": "Lugar de recojo",
+    "pickupLocationHelp": "Esta oferta usa la dirección y el distrito del negocio seleccionado. Puedes cambiarlos en su perfil antes de completar este formulario; los cambios se aplicarán a todas sus ofertas.",
+    "editPickupLocation": "Editar dirección del negocio",
+    "noBusinessInDistrict": "No tienes un negocio registrado en este distrito. Elige otro distrito o Todos los distritos."
   },
   "reservation": {
     "title": "Tus rescates de comida",

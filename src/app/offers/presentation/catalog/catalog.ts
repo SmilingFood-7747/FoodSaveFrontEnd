@@ -15,6 +15,7 @@ import { OfferService } from '../../application/offer.service';
 import { BusinessService } from '../../../businesses/application/business.service';
 import { GeolocationService } from '../../../shared/application/geolocation.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { districtOptions } from '../../../shared/domain/model/lima-districts';
 @Component({
   selector: 'app-catalog',
   encapsulation: ViewEncapsulation.None,
@@ -44,7 +45,9 @@ export class Catalog {
   );
   readonly locationError = signal(false);
   readonly categories = ['all', 'meals', 'bakery', 'vegetarian', 'desserts'];
-  readonly districts = computed(() => [...new Set(this.businesses.all().map((b) => b.district))]);
+  readonly districts = computed(() =>
+    districtOptions(this.businesses.all().map((b) => b.district)),
+  );
   readonly results = computed(() =>
     this.offers
       .active()

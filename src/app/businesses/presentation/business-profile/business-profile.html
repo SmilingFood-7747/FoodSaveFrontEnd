@@ -70,7 +70,7 @@
               [ngModel]="district()"
               (ngModelChange)="district.set($event)"
             >
-              @for (d of districts; track d) {
+              @for (d of districts(); track d) {
                 <mat-option [value]="d">{{ d }}</mat-option>
               }
             </mat-select></mat-form-field

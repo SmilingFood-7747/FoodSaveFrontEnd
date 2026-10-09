@@ -16,11 +16,11 @@ npm run build
 
 ## Fake API
 
-The frontend reads and saves data using [the deployed fake API](https://foodsavefakeapi.onrender.com/). `ApiDatabase` loads the ten resources during startup; the `Api*Repository` adapters expose this state and await HTTP writes before reporting success. Use **Refresh data** to reload changes made from another session.
+The frontend reads initial data from [the deployed fake API](https://foodsavefakeapi.onrender.com/) using **GET only**. `ApiDatabase` loads the ten resources during startup. Accounts, reservations, offers and other changes made through the frontend are saved only in this browser's localStorage; photos stay in IndexedDB. The frontend never sends POST, PUT, PATCH or DELETE requests to the fake API.
 
-The application displays a retry option when the API cannot be reached. Render may need time to wake up. There is no browser database fallback; records from the previous local demo are not automatically uploaded. Only the session, language and dismissed nearby alerts stay in browser storage.
+Use **Refresh data** to fetch updated API data while retaining local changes. Local IDs use a separate range from the seed IDs. Local changes are scoped to the configured API URL and do not appear on other devices. Records from the previous browser demo are left untouched and are not uploaded. The session and dismissed nearby alerts stay in sessionStorage, and the language preference stays in localStorage.
 
-JSON Server is a prototype service, without server authentication or transactional stock guarantees. Runtime writes on Render's ephemeral filesystem can be lost on a restart or redeploy; `db.json` supplies the initial data.
+The application displays a retry option when the API cannot be reached. Render may need time to wake up. JSON Server provides the sample data; authentication and business operations are simulated in the browser.
 
 ### Run the API locally
 
@@ -41,5 +41,5 @@ Set `platformProviderApiBaseUrl` to `http://localhost:3000` in `src/environments
 ## Documentation
 
 - [User stories and requirement traceability](docs/user-stories.md): 29 frontend stories (US02-US30) with acceptance criteria and links to the current implementation.
-- [Architectural Decision Records](docs/adrs.md): decisions reflected in the FoodSave frontend, including HTTP persistence and the fake API.
+- [Architectural Decision Records](docs/adrs.md): decisions reflected in the FoodSave frontend, including GET requests to the fake API and browser persistence.
 - [Class diagram source](docs/class-diagram.puml): editable PlantUML design of the landing page and web application, including models, services, repositories and components.

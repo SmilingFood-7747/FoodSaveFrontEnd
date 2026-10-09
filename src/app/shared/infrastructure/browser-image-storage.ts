@@ -21,26 +21,15 @@ export class BrowserImageStorage {
     }));
   }
   async save(file: File): Promise<string> {
-    // Store a portable image in the API, within JSON Server's default request limit.
-    const image = await createImageBitmap(file);
-    try {
-      const canvas = document.createElement('canvas');
-      const scale = Math.min(1, 640 / Math.max(image.width, image.height));
-      canvas.width = Math.max(1, Math.round(image.width * scale));
-      canvas.height = Math.max(1, Math.round(image.height * scale));
-      const context = canvas.getContext('2d');
-      if (!context) throw new Error('errors.imageStorage');
-      context.fillStyle = '#ffffff';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      for (const quality of [0.8, 0.65, 0.5, 0.35, 0.2]) {
-        const data = canvas.toDataURL('image/jpeg', quality);
-        if (data.length <= 80000) return data;
-      }
-      throw new Error('errors.imageSize');
-    } finally {
-      image.close();
-    }
+    const db = await this.open();
+    const id = crypto.randomUUID();
+    await new Promise<void>((resolve, reject) => {
+      const transaction = db.transaction('images', 'readwrite');
+      transaction.objectStore('images').put(file, id);
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = transaction.onabort = () => reject(new Error('errors.imageStorage'));
+    });
+    return `local-image:${id}`;
   }
   resolve(reference?: string): Promise<string | null> {
     if (!reference) return Promise.resolve(null);

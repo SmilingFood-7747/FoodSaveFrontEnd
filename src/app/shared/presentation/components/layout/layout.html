@@ -2,13 +2,15 @@
 @if (database.ready() && database.error()) {
   <div class="alert error" role="alert">
     {{ database.error() | translate }}
-    <button
-      mat-stroked-button
-      (click)="database.refresh()"
-      [disabled]="database.loading() || database.saving()"
-    >
-      {{ 'sync.retry' | translate }}
-    </button>
+    @if (database.error() === 'errors.apiLoad') {
+      <button
+        mat-stroked-button
+        (click)="database.refresh()"
+        [disabled]="database.loading() || database.saving()"
+      >
+        {{ 'sync.retry' | translate }}
+      </button>
+    }
   </div>
 }
 <button

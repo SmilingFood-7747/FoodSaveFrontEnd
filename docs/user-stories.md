@@ -21,7 +21,7 @@ EP01 incluye los requisitos de acceso público, consulta y búsqueda de ofertas,
 
 ## Matriz de trazabilidad de requisitos (RTM)
 
-La evidencia indica dónde se expresa el requisito en el código; no representa una certificación de cumplimiento ni resultados de pruebas. **Local**: lógica del prototipo en el navegador. **Parcial**: cobertura limitada al prototipo, sin envío externo de notificaciones ni servicios permanentes. Los adaptadores `Api*Repository` cargan y guardan los datos mediante la fake API de Render; las reglas de dominio se ejecutan en el navegador. La carga muestra errores y permite reintentar. La etiqueta Local describe la lógica del cliente, no el lugar de persistencia.
+La evidencia indica dónde se expresa el requisito en el código; no representa una certificación de cumplimiento ni resultados de pruebas. **Local**: lógica del prototipo en el navegador. **Parcial**: cobertura limitada al prototipo, sin envío externo de notificaciones ni servicios permanentes. Los adaptadores `Api*Repository` parten de datos obtenidos con GET desde la fake API de Render. Las acciones del usuario y las reglas de dominio se ejecutan en el navegador; sus cambios se guardan solo en localStorage e IndexedDB. El frontend no modifica la fake API. La carga muestra errores y permite reintentar.
 
 | ID | Requisito | Épica | Contexto | Elementos relacionados | Alcance actual |
 |---|---|---|---|---|---|

@@ -42,17 +42,20 @@ const endpoints = {
 type Resource = keyof typeof endpoints;
 type ApiRow = { id: number; [key: string]: unknown };
 type PreferenceRow = NotificationPreferences & { id: number; accountId: number };
-interface Change {
-  resource: Resource;
-  previous?: ApiRow;
-  next: ApiRow;
+interface LocalChange {
+  id: number;
+  fields: Record<string, unknown>;
+  created: boolean;
 }
+type LocalChanges = Partial<Record<Resource, LocalChange[]>>;
 
 @Injectable({ providedIn: 'root' })
 export class ApiDatabase {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.platformProviderApiBaseUrl.replace(/\/$/, '');
-  private preferenceRows: PreferenceRow[] = [];
+  private readonly localKey = `foodsave-local-changes-v1:${this.baseUrl}`;
+  private localChanges: LocalChanges = this.restoreChanges();
+  private source?: DatabaseSnapshot;
   private queue: Promise<unknown> = Promise.resolve();
   readonly state = signal<DatabaseSnapshot>({
     accounts: [],
@@ -79,7 +82,26 @@ export class ApiDatabase {
     return this.enqueue(async () => {
       this.loading.set(true);
       try {
-        await this.load();
+        const requests = Object.fromEntries(
+          Object.entries(endpoints).map(([resource, path]) => [
+            resource,
+            this.http.get<ApiRow[]>(this.baseUrl + path).pipe(timeout(60000)),
+          ]),
+        );
+        const data = await firstValueFrom(forkJoin(requests));
+        if (Object.values(data).some((rows) => !Array.isArray(rows)))
+          throw new Error('Invalid API response');
+        const preferences: Record<string, NotificationPreferences> = {};
+        for (const { id, accountId, ...preference } of data[
+          'preferences'
+        ] as unknown as PreferenceRow[]) {
+          preferences[accountId] = preference;
+        }
+        const source = { ...data, preferences } as unknown as DatabaseSnapshot;
+        const merged = this.merge(source);
+        this.source = source;
+        this.state.set(merged);
+        this.ready.set(true);
         this.error.set('');
       } catch {
         this.error.set('errors.apiLoad');
@@ -89,142 +111,71 @@ export class ApiDatabase {
     });
   }
 
-  private async load(): Promise<void> {
-    const requests = Object.fromEntries(
-      Object.entries(endpoints).map(([resource, path]) => [
-        resource,
-        this.http.get<ApiRow[]>(this.baseUrl + path).pipe(timeout(60000)),
-      ]),
-    );
-    const data = await firstValueFrom(forkJoin(requests));
-    if (Object.values(data).some((rows) => !Array.isArray(rows)))
-      throw new Error('Invalid API response');
-    this.preferenceRows = data['preferences'] as unknown as PreferenceRow[];
-    const preferences: Record<string, NotificationPreferences> = {};
-    for (const { id, accountId, ...preference } of this.preferenceRows) {
-      preferences[accountId] = preference;
-    }
-    this.state.set({ ...data, preferences } as unknown as DatabaseSnapshot);
-    this.ready.set(true);
-  }
-
+  // User actions belong to this browser. The fake API is only accessed with GET.
   commit(change: (current: DatabaseSnapshot) => DatabaseSnapshot): Promise<void> {
     return this.enqueue(async () => {
-      if (!this.ready()) throw new DomainError('errors.apiLoad');
-      const previous = this.state();
-      // Normalize optional fields in the same way as a JSON HTTP request.
-      const next: DatabaseSnapshot = JSON.parse(JSON.stringify(change(structuredClone(previous))));
-      const changes = this.changes(previous, next);
-      if (!changes.length) return;
-      const applied: Change[] = [];
+      if (!this.ready() || !this.source) throw new DomainError('errors.apiLoad');
+      const next = change(structuredClone(this.state()));
+      const overrides: LocalChanges = {};
+      for (const resource of Object.keys(endpoints) as Resource[]) {
+        const original = new Map(this.rows(resource, this.source).map((row) => [row.id, row]));
+        const changes: LocalChange[] = [];
+        for (const row of this.rows(resource, next)) {
+          const before = original.get(row.id);
+          const fields = before ? this.diff(before, row) : row;
+          if (Object.keys(fields).length) {
+            changes.push({ id: row.id, fields, created: !before });
+          }
+        }
+        if (changes.length) overrides[resource] = changes;
+      }
       this.saving.set(true);
       try {
-        // Detect edits made by another client before sending this batch.
-        for (const item of changes) {
-          const rows = await firstValueFrom(
-            this.http
-              .get<ApiRow[]>(this.url(item.resource), {
-                params: { id: item.next.id },
-              })
-              .pipe(timeout(15000)),
-          );
-          const remote = rows[0];
-          if (item.previous ? !remote || !this.equal(remote, item.previous) : !!remote)
-            throw new DomainError('errors.apiConflict');
-        }
-        for (const item of changes) {
-          if (item.previous) {
-            await firstValueFrom(
-              this.http
-                .patch(this.url(item.resource, item.next.id), this.patch(item.previous, item.next))
-                .pipe(timeout(15000)),
-            );
-          } else {
-            await firstValueFrom(
-              this.http.post(this.url(item.resource), item.next).pipe(timeout(15000)),
-            );
-          }
-          applied.push(item);
-        }
+        localStorage.setItem(this.localKey, JSON.stringify(overrides));
+        this.localChanges = overrides;
         this.state.set(next);
-        this.preferenceRows = this.rows('preferences', next) as unknown as PreferenceRow[];
-        try {
-          await this.load();
-          this.error.set('');
-        } catch {
-          // Writes were confirmed; a refresh failure must not invite a duplicate submission.
-          this.error.set('errors.apiLoad');
-        }
-      } catch (cause) {
-        // JSON Server has no transactions. Undo confirmed steps on a failed batch.
-        for (const item of applied.reverse()) {
-          try {
-            const remote = await firstValueFrom(
-              this.http.get<ApiRow>(this.url(item.resource, item.next.id)).pipe(timeout(15000)),
-            );
-            // Preserve subsequent edits from other clients during compensation.
-            const expected = item.previous
-              ? { ...item.previous, ...this.patch(item.previous, item.next) }
-              : item.next;
-            if (!this.equal(remote, expected)) continue;
-            if (item.previous) {
-              await firstValueFrom(
-                this.http
-                  .patch(
-                    this.url(item.resource, item.next.id),
-                    this.patch(item.next, item.previous),
-                  )
-                  .pipe(timeout(15000)),
-              );
-            } else {
-              await firstValueFrom(
-                this.http.delete(this.url(item.resource, item.next.id)).pipe(timeout(15000)),
-              );
-            }
-          } catch {
-            /* Reload the server state below if compensation fails. */
-          }
-        }
-        try {
-          await this.load();
-        } catch {
-          /* Keep the last confirmed snapshot. */
-        }
-        const key = cause instanceof DomainError ? cause.key : 'errors.apiSave';
-        this.error.set(key);
-        throw new DomainError(key);
+        // A local save cannot clear an unrelated API refresh failure.
+        if (this.error() === 'errors.localSave') this.error.set('');
+      } catch {
+        this.error.set('errors.localSave');
+        throw new DomainError('errors.localSave');
       } finally {
         this.saving.set(false);
       }
     });
   }
 
-  private changes(previous: DatabaseSnapshot, next: DatabaseSnapshot): Change[] {
-    const changes: Change[] = [];
+  private merge(source: DatabaseSnapshot): DatabaseSnapshot {
+    const merged: Record<string, unknown> = {};
     for (const resource of Object.keys(endpoints) as Resource[]) {
-      const before = new Map(this.rows(resource, previous).map((row) => [row.id, row]));
-      for (const row of this.rows(resource, next)) {
-        const old = before.get(row.id);
-        if (!old || !this.equal(old, row)) changes.push({ resource, previous: old, next: row });
+      const rows = new Map(this.rows(resource, source).map((row) => [row.id, row]));
+      for (const change of this.localChanges[resource] ?? []) {
+        const remote = rows.get(change.id);
+        // Local edits apply only to their source record; locally created records remain available.
+        if (remote || change.created) {
+          rows.set(change.id, { ...remote, ...change.fields, id: change.id });
+        }
       }
+      merged[resource] =
+        resource === 'preferences'
+          ? Object.fromEntries([...rows.values()].map(({ id, ...preference }) => [id, preference]))
+          : [...rows.values()];
     }
-    return changes;
+    return merged as unknown as DatabaseSnapshot;
   }
 
   private rows(resource: Resource, snapshot: DatabaseSnapshot): ApiRow[] {
     if (resource !== 'preferences') return snapshot[resource] as unknown as ApiRow[];
-    let nextId = this.nextId(this.preferenceRows);
-    return Object.entries(snapshot.preferences).map(([accountId, preferences]) => ({
-      ...preferences,
-      accountId: Number(accountId),
-      id: this.preferenceRows.find((row) => row.accountId === Number(accountId))?.id ?? nextId++,
+    return Object.entries(snapshot.preferences).map(([accountId, preference]) => ({
+      ...preference,
+      id: Number(accountId),
     }));
   }
 
-  private patch(previous: ApiRow, next: ApiRow): Record<string, unknown> {
+  private diff(before: ApiRow, next: ApiRow): Record<string, unknown> {
     return Object.fromEntries(
-      [...new Set([...Object.keys(previous), ...Object.keys(next)])]
-        .filter((key) => key !== 'id' && !this.equal(previous[key], next[key]))
+      [...new Set([...Object.keys(before), ...Object.keys(next)])]
+        .filter((key) => key !== 'id' && !this.equal(before[key], next[key]))
         .map((key) => [key, next[key] ?? null]),
     );
   }
@@ -239,8 +190,28 @@ export class ApiDatabase {
     return canonical(a) === canonical(b);
   }
 
-  private url(resource: Resource, id?: number): string {
-    return this.baseUrl + endpoints[resource] + (id === undefined ? '' : `/${id}`);
+  private restoreChanges(): LocalChanges {
+    try {
+      const value: unknown = JSON.parse(localStorage.getItem(this.localKey) ?? '{}');
+      if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+      const valid: LocalChanges = {};
+      for (const resource of Object.keys(endpoints) as Resource[]) {
+        const changes = (value as LocalChanges)[resource];
+        if (!Array.isArray(changes)) continue;
+        valid[resource] = changes.filter(
+          (change) =>
+            change &&
+            Number.isSafeInteger(change.id) &&
+            typeof change.created === 'boolean' &&
+            change.fields &&
+            typeof change.fields === 'object' &&
+            !Array.isArray(change.fields),
+        );
+      }
+      return valid;
+    } catch {
+      return {};
+    }
   }
 
   private enqueue<T>(work: () => Promise<T>): Promise<T> {
@@ -250,7 +221,8 @@ export class ApiDatabase {
   }
 
   nextId(items: { id: number }[]): number {
-    return items.reduce((highest, item) => Math.max(highest, item.id), 0) + 1;
+    // Keep local demo IDs separate from the API seed's IDs.
+    return items.reduce((highest, item) => Math.max(highest, item.id), 1000000000) + 1;
   }
 }
 

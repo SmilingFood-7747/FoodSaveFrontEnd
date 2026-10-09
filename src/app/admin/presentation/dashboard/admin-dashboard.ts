@@ -24,7 +24,7 @@ export class AdminDashboard {
     try {
       await this.admin.setPlusPartner(id, selected);
     } catch {
-      /* The shared API banner displays the save error. */
+      /* The shared banner displays the local save error. */
     } finally {
       this.busy.set(false);
     }

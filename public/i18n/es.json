@@ -330,8 +330,7 @@
     "plusRequired": "Necesitas foodSavePlus activo para reservar esta oferta exclusiva.",
     "plusPartnerRequired": "Este negocio no pertenece a la selección Plus. Publica la oferta para todos los clientes.",
     "apiLoad": "No pudimos cargar los datos. El servidor puede tardar en iniciar. Reintenta en unos segundos.",
-    "apiSave": "No pudimos confirmar el guardado. Actualiza los datos y revisa el resultado antes de reintentar.",
-    "apiConflict": "Estos datos cambiaron en otra sesión. Se actualizaron; revisa la información y vuelve a intentarlo."
+    "localSave": "No pudimos guardar los cambios en este navegador. Revisa el espacio disponible e inténtalo de nuevo."
   },
   "finance": {
     "date": "Fecha",

@@ -18,19 +18,6 @@
   } @else {
     <div class="panel form-panel">
       <form (ngSubmit)="save()" #form="ngForm">
-        <mat-form-field appearance="outline" class="full-width">
-          <mat-label>{{ 'editor.businessDistrict' | translate }}</mat-label>
-          <mat-select
-            name="districtFilter"
-            [ngModel]="districtFilter()"
-            (ngModelChange)="selectDistrict($event)"
-          >
-            <mat-option value="all">{{ 'catalog.allDistricts' | translate }}</mat-option>
-            @for (district of districts(); track district) {
-              <mat-option [value]="district">{{ district }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
         <div class="form-grid">
           <mat-form-field appearance="outline"
             ><mat-label>{{ 'business.name' | translate }}</mat-label
@@ -40,7 +27,7 @@
               (ngModelChange)="businessId.set($event)"
               required
             >
-              @for (b of filteredBusinesses(); track b.id) {
+              @for (b of businesses.owned(); track b.id) {
                 <mat-option [value]="b.id">{{ b.name }}</mat-option>
               }
             </mat-select></mat-form-field
@@ -79,8 +66,6 @@
               <mat-icon>edit_location_alt</mat-icon>{{ 'editor.editPickupLocation' | translate }}
             </a>
           </section>
-        } @else {
-          <p class="message" role="status">{{ 'editor.noBusinessInDistrict' | translate }}</p>
         }
         <mat-form-field appearance="outline" class="full-width"
           ><mat-label>{{ 'editor.title' | translate }}</mat-label

@@ -13,7 +13,6 @@ import { OfferService } from '../../application/offer.service';
 import { BusinessService } from '../../../businesses/application/business.service';
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
 import { Offer } from '../../domain/model/offer';
-import { districtOptions } from '../../../shared/domain/model/lima-districts';
 @Component({
   selector: 'app-offer-editor',
   encapsulation: ViewEncapsulation.None,
@@ -36,25 +35,7 @@ export class OfferEditor {
     return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   }
   readonly businessId = signal(this.existing?.businessId ?? this.businesses.owned()[0]?.id ?? 0);
-  readonly districtFilter = signal('all');
-  readonly districts = computed(() =>
-    districtOptions(this.businesses.owned().map((b) => b.district)),
-  );
-  readonly filteredBusinesses = computed(() =>
-    this.businesses
-      .owned()
-      .filter(
-        (business) =>
-          this.districtFilter() === 'all' || business.district === this.districtFilter(),
-      ),
-  );
   readonly pickupBusiness = computed(() => this.businesses.get(Number(this.businessId())));
-  selectDistrict(district: string): void {
-    this.districtFilter.set(district);
-    const businesses = this.filteredBusinesses();
-    if (!businesses.some((business) => business.id === Number(this.businessId())))
-      this.businessId.set(businesses[0]?.id ?? 0);
-  }
   readonly plusExclusive = signal(this.existing?.plusExclusive ?? false);
   readonly title = signal(this.existing?.title ?? '');
   readonly description = signal(this.existing?.description ?? '');

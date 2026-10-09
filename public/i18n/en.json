@@ -477,7 +477,6 @@
     "signInHint": "Sign in to save these alerts in your notifications."
   },
   "sync": {
-    "refresh": "Refresh data",
     "retry": "Try again",
     "loading": "Loading data…",
     "unavailable": "Data is unavailable"

@@ -477,7 +477,6 @@
     "signInHint": "Inicia sesión para guardar estos avisos en tus notificaciones."
   },
   "sync": {
-    "refresh": "Actualizar datos",
     "retry": "Reintentar",
     "loading": "Cargando datos…",
     "unavailable": "No se pudieron cargar los datos"

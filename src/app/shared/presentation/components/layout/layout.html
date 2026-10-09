@@ -72,14 +72,6 @@
         ><mat-icon>eco</mat-icon>{{ 'nav.about' | translate }}</a
       >
     </nav>
-    <button
-      mat-stroked-button
-      (click)="database.refresh()"
-      [disabled]="database.loading() || database.saving()"
-    >
-      <mat-icon>refresh</mat-icon
-      >{{ (database.loading() ? 'sync.loading' : 'sync.refresh') | translate }}
-    </button>
     <div class="sidebar-impact">
       <div class="impact-icon"><mat-icon>spa</mat-icon></div>
       <strong>{{ 'brand.smallActions' | translate }}</strong>

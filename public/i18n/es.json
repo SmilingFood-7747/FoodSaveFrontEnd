@@ -470,10 +470,10 @@
     "view": "Ver oferta",
     "dismiss": "Ocultar ofertas cercanas actuales",
     "dismissToast": "Cerrar aviso",
-    "enableHint": "Activa “Usar mi ubicación” para recibir avisos de ofertas a menos de 2 km. Tu ubicación se usa solo mientras navegas.",
-    "none": "No hay ofertas disponibles a menos de 2 km, o tienes desactivados los avisos de cercanía. Puedes seguir explorando el catálogo.",
+    "enableHint": "Activa “Usar mi ubicación” para recibir avisos de ofertas en un radio de {{radius}} km. Tu ubicación se usa solo mientras navegas.",
+    "none": "No hay ofertas disponibles en un radio de {{radius}} km, o tienes desactivados los avisos de cercanía. Puedes seguir explorando el catálogo.",
     "preference": "Avisos de ofertas cercanas",
-    "preferenceBody": "Con permiso de ubicación, muestra ofertas a menos de 2 km en un cuadro fijo, un aviso temporal y tu historial de notificaciones. Puedes desactivarlos cuando quieras.",
+    "preferenceBody": "Con permiso de ubicación, muestra ofertas en un radio de {{radius}} km en un cuadro fijo, un aviso temporal y tu historial de notificaciones. Puedes desactivarlos cuando quieras.",
     "signInHint": "Inicia sesión para guardar estos avisos en tus notificaciones."
   },
   "sync": {

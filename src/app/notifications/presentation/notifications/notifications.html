@@ -78,7 +78,9 @@
         <mat-slide-toggle [ngModel]="nearbyEnabled()" (ngModelChange)="nearbyEnabled.set($event)">{{
           'nearby.preference' | translate
         }}</mat-slide-toggle>
-        <p class="caption">{{ 'nearby.preferenceBody' | translate }}</p>
+        <p class="caption">
+          {{ 'nearby.preferenceBody' | translate: { radius: nearby.radiusKm } }}
+        </p>
       </div>
       <p class="caption">{{ 'notice.channels' | translate }}</p>
       <button mat-flat-button (click)="save()" [disabled]="busy()">

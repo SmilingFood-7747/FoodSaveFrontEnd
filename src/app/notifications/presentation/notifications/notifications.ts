@@ -10,6 +10,7 @@ import { NotificationService } from '../../application/notification.service';
 import { ReservationService } from '../../../reservations/application/reservation.service';
 import { OfferService } from '../../../offers/application/offer.service';
 import { BusinessService } from '../../../businesses/application/business.service';
+import { NearbyOfferService } from '../../../offers/application/nearby-offer.service';
 @Component({
   selector: 'app-notifications',
   encapsulation: ViewEncapsulation.None,
@@ -19,6 +20,7 @@ import { BusinessService } from '../../../businesses/application/business.servic
   styleUrl: './notifications.css',
 })
 export class Notifications {
+  readonly nearby = inject(NearbyOfferService);
   readonly notifications = inject(NotificationService);
   readonly reservations = inject(ReservationService);
   readonly offers = inject(OfferService);

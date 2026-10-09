@@ -14,9 +14,13 @@
     <p class="message error" role="alert">{{ 'errors.location' | translate }}</p>
   }
   @if (!geo.position()) {
-    <p class="caption location-hint">{{ 'nearby.enableHint' | translate }}</p>
+    <p class="caption location-hint">
+      {{ 'nearby.enableHint' | translate: { radius: nearby.radiusKm } }}
+    </p>
   } @else if (!nearby.nearby().length) {
-    <p class="caption location-hint">{{ 'nearby.none' | translate }}</p>
+    <p class="caption location-hint">
+      {{ 'nearby.none' | translate: { radius: nearby.radiusKm } }}
+    </p>
   }
   <div class="rescue-banner">
     <div>

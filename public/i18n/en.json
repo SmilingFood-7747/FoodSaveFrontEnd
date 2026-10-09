@@ -470,10 +470,10 @@
     "view": "View offer",
     "dismiss": "Hide current nearby offers",
     "dismissToast": "Dismiss notification",
-    "enableHint": "Enable “Use my location” to receive alerts for offers within 2 km. Your location is used only while you browse.",
-    "none": "No available offers within 2 km, or nearby alerts are disabled. You can keep exploring the catalog.",
+    "enableHint": "Enable “Use my location” to receive alerts for offers within {{radius}} km. Your location is used only while you browse.",
+    "none": "No available offers within {{radius}} km, or nearby alerts are disabled. You can keep exploring the catalog.",
     "preference": "Nearby offer alerts",
-    "preferenceBody": "With location permission, show offers within 2 km in a pinned card, a temporary alert and your notification history. You can turn them off at any time.",
+    "preferenceBody": "With location permission, show offers within {{radius}} km in a pinned card, a temporary alert and your notification history. You can turn them off at any time.",
     "signInHint": "Sign in to save these alerts in your notifications."
   },
   "sync": {

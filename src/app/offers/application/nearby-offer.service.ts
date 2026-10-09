@@ -19,7 +19,7 @@ export class NearbyOfferService {
   private readonly session = inject(SessionService);
   private readonly notifications = inject(NotificationService);
   readonly billing = inject(BillingService);
-  readonly radiusKm = 2;
+  readonly radiusKm = 7;
   // Show nearby offers once per page visit, independently of notification history.
   private readonly announced = new Set<string>();
   private readonly dismissed = signal<string[]>([]);

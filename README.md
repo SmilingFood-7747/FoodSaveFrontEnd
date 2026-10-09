@@ -20,7 +20,7 @@ The frontend reads initial data from [the deployed fake API](https://foodsavefak
 
 Use **Refresh data** to fetch updated API data while retaining local changes. Local IDs use a separate range from the seed IDs. Local changes are scoped to the configured API URL and do not appear on other devices. Records from the previous browser demo are left untouched and are not uploaded. The session stays in sessionStorage, and the language preference stays in localStorage.
 
-When location permission is already granted, the frontend resumes location on entry. Available offers within 2 km trigger a six-second nearby toast once per page visit, even if the offer is already in the notification history. Returning or reloading allows the toast again; the notification history still avoids duplicate entries for the same account, offer and offer version.
+When location permission is already granted, the frontend resumes location on entry. Available offers within 7 km (temporarily expanded from 2 km) trigger a six-second nearby toast once per page visit, even if the offer is already in the notification history. Returning or reloading allows the toast again; the notification history still avoids duplicate entries for the same account, offer and offer version.
 
 The application displays a retry option when the API cannot be reached. Render may need time to wake up. JSON Server provides the sample data; authentication and business operations are simulated in the browser.
 

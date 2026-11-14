@@ -10,6 +10,7 @@ import { Header } from '../header/header';
 import { UI } from '../../ui';
 import { SessionService } from '../../../../iam/application/session.service';
 import { ApiDatabase } from '../../../infrastructure/api-database';
+import { BackendCatalogApi } from '../../../infrastructure/backend-catalog.api';
 @Component({
   selector: 'app-layout',
   encapsulation: ViewEncapsulation.None,
@@ -22,5 +23,11 @@ export class Layout {
   readonly session = inject(SessionService);
   readonly nearby = inject(NearbyOfferService);
   readonly database = inject(ApiDatabase);
+  readonly catalog = inject(BackendCatalogApi);
   readonly menuOpen = signal(false);
+
+  async refresh(): Promise<void> {
+    await this.database.refresh();
+    await this.catalog.refresh(this.session.user(), this.session.accessToken);
+  }
 }

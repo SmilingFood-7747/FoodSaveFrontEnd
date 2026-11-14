@@ -2,13 +2,11 @@ import { computed, inject, Injectable } from '@angular/core';
 import { Business } from '../domain/model/business';
 import { BusinessRepository } from '../domain/repositories/business.repository';
 import { SessionService } from '../../iam/application/session.service';
-import { ApiDatabase } from '../../shared/infrastructure/api-database';
 import { DomainError } from '../../shared/domain/model/domain-error';
 @Injectable({ providedIn: 'root' })
 export class BusinessService {
   private readonly repository = inject(BusinessRepository);
   private readonly session = inject(SessionService);
-  private readonly db = inject(ApiDatabase);
   readonly all = computed(() => this.repository.all());
   readonly owned = computed(() =>
     this.all().filter((b) => b.ownerAccountId === this.session.user()?.id),
@@ -21,6 +19,8 @@ export class BusinessService {
     id?: number,
   ): Promise<Business> {
     const owner = this.session.require('BUSINESS_OWNER');
+    const token = this.session.accessToken;
+    if (!token) throw new DomainError('errors.signIn');
     if (
       ![data.name, data.address, data.district, data.contactPhone, data.pickupConditions].every(
         (v) => v.trim(),
@@ -32,14 +32,13 @@ export class BusinessService {
     )
       throw new DomainError('errors.business');
     if (id && this.get(id)?.ownerAccountId !== owner.id) throw new DomainError('errors.forbidden');
-    const business = {
+    const business: Business = {
       ...data,
-      id: id ?? this.db.nextId(this.all()),
+      id: id ?? 0,
       ownerAccountId: owner.id,
       isActive: true,
       plusPartner: id ? (this.get(id)?.plusPartner ?? false) : false,
     };
-    await this.repository.save(business);
-    return business;
+    return this.repository.save(business, token);
   }
 }

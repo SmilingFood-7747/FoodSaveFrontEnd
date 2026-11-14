@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  foodsaveBackendBaseUrl: 'https://foodsave-backend-b28w.onrender.com',
   platformProviderApiBaseUrl: 'https://foodsavefakeapi.onrender.com',
   platformProviderAccountsEndpointPath: '/accounts',
   platformProviderBusinessesEndpointPath: '/businesses',

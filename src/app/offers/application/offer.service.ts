@@ -13,8 +13,8 @@ export class OfferService {
   private readonly repository = inject(OfferRepository);
   private readonly businesses = inject(BusinessService);
   private readonly session = inject(SessionService);
-  private readonly db = inject(ApiDatabase);
   private readonly clock = inject(ClockService);
+  private readonly db = inject(ApiDatabase);
   readonly all = computed(() => {
     this.clock.now();
     return this.repository.all().map((data) => ({ ...data, status: new Offer(data).status }));
@@ -33,6 +33,8 @@ export class OfferService {
     id?: number,
   ): Promise<OfferData> {
     const owner = this.session.require('BUSINESS_OWNER');
+    const token = this.session.accessToken;
+    if (!token) throw new DomainError('errors.signIn');
     if (this.businesses.get(data.businessId)?.ownerAccountId !== owner.id)
       throw new DomainError('errors.forbidden');
     const current = id ? this.get(id) : undefined;
@@ -47,36 +49,21 @@ export class OfferService {
       throw new DomainError('errors.plusPartnerRequired');
     const next = {
       ...data,
-      id: id ?? this.db.nextId(this.all()),
+      id: id ?? 0,
       availableUnits: data.initialUnits,
       status: 'ACTIVE' as const,
     };
     Offer.validate(next);
     this.billing.assertCanPublish(data.businessId, id);
-    await this.repository.save(next);
-    return next;
+    return this.repository.save(next, token);
   }
   async pause(id: number): Promise<void> {
     const owner = this.session.require('BUSINESS_OWNER');
     const current = this.get(id);
     if (!current || this.businesses.get(current.businessId)?.ownerAccountId !== owner.id)
       throw new DomainError('errors.forbidden');
-    await this.db.commit((s) => {
-      const affected = s.reservations.filter((r) => r.offerId === id && r.status === 'ACTIVE');
-      const messages = affected.map((r, index) => ({
-        id: this.db.nextId(s.notifications) + index,
-        recipientAccountId: r.customerUserId,
-        reservationId: r.id,
-        type: 'OFFER_CHANGED' as const,
-        titleKey: 'notice.offerChanged',
-        body: current.title,
-        createdAt: new Date().toISOString(),
-      }));
-      return {
-        ...s,
-        offers: s.offers.map((o) => (o.id === id ? { ...o, status: 'PAUSED' as const } : o)),
-        notifications: [...s.notifications, ...messages],
-      };
-    });
+    const token = this.session.accessToken;
+    if (!token) throw new DomainError('errors.signIn');
+    await this.repository.pause(id, token);
   }
 }

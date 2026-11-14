@@ -1,56 +1,53 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { AccountRepository } from '../domain/repositories/account.repository';
 import { AccountRole, Session } from '../domain/model/account';
 import { DomainError } from '../../shared/domain/model/domain-error';
-import { ApiDatabase } from '../../shared/infrastructure/api-database';
+import { authErrorCode, BackendAuthApi } from '../infrastructure/backend-auth.api';
+import { BackendCatalogApi } from '../../shared/infrastructure/backend-catalog.api';
+
+const sessionKey = 'foodsave-backend-session';
+const tokenKey = 'foodsave-backend-access-token';
+
 @Injectable({ providedIn: 'root' })
 export class SessionService {
-  private readonly repository = inject(AccountRepository);
-  private readonly db = inject(ApiDatabase);
+  private readonly authApi = inject(BackendAuthApi);
+  private readonly catalog = inject(BackendCatalogApi);
   readonly user = signal<Session | null>(this.restore());
+  private readonly accessTokenValue = signal(this.restoreToken());
   readonly isBusinessOwner = computed(() => this.user()?.role === 'BUSINESS_OWNER');
   readonly isAdmin = computed(() => this.user()?.role === 'ADMIN');
+
+  get accessToken(): string | null { return this.accessTokenValue(); }
+
   private restore(): Session | null {
     try {
-      const id = Number(sessionStorage.getItem('foodsave-api-session'));
-      const account = this.repository.get(id);
-      return account ? this.publicAccount(account) : null;
+      const value = sessionStorage.getItem(sessionKey);
+      if (!value) return null;
+      const session = JSON.parse(value) as Session;
+      return session.id && session.email && session.role ? this.publicAccount(session) : null;
     } catch {
       return null;
     }
   }
+
+  private restoreToken(): string | null {
+    try { return sessionStorage.getItem(tokenKey); } catch { return null; }
+  }
+
   private publicAccount(account: Session): Session {
-    return {
-      id: account.id,
-      fullName: account.fullName,
-      email: account.email,
-      phone: account.phone,
-      role: account.role,
-    };
+    return { id: account.id, fullName: account.fullName, email: account.email, phone: account.phone, role: account.role };
   }
-  private async hash(password: string, salt: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const key = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
-      'deriveBits',
-    ]);
-    const bits = await crypto.subtle.deriveBits(
-      { name: 'PBKDF2', salt: encoder.encode(salt), iterations: 120000, hash: 'SHA-256' },
-      key,
-      256,
-    );
-    return Array.from(new Uint8Array(bits), (byte) => byte.toString(16).padStart(2, '0')).join('');
-  }
+
   async signIn(email: string, password: string): Promise<void> {
-    await this.db.refresh();
-    if (this.db.error()) throw new DomainError('errors.apiLoad');
-    const account = this.repository.findByEmail(email.trim());
-    if (!account) throw new DomainError('errors.credentials');
-    const hash = await this.hash(password, account.salt);
-    if (account.passwordHash ? hash !== account.passwordHash : password !== 'FoodSave123!')
-      throw new DomainError('errors.credentials');
-    if (!account.passwordHash) await this.repository.save({ ...account, passwordHash: hash });
-    this.establish(this.publicAccount(account));
+    try {
+      const result = await this.authApi.signIn(email.trim(), password);
+      const user = this.publicAccount(result.account);
+      this.establish(user, result.accessToken);
+      await this.catalog.refresh(user, result.accessToken);
+    } catch (error) {
+      throw new DomainError(authErrorCode(error, 'signIn'));
+    }
   }
+
   async signUp(data: {
     fullName: string;
     email: string;
@@ -60,54 +57,62 @@ export class SessionService {
   }): Promise<void> {
     if (data.role !== 'CUSTOMER' && data.role !== 'BUSINESS_OWNER')
       throw new DomainError('errors.forbidden');
-    if (
-      !data.fullName.trim() ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) ||
-      data.password.length < 8
-    )
+    if (!data.fullName.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) || data.password.length < 8)
       throw new DomainError('errors.account');
-    await this.db.refresh();
-    if (this.db.error()) throw new DomainError('errors.apiLoad');
-    if (this.repository.findByEmail(data.email)) throw new DomainError('errors.emailExists');
-    const salt = crypto.randomUUID();
-    const passwordHash = await this.hash(data.password, salt);
-    if (this.repository.findByEmail(data.email.trim())) throw new DomainError('errors.emailExists');
-    const account = {
-      id: this.db.nextId(this.db.state().accounts),
-      fullName: data.fullName.trim(),
-      email: data.email.trim().toLowerCase(),
-      phone: data.phone.trim(),
-      role: data.role,
-      salt,
-      passwordHash,
-    };
-    await this.repository.save(account);
-    this.establish(this.publicAccount(account));
+    try {
+      await this.authApi.signUp({
+        fullName: data.fullName.trim(),
+        email: data.email.trim().toLowerCase(),
+        phone: data.phone.trim(),
+        password: data.password,
+        role: data.role,
+      });
+      await this.signIn(data.email, data.password);
+    } catch (error) {
+      if (error instanceof DomainError) throw error;
+      throw new DomainError(authErrorCode(error, 'signUp'));
+    }
   }
+
   async updateProfile(fullName: string, phone: string): Promise<void> {
     const user = this.require();
+    const token = this.accessTokenValue();
     if (!fullName.trim()) throw new DomainError('errors.required');
-    const account = this.repository.get(user.id);
-    if (!account) throw new DomainError('errors.credentials');
-    await this.repository.save({ ...account, fullName: fullName.trim(), phone: phone.trim() });
-    this.establish({ ...user, fullName: fullName.trim(), phone: phone.trim() });
+    if (!token) throw new DomainError('errors.signIn');
+    try {
+      const updated = await this.authApi.updateProfile(user.id, token, fullName.trim(), phone.trim());
+      this.establish(this.publicAccount(updated), token);
+    } catch (error) {
+      throw new DomainError(authErrorCode(error, 'profile'));
+    }
   }
+
   require(role?: AccountRole): Session {
     const user = this.user();
     if (!user) throw new DomainError('errors.signIn');
     if (role && user.role !== role) throw new DomainError('errors.forbidden');
     return user;
   }
-  private establish(user: Session): void {
-    this.user.set(user);
+
+  private establish(user: Session, token: string): void {
+    const safeUser = this.publicAccount(user);
+    this.user.set(safeUser);
+    this.accessTokenValue.set(token);
     try {
-      sessionStorage.setItem('foodsave-api-session', String(user.id));
-    } catch {}
-  }
-  signOut(): void {
-    this.user.set(null);
-    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify(safeUser));
+      sessionStorage.setItem(tokenKey, token);
       sessionStorage.removeItem('foodsave-api-session');
     } catch {}
+  }
+
+  signOut(): void {
+    this.user.set(null);
+    this.accessTokenValue.set(null);
+    try {
+      sessionStorage.removeItem(sessionKey);
+      sessionStorage.removeItem(tokenKey);
+      sessionStorage.removeItem('foodsave-api-session');
+    } catch {}
+    void this.catalog.refresh(null, null);
   }
 }

@@ -10,6 +10,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { ApiDatabase } from './shared/infrastructure/api-database';
+import { BackendCatalogApi } from './shared/infrastructure/backend-catalog.api';
 import { LanguageService } from './shared/application/language.service';
 import { AccountRepository } from './iam/domain/repositories/account.repository';
 import { ApiAccountRepository } from './iam/infrastructure/api-account.repository';
@@ -23,6 +24,16 @@ import { NotificationRepository } from './notifications/domain/repositories/noti
 import { ApiNotificationRepository } from './notifications/infrastructure/api-notification.repository';
 import { FeedbackRepository } from './feedback/domain/repositories/feedback.repository';
 import { ApiFeedbackRepository } from './feedback/infrastructure/api-feedback.repository';
+import { SessionService } from './iam/application/session.service';
+
+async function initializeFoodSave(): Promise<void> {
+  const database = inject(ApiDatabase);
+  const catalog = inject(BackendCatalogApi);
+  const session = inject(SessionService);
+  await database.initialize();
+  await catalog.initialize(session.user(), session.accessToken);
+}
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -41,7 +52,7 @@ export const appConfig: ApplicationConfig = {
       }),
     }),
     provideAppInitializer(() => inject(LanguageService).initialize()),
-    provideAppInitializer(() => inject(ApiDatabase).initialize()),
+    provideAppInitializer(initializeFoodSave),
     { provide: AccountRepository, useClass: ApiAccountRepository },
     { provide: BusinessRepository, useClass: ApiBusinessRepository },
     { provide: OfferRepository, useClass: ApiOfferRepository },

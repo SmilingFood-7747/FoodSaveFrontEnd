@@ -4,12 +4,14 @@ import { NotificationPreferences } from '../domain/model/notification';
 import { ApiDatabase } from '../../shared/infrastructure/api-database';
 import { ClockService } from '../../shared/application/clock.service';
 import { SessionService } from '../../iam/application/session.service';
+import { BackendCatalogApi } from '../../shared/infrastructure/backend-catalog.api';
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private reminding = false;
   private readonly repository = inject(NotificationRepository);
   private readonly db = inject(ApiDatabase);
   private readonly session = inject(SessionService);
+  private readonly catalog = inject(BackendCatalogApi);
   private readonly clock = inject(ClockService);
   readonly mine = computed(() =>
     this.repository
@@ -20,7 +22,7 @@ export class NotificationService {
   readonly unread = computed(() => this.mine().filter((n) => !n.readAt).length);
   readonly preferences = computed<NotificationPreferences>(
     () =>
-      this.db.state().preferences[this.session.user()?.id ?? ''] ?? {
+      this.catalog.preferences() ?? this.db.state().preferences[this.session.user()?.id ?? ''] ?? {
         emailEnabled: false,
         pushEnabled: false,
         remindersEnabled: true,
@@ -110,10 +112,9 @@ export class NotificationService {
     if (n) await this.repository.save({ ...n, readAt: new Date().toISOString() });
   }
   async savePreferences(preferences: NotificationPreferences): Promise<void> {
-    const user = this.session.require();
-    await this.db.commit((s) => ({
-      ...s,
-      preferences: { ...s.preferences, [user.id]: preferences },
-    }));
+    this.session.require();
+    const token = this.session.accessToken;
+    if (!token) throw new Error('errors.signIn');
+    await this.catalog.savePreferences(preferences, token);
   }
 }

@@ -99,16 +99,5 @@
         (registering ? 'auth.signIn' : 'auth.createAccount') | translate
       }}</a>
     </p>
-    @if (!registering) {
-      <div class="demo-accounts">
-        <div class="button-row">
-          <button mat-stroked-button (click)="demo('CUSTOMER')">
-            {{ 'roles.CUSTOMER' | translate }}</button
-          ><button mat-stroked-button (click)="demo('BUSINESS_OWNER')">
-            {{ 'roles.BUSINESS_OWNER' | translate }}
-          </button>
-        </div>
-      </div>
-    }
   </div>
 </section>

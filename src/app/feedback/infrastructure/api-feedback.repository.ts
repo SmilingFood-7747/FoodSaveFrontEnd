@@ -1,20 +1,26 @@
 import { inject, Injectable } from '@angular/core';
 import { FeedbackRepository } from '../domain/repositories/feedback.repository';
 import { Review, SupportRequest } from '../domain/model/review';
-import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
+import { BackendCatalogApi } from '../../shared/infrastructure/backend-catalog.api';
+import { SessionService } from '../../iam/application/session.service';
 @Injectable()
 export class ApiFeedbackRepository extends FeedbackRepository {
-  private readonly db = inject(ApiDatabase);
+  private readonly catalog = inject(BackendCatalogApi);
+  private readonly session = inject(SessionService);
   reviews(): Review[] {
-    return this.db.state().reviews;
+    return this.catalog.reviews();
   }
   requests(): SupportRequest[] {
-    return this.db.state().requests;
+    return this.catalog.requests();
   }
   saveReview(review: Review): Promise<void> {
-    return this.db.commit((s) => ({ ...s, reviews: upsert(s.reviews, review) }));
+    const token = this.session.accessToken;
+    if (!token) return Promise.reject(new Error('errors.signIn'));
+    return this.catalog.submitReview(review.reservationId, review.rating, review.comment, token);
   }
   saveRequest(request: SupportRequest): Promise<void> {
-    return this.db.commit((s) => ({ ...s, requests: upsert(s.requests, request) }));
+    const token = this.session.accessToken;
+    if (!token) return Promise.reject(new Error('errors.signIn'));
+    return this.catalog.openSupportRequest(request.subject, request.description, request.reservationId, token);
   }
 }

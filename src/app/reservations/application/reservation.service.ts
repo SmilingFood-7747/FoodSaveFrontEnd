@@ -1,166 +1,73 @@
+import { computed, inject, Injectable } from '@angular/core';
 import { BillingService } from '../../billing/application/billing.service';
-import { cents, money } from '../../billing/domain/model/subscription';
-import { computed, effect, inject, Injectable } from '@angular/core';
-import { Notification } from '../../notifications/domain/model/notification';
-import { Reservation, ReservationData } from '../domain/model/reservation';
-import { ReservationRepository } from '../domain/repositories/reservation.repository';
 import { Offer } from '../../offers/domain/model/offer';
 import { OfferService } from '../../offers/application/offer.service';
 import { BusinessService } from '../../businesses/application/business.service';
 import { SessionService } from '../../iam/application/session.service';
-import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
 import { ClockService } from '../../shared/application/clock.service';
 import { DomainError } from '../../shared/domain/model/domain-error';
+import { Reservation, ReservationData } from '../domain/model/reservation';
+import { ReservationRepository } from '../domain/repositories/reservation.repository';
+
 @Injectable({ providedIn: 'root' })
 export class ReservationService {
-  private expiring = false;
   private readonly billing = inject(BillingService);
   private readonly repository = inject(ReservationRepository);
   private readonly offers = inject(OfferService);
   private readonly businesses = inject(BusinessService);
   private readonly session = inject(SessionService);
-  private readonly db = inject(ApiDatabase);
   private readonly clock = inject(ClockService);
+
   readonly all = computed(() => {
     this.clock.now();
-    return this.repository.all().map((r) => ({ ...r, status: new Reservation(r).status }));
+    return this.repository.all().map((reservation) => ({
+      ...reservation,
+      status: new Reservation(reservation).status,
+    }));
   });
+
   readonly mine = computed(() =>
-    this.all().filter((r) => r.customerUserId === this.session.user()?.id),
+    this.all().filter((reservation) => reservation.customerUserId === this.session.user()?.id),
   );
-  readonly businessReservations = computed(() =>
-    this.all().filter((r) =>
-      this.businesses.owned().some((b) => b.id === this.offers.get(r.offerId)?.businessId),
-    ),
-  );
-  constructor() {
-    effect(() => {
-      const now = this.clock.now();
-      const expired = this.db
-        .state()
-        .reservations.filter((r) => r.status === 'ACTIVE' && Date.parse(r.pickupDeadlineAt) <= now);
-      if (!expired.length || this.expiring) return;
-      this.expiring = true;
-      void this.db
-        .commit((s) => {
-          for (const reservation of expired) {
-            const current = s.reservations.find((r) => r.id === reservation.id);
-            if (!current || current.status !== 'ACTIVE') continue;
-            current.status = 'EXPIRED';
-            const offer = s.offers.find((o) => o.id === current.offerId);
-            if (offer) s.offers = upsert(s.offers, new Offer(offer).release(current.quantity));
-          }
-          return s;
-        })
-        .catch(() => undefined)
-        .finally(() => {
-          this.expiring = false;
-        });
-    });
-  }
+
+  readonly businessReservations = computed(() => {
+    const businessIds = new Set(this.businesses.owned().map((business) => business.id));
+    return this.all().filter(
+      (reservation) => businessIds.has(reservation.businessId ?? this.offers.get(reservation.offerId)?.businessId ?? 0),
+    );
+  });
+
   async create(offerId: number, quantity: number): Promise<ReservationData> {
-    const customer = this.session.require('CUSTOMER');
-    let created!: ReservationData;
-    await this.db.commit((s) => {
-      const data = s.offers.find((o) => o.id === offerId);
-      if (!data) throw new DomainError('errors.unavailable');
-      if (!this.billing.canReserveOffer(data, customer.id))
-        throw new DomainError('errors.plusRequired');
-      const allocated = new Offer(data).allocate(quantity);
-      let code = '';
-      do {
-        code = 'FS-' + crypto.randomUUID().slice(0, 8).toUpperCase();
-      } while (s.reservations.some((r) => r.pickupCode === code));
-      created = {
-        id: this.db.nextId(s.reservations),
-        offerId,
-        businessId: data.businessId,
-        commissionRate: this.billing.businessPlan(data.businessId).commissionRate,
-        commissionAmount: money(
-          Math.round(
-            (cents(data.offerPrice * quantity) *
-              this.billing.businessPlan(data.businessId).commissionRate) /
-              100,
-          ),
-        ),
-        ...this.billing.quote(data.offerPrice * quantity, customer.id),
-        customerUserId: customer.id,
-        quantity,
-        unitPrice: data.offerPrice,
-        originalUnitPrice: data.originalPrice,
-        pickupCode: code,
-        pickupStartAt: data.pickupStartAt,
-        pickupDeadlineAt: data.pickupEndAt,
-        status: 'ACTIVE',
-        createdAt: new Date().toISOString(),
-      };
-      const ownerId = this.businesses.get(data.businessId)?.ownerAccountId;
-      const messages: Notification[] = [
-        {
-          id: this.db.nextId(s.notifications),
-          recipientAccountId: customer.id,
-          reservationId: created.id,
-          type: 'RESERVATION_CONFIRMED',
-          titleKey: 'notice.confirmed',
-          body: `${data.title} · ${code}`,
-          createdAt: created.createdAt,
-        },
-      ];
-      if (ownerId)
-        messages.push({
-          id: messages[0].id + 1,
-          recipientAccountId: ownerId,
-          reservationId: created.id,
-          type: 'NEW_RESERVATION',
-          titleKey: 'notice.newReservation',
-          body: `${data.title} · ${quantity}`,
-          createdAt: created.createdAt,
-        });
-      return {
-        ...s,
-        offers: upsert(s.offers, allocated),
-        reservations: [...s.reservations, created],
-        notifications: [...s.notifications, ...messages],
-      };
-    });
-    return created;
+    this.session.require('CUSTOMER');
+    const token = this.session.accessToken;
+    const offer = this.offers.get(offerId);
+    if (!token) throw new DomainError('errors.signIn');
+    if (!offer) throw new DomainError('errors.unavailable');
+    if (!this.billing.canReserveOffer(offer)) throw new DomainError('errors.plusRequired');
+    new Offer(offer).allocate(quantity);
+    return this.repository.create(offerId, quantity, token);
   }
+
   async cancel(id: number): Promise<void> {
-    const customer = this.session.require('CUSTOMER');
-    await this.db.commit((s) => {
-      const data = s.reservations.find((r) => r.id === id && r.customerUserId === customer.id);
-      if (!data) throw new DomainError('errors.forbidden');
-      const next = new Reservation(data).cancel();
-      const offer = s.offers.find((o) => o.id === data.offerId);
-      const ownerId = offer && this.businesses.get(offer.businessId)?.ownerAccountId;
-      const notice: Notification[] = ownerId
-        ? [
-            {
-              id: this.db.nextId(s.notifications),
-              recipientAccountId: ownerId,
-              reservationId: id,
-              type: 'RESERVATION_CANCELLED',
-              titleKey: 'notice.cancelled',
-              body: `${offer?.title} · ${data.quantity}`,
-              createdAt: new Date().toISOString(),
-            },
-          ]
-        : [];
-      return {
-        ...s,
-        reservations: upsert(s.reservations, next),
-        offers: offer ? upsert(s.offers, new Offer(offer).release(data.quantity)) : s.offers,
-        notifications: [...s.notifications, ...notice],
-      };
-    });
+    this.session.require('CUSTOMER');
+    const token = this.session.accessToken;
+    const reservation = this.mine().find((item) => item.id === id);
+    if (!reservation) throw new DomainError('errors.forbidden');
+    if (!token) throw new DomainError('errors.signIn');
+    new Reservation(reservation).cancel();
+    await this.repository.cancel(id, token);
   }
+
   async confirmPickup(code: string): Promise<ReservationData> {
     this.session.require('BUSINESS_OWNER');
+    const token = this.session.accessToken;
     const normalized = code.trim().toUpperCase();
-    const data = this.businessReservations().find((r) => r.pickupCode === normalized);
-    if (!data) throw new DomainError('errors.invalidCode');
-    const collected = new Reservation(data).collect();
-    await this.repository.save(collected);
-    return collected;
+    const reservation = this.businessReservations().find(
+      (item) => item.pickupCode.toUpperCase() === normalized,
+    );
+    if (!reservation) throw new DomainError('errors.invalidCode');
+    if (!token) throw new DomainError('errors.signIn');
+    new Reservation(reservation).collect();
+    return this.repository.confirm(reservation.id, normalized, token);
   }
 }

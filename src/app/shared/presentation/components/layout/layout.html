@@ -1,11 +1,11 @@
 <app-header />
-@if (database.ready() && database.error()) {
+@if (database.ready() && (database.error() || catalog.error())) {
   <div class="alert error" role="alert">
-    {{ database.error() | translate }}
-    @if (database.error() === 'errors.apiLoad') {
+    {{ (database.error() || catalog.error()) | translate }}
+    @if (database.error() === 'errors.apiLoad' || catalog.error()) {
       <button
         mat-stroked-button
-        (click)="database.refresh()"
+        (click)="refresh()"
         [disabled]="database.loading() || database.saving()"
       >
         {{ 'sync.retry' | translate }}

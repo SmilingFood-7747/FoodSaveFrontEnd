@@ -108,6 +108,24 @@ export class OfferEditor {
       if (selection === this.selection) this.checkingImage.set(false);
     }
   }
+  private async persistableImage(file: File): Promise<string> {
+    const url = URL.createObjectURL(file);
+    try {
+      const image = new Image();
+      image.src = url;
+      await image.decode();
+      const scale = Math.min(1, 960 / Math.max(image.naturalWidth, image.naturalHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('errors.image');
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/webp', 0.76);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
   readonly error = signal('');
   readonly categories = ['meals', 'bakery', 'vegetarian', 'desserts'];
   submitLabel(): string {
@@ -119,7 +137,6 @@ export class OfferEditor {
     if (this.saving() || this.checkingImage() || this.imageError()) return;
     this.saving.set(true);
     this.error.set('');
-    let uploaded: string | undefined;
     try {
       const data = {
         businessId: Number(this.businessId()),
@@ -144,15 +161,10 @@ export class OfferEditor {
         status: 'ACTIVE',
       });
       const file = this.selectedImage();
-      if (file) {
-        uploaded = await this.images.save(file);
-        data.image = uploaded;
-      }
+      if (file) data.image = await this.persistableImage(file);
       await this.offers.save(data, this.id);
-      uploaded = undefined;
       this.router.navigate(['/business/offers']);
     } catch (e) {
-      if (uploaded) await this.images.remove(uploaded).catch(() => undefined);
       this.error.set(
         e instanceof Error && e.message.startsWith('errors.') ? e.message : 'errors.invalidWindow',
       );

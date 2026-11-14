@@ -1,14 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { ReservationRepository } from '../domain/repositories/reservation.repository';
 import { ReservationData } from '../domain/model/reservation';
-import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
+import { BackendCatalogApi } from '../../shared/infrastructure/backend-catalog.api';
 @Injectable()
 export class ApiReservationRepository extends ReservationRepository {
-  private readonly db = inject(ApiDatabase);
+  private readonly catalog = inject(BackendCatalogApi);
   all(): ReservationData[] {
-    return this.db.state().reservations;
+    return this.catalog.reservations();
   }
-  save(reservation: ReservationData): Promise<void> {
-    return this.db.commit((s) => ({ ...s, reservations: upsert(s.reservations, reservation) }));
+  create(offerId: number, quantity: number, token: string): Promise<ReservationData> {
+    return this.catalog.createReservation(offerId, quantity, token);
+  }
+  cancel(id: number, token: string): Promise<void> {
+    return this.catalog.cancelReservation(id, token);
+  }
+  confirm(id: number, code: string, token: string): Promise<ReservationData> {
+    return this.catalog.confirmReservation(id, code, token);
   }
 }

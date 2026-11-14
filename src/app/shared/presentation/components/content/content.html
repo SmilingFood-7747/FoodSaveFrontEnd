@@ -6,7 +6,7 @@
       <mat-icon>cloud_off</mat-icon>
       <h1>{{ 'sync.unavailable' | translate }}</h1>
       <p role="alert">{{ database.error() | translate }}</p>
-      <button mat-flat-button (click)="database.refresh()" [disabled]="database.loading()">
+      <button mat-flat-button (click)="refresh()" [disabled]="database.loading()">
         {{ (database.loading() ? 'sync.loading' : 'sync.retry') | translate }}
       </button>
     </section>

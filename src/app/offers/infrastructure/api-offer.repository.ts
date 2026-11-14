@@ -1,14 +1,17 @@
 import { inject, Injectable } from '@angular/core';
 import { OfferRepository } from '../domain/repositories/offer.repository';
 import { OfferData } from '../domain/model/offer';
-import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
+import { BackendCatalogApi } from '../../shared/infrastructure/backend-catalog.api';
 @Injectable()
 export class ApiOfferRepository extends OfferRepository {
-  private readonly db = inject(ApiDatabase);
+  private readonly catalog = inject(BackendCatalogApi);
   all(): OfferData[] {
-    return this.db.state().offers;
+    return this.catalog.offers();
   }
-  save(offer: OfferData): Promise<void> {
-    return this.db.commit((s) => ({ ...s, offers: upsert(s.offers, offer) }));
+  save(offer: OfferData, token: string): Promise<OfferData> {
+    return this.catalog.saveOffer(offer, token);
+  }
+  pause(id: number, token: string): Promise<OfferData> {
+    return this.catalog.pauseOffer(id, token);
   }
 }

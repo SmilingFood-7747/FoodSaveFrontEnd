@@ -78,6 +78,42 @@ export class ApiDatabase {
     await this.refresh();
   }
 
+  replaceBackendCatalog(
+    businesses: Business[],
+    offers: OfferData[],
+    session?: Pick<Account, 'id' | 'fullName' | 'email' | 'phone' | 'role'>,
+    reservations?: ReservationData[],
+    notifications?: Notification[],
+    preferences?: NotificationPreferences,
+    reviews?: Review[],
+    requests?: SupportRequest[],
+  ): void {
+    const current = this.state();
+    const accounts = session
+      ? upsert(current.accounts, { ...session, passwordHash: '', salt: '' })
+      : current.accounts;
+    const backendNotificationIds = new Set((notifications ?? []).map((item) => item.id));
+    const localNearbyNotifications = current.notifications.filter(
+      (item) => item.type === 'NEARBY_OFFER' && !backendNotificationIds.has(item.id),
+    );
+    this.state.set({
+      ...current,
+      businesses,
+      offers,
+      accounts,
+      reservations: reservations ?? current.reservations,
+      notifications: notifications
+        ? [...notifications, ...localNearbyNotifications]
+        : current.notifications,
+      preferences:
+        preferences && session
+          ? { ...current.preferences, [session.id]: preferences }
+          : current.preferences,
+      reviews: reviews ?? current.reviews,
+      requests: requests ?? current.requests,
+    });
+  }
+
   refresh(): Promise<void> {
     return this.enqueue(async () => {
       this.loading.set(true);
@@ -118,9 +154,22 @@ export class ApiDatabase {
       const next = change(structuredClone(this.state()));
       const overrides: LocalChanges = {};
       for (const resource of Object.keys(endpoints) as Resource[]) {
+        if (
+          resource === 'accounts' ||
+          resource === 'businesses' ||
+          resource === 'offers' ||
+          resource === 'reservations' ||
+          resource === 'preferences' ||
+          resource === 'reviews' ||
+          resource === 'requests'
+        )
+          continue;
         const original = new Map(this.rows(resource, this.source).map((row) => [row.id, row]));
         const changes: LocalChange[] = [];
-        for (const row of this.rows(resource, next)) {
+        const rows = this.rows(resource, next).filter(
+          (row) => resource !== 'notifications' || row.type === 'NEARBY_OFFER',
+        );
+        for (const row of rows) {
           const before = original.get(row.id);
           const fields = before ? this.diff(before, row) : row;
           if (Object.keys(fields).length) {

@@ -1,14 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { BusinessRepository } from '../domain/repositories/business.repository';
 import { Business } from '../domain/model/business';
-import { ApiDatabase, upsert } from '../../shared/infrastructure/api-database';
+import { BackendCatalogApi } from '../../shared/infrastructure/backend-catalog.api';
 @Injectable()
 export class ApiBusinessRepository extends BusinessRepository {
-  private readonly db = inject(ApiDatabase);
+  private readonly catalog = inject(BackendCatalogApi);
   all(): Business[] {
-    return this.db.state().businesses;
+    return this.catalog.businesses();
   }
-  save(business: Business): Promise<void> {
-    return this.db.commit((s) => ({ ...s, businesses: upsert(s.businesses, business) }));
+  save(business: Business, token: string): Promise<Business> {
+    return this.catalog.saveBusiness(business, token);
   }
 }

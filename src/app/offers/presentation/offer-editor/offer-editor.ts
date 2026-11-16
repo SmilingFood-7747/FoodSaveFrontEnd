@@ -13,6 +13,7 @@ import { OfferService } from '../../application/offer.service';
 import { BusinessService } from '../../../businesses/application/business.service';
 import { BrowserImageStorage } from '../../../shared/infrastructure/browser-image-storage';
 import { Offer } from '../../domain/model/offer';
+import { BillingService } from '../../../billing/application/billing.service';
 @Component({
   selector: 'app-offer-editor',
   encapsulation: ViewEncapsulation.None,
@@ -24,6 +25,7 @@ import { Offer } from '../../domain/model/offer';
 export class OfferEditor {
   readonly offers = inject(OfferService);
   readonly businesses = inject(BusinessService);
+  readonly billing = inject(BillingService);
   private readonly router = inject(Router);
   private readonly images = inject(BrowserImageStorage);
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || undefined;
@@ -141,7 +143,7 @@ export class OfferEditor {
       const data = {
         businessId: Number(this.businessId()),
         plusExclusive:
-          !!this.businesses.get(Number(this.businessId()))?.plusPartner && this.plusExclusive(),
+          this.billing.hasActiveBusinessPlus(Number(this.businessId())) && this.plusExclusive(),
         title: this.title(),
         description: this.description(),
         allergens: this.allergens(),

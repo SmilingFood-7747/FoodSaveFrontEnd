@@ -148,7 +148,7 @@
               required
           /></mat-form-field>
         </div>
-        @if (businesses.get(+businessId())?.plusPartner) {
+        @if (billing.hasActiveBusinessPlus(+businessId())) {
           <section class="panel plus-editor-option">
             <mat-checkbox
               name="plusExclusive"

@@ -48,13 +48,12 @@ export class BillingService {
     const owner = this.db.state().businesses.find((b) => b.id === businessId)?.ownerAccountId ?? 0;
     return this.planFor(owner);
   }
+  hasActiveBusinessPlus(businessId: number): boolean {
+    const owner = this.db.state().businesses.find((business) => business.id === businessId)?.ownerAccountId;
+    return owner !== undefined && this.businessPlan(businessId).id === 'PLUS' && !!this.subscriptionFor(owner);
+  }
   isExclusiveOffer(offer: OfferData): boolean {
-    return (
-      !!offer.plusExclusive &&
-      !!this.db
-        .state()
-        .businesses.find((business) => business.id === offer.businessId && business.plusPartner)
-    );
+    return !!offer.plusExclusive && this.hasActiveBusinessPlus(offer.businessId);
   }
   canReserveOffer(offer: OfferData, accountId = this.session.user()?.id ?? 0): boolean {
     if (!this.isExclusiveOffer(offer)) return true;

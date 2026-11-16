@@ -9,15 +9,6 @@ export class AdminService {
   private readonly billing = inject(BillingService);
   private readonly clock = inject(ClockService);
   private readonly session = inject(SessionService);
-  async setPlusPartner(businessId: number, selected: boolean): Promise<void> {
-    this.session.require('ADMIN');
-    await this.db.commit((state) => ({
-      ...state,
-      businesses: state.businesses.map((business) =>
-        business.id === businessId ? { ...business, plusPartner: selected } : business,
-      ),
-    }));
-  }
   readonly period = signal(30);
   readonly query = signal('');
   readonly planFilter = signal('ALL');

@@ -14,6 +14,7 @@ import { OfferService } from '../../../offers/application/offer.service';
 import { OfferCard } from '../../../offers/presentation/components/offer-card/offer-card';
 import { SessionService } from '../../../iam/application/session.service';
 import { districtOptions } from '../../../shared/domain/model/lima-districts';
+import { BillingService } from '../../../billing/application/billing.service';
 @Component({
   selector: 'app-business-profile',
   encapsulation: ViewEncapsulation.None,
@@ -27,6 +28,7 @@ export class BusinessProfile {
   readonly businesses = inject(BusinessService);
   readonly session = inject(SessionService);
   readonly offers = inject(OfferService);
+  readonly billing = inject(BillingService);
   private readonly router = inject(Router);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly route = inject(ActivatedRoute);

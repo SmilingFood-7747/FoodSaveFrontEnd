@@ -18,7 +18,7 @@
       <div class="detail-grid">
         <div class="panel">
           <h2>{{ b.name }}</h2>
-          @if (b.plusPartner) {
+          @if (billing.hasActiveBusinessPlus(b.id)) {
             <span class="status"
               ><mat-icon>workspace_premium</mat-icon>{{ 'premium.partner' | translate }}</span
             >

@@ -15,7 +15,7 @@ export class BusinessService {
     return this.all().find((b) => b.id === id);
   }
   async save(
-    data: Omit<Business, 'id' | 'ownerAccountId' | 'isActive' | 'plusPartner'>,
+    data: Omit<Business, 'id' | 'ownerAccountId' | 'isActive'>,
     id?: number,
   ): Promise<Business> {
     const owner = this.session.require('BUSINESS_OWNER');
@@ -37,7 +37,6 @@ export class BusinessService {
       id: id ?? 0,
       ownerAccountId: owner.id,
       isActive: true,
-      plusPartner: id ? (this.get(id)?.plusPartner ?? false) : false,
     };
     return this.repository.save(business, token);
   }

@@ -328,7 +328,7 @@
     "plan": "Select a valid plan.",
     "offerLimit": "You reached the active offer limit for your plan. Pause an offer or change plans.",
     "plusRequired": "An active foodSavePlus subscription is required to reserve this exclusive offer.",
-    "plusPartnerRequired": "This business is not in the Plus selection. Publish the offer for all customers.",
+    "plusPartnerRequired": "An active foodSavePlus subscription is required to publish exclusive offers.",
     "apiLoad": "We could not load the data. The server may take a while to start. Try again in a few seconds.",
     "backendUnavailable": "We could not connect to the FoodSave server. Try again in a moment.",
     "localSave": "We could not save the changes in this browser. Check the available storage and try again."

@@ -1,7 +1,6 @@
 import {
   Component,
   inject,
-  signal,
   ChangeDetectionStrategy,
   ViewEncapsulation,
 } from '@angular/core';
@@ -17,16 +16,4 @@ import { AdminService } from '../../application/admin.service';
 })
 export class AdminDashboard {
   readonly admin = inject(AdminService);
-  readonly busy = signal(false);
-  async setPlusPartner(id: number, selected: boolean): Promise<void> {
-    if (this.busy()) return;
-    this.busy.set(true);
-    try {
-      await this.admin.setPlusPartner(id, selected);
-    } catch {
-      /* The shared banner displays the local save error. */
-    } finally {
-      this.busy.set(false);
-    }
-  }
 }

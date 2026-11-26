@@ -29,8 +29,7 @@ export class NearbyOfferService {
   readonly nearby = computed<NearbyOffer[]>(() => {
     if (
       !this.geo.position() ||
-      this.session.isBusinessOwner() ||
-      this.session.isAdmin() ||
+      this.session.user()?.role !== 'CUSTOMER' ||
       this.notifications.preferences().nearbyOffersEnabled === false
     )
       return [];

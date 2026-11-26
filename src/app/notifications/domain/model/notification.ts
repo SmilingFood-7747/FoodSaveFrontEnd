@@ -22,4 +22,5 @@ export interface NotificationPreferences {
   pushEnabled: boolean;
   remindersEnabled: boolean;
   nearbyOffersEnabled?: boolean;
+  preferredCategories?: string[];
 }

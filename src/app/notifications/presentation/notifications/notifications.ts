@@ -30,6 +30,8 @@ export class Notifications {
   readonly busy = signal(false);
   readonly error = signal('');
   readonly nearbyEnabled = signal(this.notifications.preferences().nearbyOffersEnabled !== false);
+  readonly categories = ['meals', 'bakery', 'vegetarian', 'desserts'];
+  readonly preferredCategories = signal<string[]>(this.notifications.preferences().preferredCategories ?? []);
   reservation(id?: number) {
     return this.reservations.all().find((r) => r.id === id);
   }
@@ -43,6 +45,7 @@ export class Notifications {
         ...this.notifications.preferences(),
         remindersEnabled: this.reminders(),
         nearbyOffersEnabled: this.nearbyEnabled(),
+        preferredCategories: this.preferredCategories(),
       });
       this.saved.set(true);
     } catch (e) {

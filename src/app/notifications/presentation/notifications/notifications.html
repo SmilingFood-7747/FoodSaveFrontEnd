@@ -82,6 +82,15 @@
           {{ 'nearby.preferenceBody' | translate: { radius: nearby.radiusKm } }}
         </p>
       </div>
+      <h3>{{ 'profile.foodPreferences' | translate }}</h3>
+      <p class="caption">{{ 'profile.foodPreferencesHelp' | translate }}</p>
+      @for (category of categories; track category) {
+        <mat-checkbox
+          [checked]="preferredCategories().includes(category)"
+          (change)="preferredCategories.update((items) => $event.checked ? [...items, category] : items.filter((item) => item !== category))">
+          {{ 'categories.' + category | translate }}
+        </mat-checkbox>
+      }
       <p class="caption">{{ 'notice.channels' | translate }}</p>
       <button mat-flat-button (click)="save()" [disabled]="busy()">
         {{ 'common.save' | translate }}

@@ -37,6 +37,10 @@ export class NearbyOfferService {
     return this.offers
       .active()
       .flatMap((offer) => {
+        const preferred = this.session.user()?.role === 'CUSTOMER'
+          ? this.notifications.preferences().preferredCategories ?? []
+          : [];
+        if (preferred.length && !preferred.includes(offer.category)) return [];
         const business = this.businesses.get(offer.businessId);
         if (!business || offer.availableUnits < 1) return [];
         const distance = this.geo.distance(business.latitude, business.longitude);

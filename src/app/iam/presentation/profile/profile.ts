@@ -20,7 +20,10 @@ export class Profile {
   readonly busy = signal(false);
   readonly session = inject(SessionService);
   readonly notificationService = inject(NotificationService);
-  readonly foodCategories = ['meals', 'bakery', 'vegetarian', 'desserts'];
+  readonly foodCategories = [
+    'meals', 'criolla', 'seafood', 'chicken', 'meat', 'pasta',
+    'bakery', 'vegetarian', 'vegan', 'desserts', 'snacks', 'drinks',
+  ];
   readonly preferredCategories = signal<string[]>(this.notificationService.preferences().preferredCategories ?? []);
   readonly name = signal(this.session.user()?.fullName ?? '');
   readonly phone = signal(this.nationalNumber(this.session.user()?.phone ?? ''));

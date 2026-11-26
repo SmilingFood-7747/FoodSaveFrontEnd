@@ -129,7 +129,10 @@ export class OfferEditor {
     }
   }
   readonly error = signal('');
-  readonly categories = ['meals', 'bakery', 'vegetarian', 'desserts'];
+  readonly categories = [
+    'meals', 'criolla', 'seafood', 'chicken', 'meat', 'pasta',
+    'bakery', 'vegetarian', 'vegan', 'desserts', 'snacks', 'drinks',
+  ];
   submitLabel(): string {
     if (this.saving()) return 'editor.saving';
     if (this.id) return 'common.save';

@@ -83,9 +83,17 @@
   "categories": {
     "all": "All food",
     "meals": "Meals",
+    "criolla": "Peruvian cuisine",
+    "seafood": "Seafood",
+    "chicken": "Chicken",
+    "meat": "Meat",
+    "pasta": "Pasta",
     "bakery": "Bakery",
     "vegetarian": "Vegetarian",
-    "desserts": "Desserts"
+    "vegan": "Vegan",
+    "desserts": "Desserts",
+    "snacks": "Snacks",
+    "drinks": "Drinks"
   },
   "status": {
     "ACTIVE": "Active",

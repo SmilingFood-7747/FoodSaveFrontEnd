@@ -83,9 +83,17 @@
   "categories": {
     "all": "Toda la comida",
     "meals": "Comidas",
+    "criolla": "Comida criolla",
+    "seafood": "Comida marina",
+    "chicken": "Pollo",
+    "meat": "Carnes",
+    "pasta": "Pastas",
     "bakery": "Panadería",
     "vegetarian": "Vegetariano",
-    "desserts": "Postres"
+    "vegan": "Vegano",
+    "desserts": "Postres",
+    "snacks": "Snacks",
+    "drinks": "Bebidas"
   },
   "status": {
     "ACTIVE": "Activa",

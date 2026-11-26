@@ -298,14 +298,14 @@
     "terms5Body": "A customer may submit one rating after a confirmed pickup. Use respectful, relevant comments. The help page lets you record a local request; it does not send messages to a support team in this demonstration.",
     "privacy1Title": "1. Information entered",
     "privacy1Body": "The demonstration stores names, email addresses, phone numbers, business information, offers, reservations, reviews, preferences and support requests that you enter. Use fictional information.",
-    "privacy2Title": "2. Browser storage",
-    "privacy2Body": "Records and the selected language are stored in localStorage on this device. The current account identifier is stored in sessionStorage. Passwords are stored as salted PBKDF2 hashes, but local browser access is not production security. Do not use sensitive data.",
+    "privacy2Title": "2. Storage and account",
+    "privacy2Body": "Accounts, profiles, businesses, offers, reservations, reviews, support requests and preferences are sent to the FoodSave backend and stored in its database. The session and access token are kept in this browser’s sessionStorage. Some demo features, such as certain subscriptions and nearby alerts, may be stored locally only. Passwords are processed by the backend and are never returned in responses. Use test data and do not reuse sensitive passwords.",
     "privacy3Title": "3. Location",
     "privacy3Body": "Your browser requests permission only when you select Use my location. Coordinates are used in memory to calculate approximate distances and are not saved by this demonstration.",
     "privacy4Title": "4. External resources",
-    "privacy4Body": "Business maps load OpenStreetMap. Fonts load from Google Fonts. These providers receive ordinary connection information under their own policies. Uploaded photos are stored in this browser. No analytics tracker is configured.",
+    "privacy4Body": "Business maps load OpenStreetMap. Fonts load from Google Fonts. These providers receive ordinary connection information under their own policies. Offer images are sent to the backend as part of the offer. No analytics tracker is configured.",
     "privacy5Title": "5. Removing local records",
-    "privacy5Body": "Clear this site’s browser data to remove your local records and session. No remote backend is connected and there is no remote account deletion request in this demonstration."
+    "privacy5Body": "Sign out to clear this browser’s session. Clearing site data removes preferences and alerts stored locally, but does not delete backend information. This version has no remote account-deletion feature; contact support for assistance."
   },
   "errors": {
     "invalidPrice": "Enter valid prices. The offer must be cheaper than the original.",

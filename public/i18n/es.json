@@ -298,14 +298,14 @@
     "terms5Body": "Un cliente puede enviar una calificación después de un recojo confirmado. Usa comentarios respetuosos y pertinentes. La página de ayuda permite registrar una solicitud local; en esta demostración no envía mensajes a un equipo de soporte.",
     "privacy1Title": "1. Información ingresada",
     "privacy1Body": "La demostración guarda los nombres, correos, teléfonos, información del negocio, ofertas, reservas, calificaciones, preferencias y solicitudes que ingreses. Usa información ficticia.",
-    "privacy2Title": "2. Almacenamiento en el navegador",
-    "privacy2Body": "Los registros y el idioma seleccionado se guardan en localStorage de este dispositivo. El identificador de la cuenta actual se guarda en sessionStorage. Las contraseñas se guardan como hashes PBKDF2 con sal, pero el acceso local del navegador no constituye seguridad de producción. No uses datos sensibles.",
+    "privacy2Title": "2. Almacenamiento y cuenta",
+    "privacy2Body": "Las cuentas, perfiles, negocios, ofertas, reservas, reseñas, solicitudes y preferencias se envían al backend FoodSave y se almacenan en su base de datos. La sesión y el token de acceso se mantienen en sessionStorage de este navegador. Algunas funciones demostrativas, como ciertas suscripciones y avisos cercanos, pueden guardarse solo localmente. Las contraseñas se procesan en el backend y no se devuelven en las respuestas. Usa datos de prueba y no reutilices contraseñas sensibles.",
     "privacy3Title": "3. Ubicación",
     "privacy3Body": "Tu navegador solicita permiso solo al seleccionar Usar mi ubicación. Las coordenadas se usan en memoria para calcular distancias aproximadas y esta demostración no las guarda.",
     "privacy4Title": "4. Recursos externos",
-    "privacy4Body": "Los mapas de negocios cargan OpenStreetMap. Las fuentes cargan Google Fonts. Estos proveedores reciben información normal de conexión bajo sus propias políticas. Las fotos cargadas se guardan en este navegador. No se configura un rastreador de analítica.",
+    "privacy4Body": "Los mapas de negocios cargan OpenStreetMap. Las fuentes cargan Google Fonts. Estos proveedores reciben información normal de conexión bajo sus propias políticas. Las imágenes de ofertas se envían al backend como parte de la oferta. No se configura un rastreador de analítica.",
     "privacy5Title": "5. Eliminar registros locales",
-    "privacy5Body": "Borra los datos del sitio en tu navegador para eliminar tus registros locales y sesión. No hay un backend remoto conectado ni una solicitud remota de eliminación de cuenta en esta demostración."
+    "privacy5Body": "Puedes cerrar sesión para borrar la sesión de este navegador. Borrar los datos del sitio elimina preferencias y avisos que se hayan guardado localmente, pero no elimina información del backend. Esta versión no incluye una función de eliminación remota de cuenta; contacta con soporte para solicitar ayuda."
   },
   "errors": {
     "invalidPrice": "Ingresa precios válidos. La oferta debe ser menor al precio original.",

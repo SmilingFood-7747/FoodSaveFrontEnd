@@ -59,6 +59,7 @@ export class SessionService {
       throw new DomainError('errors.forbidden');
     if (!data.fullName.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) || data.password.length < 8)
       throw new DomainError('errors.account');
+    if (!/^\+51\d{9}$/.test(data.phone)) throw new DomainError('errors.phone');
     try {
       await this.authApi.signUp({
         fullName: data.fullName.trim(),

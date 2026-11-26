@@ -15,15 +15,6 @@
     <form (ngSubmit)="submit()" #form="ngForm">
       @if (registering) {
         <mat-form-field appearance="outline"
-          ><mat-label>{{ 'profile.name' | translate }}</mat-label
-          ><input
-            matInput
-            name="fullName"
-            [ngModel]="fullName()"
-            (ngModelChange)="fullName.set($event)"
-            required
-            autocomplete="name" /></mat-form-field
-        ><mat-form-field appearance="outline"
           ><mat-label>{{ 'profile.role' | translate }}</mat-label
           ><mat-select name="role" [ngModel]="role()" (ngModelChange)="role.set($event)"
             ><mat-option value="CUSTOMER">{{ 'roles.CUSTOMER' | translate }}</mat-option
@@ -31,16 +22,43 @@
               'roles.BUSINESS_OWNER' | translate
             }}</mat-option></mat-select
           ></mat-form-field
-        ><mat-form-field appearance="outline"
+        ><div class="auth-name-fields">
+          <mat-form-field appearance="outline"
+            ><mat-label>{{ 'auth.firstName' | translate }}</mat-label
+            ><input
+              matInput
+              name="firstName"
+              [ngModel]="firstName()"
+              (ngModelChange)="firstName.set($event)"
+              required
+              autocomplete="given-name" /></mat-form-field
+          ><mat-form-field appearance="outline"
+            ><mat-label>{{ 'auth.lastName' | translate }}</mat-label
+            ><input
+              matInput
+              name="lastName"
+              [ngModel]="lastName()"
+              (ngModelChange)="lastName.set($event)"
+              required
+              autocomplete="family-name" /></mat-form-field
+        ></div>
+        <mat-form-field appearance="outline"
           ><mat-label>{{ 'profile.phone' | translate }}</mat-label
           ><input
             matInput
             type="tel"
             name="phone"
+            inputmode="numeric"
+            [pattern]="phonePattern"
+            minlength="9"
+            maxlength="9"
             [ngModel]="phone()"
-            (ngModelChange)="phone.set($event)"
+            (ngModelChange)="setPhone($event)"
+            required
             autocomplete="tel"
-        /></mat-form-field>
+          /><span matTextPrefix>+51&nbsp;</span
+          ><mat-hint>{{ 'auth.phoneHelp' | translate }}</mat-hint></mat-form-field
+        >
       }
       <mat-form-field appearance="outline"
         ><mat-label>{{ 'profile.email' | translate }}</mat-label
@@ -67,6 +85,21 @@
           [attr.autocomplete]="registering ? 'new-password' : 'current-password'"
       /></mat-form-field>
       @if (registering) {
+        <mat-form-field appearance="outline"
+          ><mat-label>{{ 'auth.confirmPassword' | translate }}</mat-label
+          ><input
+            matInput
+            type="password"
+            name="confirmPassword"
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
+            required
+            minlength="8"
+            autocomplete="new-password"
+        /></mat-form-field>
+        @if (confirmPassword() && password() !== confirmPassword()) {
+          <p class="message error" role="alert">{{ 'errors.passwordMismatch' | translate }}</p>
+        }
         <mat-checkbox
           name="accepted"
           [ngModel]="accepted()"
@@ -85,7 +118,12 @@
         mat-flat-button
         class="full-width"
         type="submit"
-        [disabled]="form.invalid || busy() || (registering && !accepted())"
+        [disabled]="
+          form.invalid ||
+          busy() ||
+          (registering &&
+            (!accepted() || phone().length !== 9 || password() !== confirmPassword()))
+        "
       >
         {{
           (busy() ? 'common.loading' : registering ? 'auth.createAccount' : 'auth.signIn')

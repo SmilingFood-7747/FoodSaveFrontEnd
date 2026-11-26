@@ -46,6 +46,12 @@ app-auth .auth-panel form mat-form-field {
   width: 100%;
 }
 
+app-auth .auth-name-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
 app-auth .auth-switch {
   font-size: 12px;
   text-align: center;
@@ -80,5 +86,12 @@ app-auth .demo-accounts p {
   }
   app-auth .auth-story {
     display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  app-auth .auth-name-fields {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 }

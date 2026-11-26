@@ -22,10 +22,13 @@ export class Auth {
   private readonly router = inject(Router);
   readonly session = inject(SessionService);
   readonly registering = this.route.snapshot.data['register'] === true;
-  readonly fullName = signal('');
+  readonly firstName = signal('');
+  readonly lastName = signal('');
   readonly email = signal('');
   readonly phone = signal('');
   readonly password = signal('');
+  readonly confirmPassword = signal('');
+  readonly phonePattern = '^[0-9]{9}$';
   readonly role = signal<AccountRole>(
     this.route.snapshot.queryParamMap.get('role') === 'BUSINESS_OWNER'
       ? 'BUSINESS_OWNER'
@@ -34,6 +37,11 @@ export class Auth {
   readonly accepted = signal(false);
   readonly error = signal('');
   readonly busy = signal(false);
+
+  setPhone(value: string): void {
+    this.phone.set(value.replace(/\D/g, '').slice(0, 9));
+  }
+
   async submit(): Promise<void> {
     if (this.busy()) return;
     this.error.set('');
@@ -41,10 +49,12 @@ export class Auth {
     try {
       if (this.registering) {
         if (!this.accepted()) throw new Error('errors.acceptTerms');
+        if (this.phone().length !== 9) throw new Error('errors.phone');
+        if (this.password() !== this.confirmPassword()) throw new Error('errors.passwordMismatch');
         await this.session.signUp({
-          fullName: this.fullName(),
+          fullName: `${this.firstName().trim()} ${this.lastName().trim()}`,
           email: this.email(),
-          phone: this.phone(),
+          phone: `+51${this.phone()}`,
           password: this.password(),
           role: this.role(),
         });

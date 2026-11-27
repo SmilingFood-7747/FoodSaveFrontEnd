@@ -28,15 +28,29 @@
           autocomplete="name" />
       </mat-form-field>
       <section class="profile-food-preferences">
-        <h3>{{ 'profile.foodPreferences' | translate }}</h3>
-        <p>{{ 'profile.foodPreferencesHelp' | translate }}</p>
-        @for (category of foodCategories; track category) {
-          <mat-checkbox
-            [checked]="preferredCategories().includes(category)"
-            (change)="preferredCategories.update((items) => $event.checked ? [...items, category] : items.filter((item) => item !== category))">
-            {{ 'categories.' + category | translate }}
-          </mat-checkbox>
-        }
+        <div class="food-preferences-heading">
+          <div>
+            <h3>{{ 'profile.foodPreferences' | translate }}</h3>
+            <p>{{ 'profile.foodPreferencesHelp' | translate }}</p>
+          </div>
+          <span class="preference-count">{{ preferredCategories().length }}</span>
+        </div>
+        <div class="food-category-grid">
+          @for (category of foodCategories; track category) {
+            <button
+              class="food-category-button"
+              type="button"
+              [class.selected]="preferredCategories().includes(category)"
+              [attr.aria-pressed]="preferredCategories().includes(category)"
+              (click)="toggleFoodCategory(category)">
+              <mat-icon>{{ categoryIcon(category) }}</mat-icon>
+              <span>{{ 'categories.' + category | translate }}</span>
+              @if (preferredCategories().includes(category)) {
+                <mat-icon class="category-check">check_circle</mat-icon>
+              }
+            </button>
+          }
+        </div>
       </section>
       <mat-form-field appearance="outline">
         <mat-label>{{ 'profile.phone' | translate }}</mat-label>

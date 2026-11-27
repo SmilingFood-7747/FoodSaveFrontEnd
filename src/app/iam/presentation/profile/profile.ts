@@ -34,6 +34,21 @@ export class Profile {
     this.phone.set(value.replace(/\D/g, '').slice(0, 9));
   }
 
+  toggleFoodCategory(category: string): void {
+    this.preferredCategories.update((items) =>
+      items.includes(category) ? items.filter((item) => item !== category) : [...items, category],
+    );
+  }
+
+  categoryIcon(category: string): string {
+    const icons: Record<string, string> = {
+      meals: 'restaurant', criolla: 'soup_kitchen', seafood: 'set_meal', chicken: 'egg_alt',
+      meat: 'lunch_dining', pasta: 'dinner_dining', bakery: 'bakery_dining',
+      vegetarian: 'eco', vegan: 'spa', desserts: 'cake', snacks: 'cookie', drinks: 'local_cafe',
+    };
+    return icons[category] ?? 'restaurant';
+  }
+
   async save(): Promise<void> {
     if (this.busy()) return;
     if (this.phone().length !== 9) {

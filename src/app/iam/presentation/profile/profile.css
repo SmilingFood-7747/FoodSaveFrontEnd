@@ -23,3 +23,85 @@ app-profile .large-avatar {
   font-size: 28px;
   color: var(--brand);
 }
+
+app-profile .profile-food-preferences {
+  margin: 4px 0 20px;
+  padding: 18px;
+  border: 1px solid var(--border, #dfe7dd);
+  border-radius: 16px;
+  background: linear-gradient(145deg, #fbfdf9, #f5f9f1);
+}
+
+app-profile .food-preferences-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+app-profile .food-preferences-heading h3 { margin: 0 0 5px; }
+app-profile .food-preferences-heading p { margin: 0; color: var(--muted, #607080); }
+
+app-profile .preference-count {
+  min-width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #e5f1df;
+  color: var(--brand, #287d36);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+app-profile .food-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(142px, 1fr));
+  gap: 9px;
+}
+
+app-profile .food-category-button {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 11px;
+  border: 1px solid #dce5d9;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text, #19324a);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+app-profile .food-category-button > mat-icon:first-child {
+  color: #6b826c;
+  font-size: 19px;
+}
+
+app-profile .food-category-button span { flex: 1; font-size: 13px; }
+app-profile .food-category-button .category-check { color: var(--brand, #287d36); font-size: 18px; }
+
+app-profile .food-category-button:hover {
+  border-color: #8bb991;
+  background: #f8fcf6;
+  transform: translateY(-1px);
+}
+
+app-profile .food-category-button.selected {
+  border-color: #378342;
+  background: #eaf5e7;
+  box-shadow: inset 0 0 0 1px #378342;
+}
+
+app-profile .food-category-button.selected > mat-icon:first-child { color: #287d36; }
+app-profile .food-category-button:focus-visible { outline: 3px solid #9bc99c; outline-offset: 2px; }
+
+@media (max-width: 520px) {
+  app-profile .profile-food-preferences { padding: 14px; }
+  app-profile .food-category-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  app-profile .food-category-button { min-height: 44px; gap: 6px; padding: 0 8px; }
+  app-profile .food-category-button span { font-size: 12px; }
+}
